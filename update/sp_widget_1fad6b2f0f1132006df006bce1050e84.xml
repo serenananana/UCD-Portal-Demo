@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function(spUtil, $scope, $timeout) {
+    /* widget controller */
+
+    var c = this;
+	
+	// record watchers for My Stuff icon link
+	if(c.data.title == "My Stuff") {
+		  spUtil.recordWatch($scope, "incident", "caller_id="+c.data.userID, function(name, data) {
+			 $timeout(function() {
+				spUtil.update($scope);
+        }, 500);   
+    });
+	spUtil.recordWatch($scope, "sc_request", "requested_for="+c.data.userID,function(name, data) {
+		 $timeout(function() {
+			spUtil.update($scope);
+        }, 500);   
+    });
+	spUtil.recordWatch($scope, "sysapproval_approver", "approver="+c.data.userID,function(name, data) {
+		 $timeout(function() {
+			spUtil.update($scope);
+        }, 500);   
+    });
+	spUtil.recordWatch($scope, "sc_task", "assigned_to="+c.data.userID,function(name, data) {
+		 $timeout(function() {
+			spUtil.update($scope);
+        }, 500);   
+    });
+	}
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>#icon-links-container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#icon-links-container:hover {
+  background-color: darken(#edf1f2, 5%);
+}
+
+.text-primary {
+  color: $brand-primary;
+}
+
+#icon-links-container:hover .text-primary {
+  color: darken($brand-primary, 20%);
+}
+
+.text-info {
+  color: $brand-info;
+}
+
+#icon-links-container:hover .text-info {
+  color: darken($brand-info, 20%);
+}
+
+.text-success {
+  color: $brand-success;
+}
+
+#icon-links-container:hover .text-success {
+  color: darken($brand-success, 20%);
+}
+
+.text-warning {
+  color: $brand-warning;
+}
+
+#icon-links-container:hover .text-warning {
+  color: darken($brand-warning, 20%);
+}
+
+.text-danger {
+  color: $brand-danger;
+}
+
+#icon-links-container:hover .text-danger {
+  color: darken($brand-danger, 20%);
+}
+
+.media, .media-body {
+  overflow: visible;
+}
+
+.label-custom {
+	font-size: 70%;
+  vertical-align: super;
+}
+
+.text-purple {
+  color: #7647A2;
+}
+
+#icon-links-container:hover .text-purple {
+  color: darken(#7647A2, 20%);
+}
+
+a:active, a:focus {
+  outline: 0;
+  -moz-outline-style: none
+}</css>
+        <data_table>sp_instance_link</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,short_description,glyph,class_name,type,sc_category,url,kb_article,kb_topic,kb_category,sc_cat_item,sp_page,color</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-icon-link</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Icon Link</name>
+        <option_schema>[{"name":"link_template","label":"Template","type":"choice","choices":[{"label":"Top Icon","value":"Top Icon"},{"label":"Circle Icon","value":"Circle Icon"},{"label":"Color Box","value":"Color Box"}]},{"hint":"Image URL within ServiceNow (\"example.jpg\")","name":"image","label":"Image","type":"string"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function(){
+	// var gr = $sp.getInstanceRecord();
+	// data.href = $sp.getMenuHREF(gr);
+	// data.target = options.target || "";		
+	if(!input) 
+		data.title = options.title;
+	else if(input && input.title == "My Stuff")
+		data.title = input.title;
+	
+	data.userID = gs.getUserID();
+	
+	if(!input)
+		data.recordCount = 0;
+	else if(input && input.recordCount > 0 && data.title == "My Stuff") {
+		data.recordCount = getMyStuffTotal();
+	}
+	
+	if(options.title == "My Stuff") {
+		data.recordCount = getMyStuffTotal();
+	}
+	
+	function getMyStuffTotal() {
+		var numInc = 0;
+		var numReq = 0;
+		var numApproval = 0;
+		var numTask = 0;
+		var numChange = 0;
+		var numRecords = 0;
+		
+		// get number of incidents - if itil user also show tickets that were last updated by someone else
+		//if(gs.getUser().hasRole('itil')) numInc = getStuffCount('incident', "stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^sys_updated_by!=javascript:gs.getUserName()^NQcaller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");
+		numInc = getStuffCount('incident', "stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");
+		// get number of requests 
+		// numReq = getStuffCount('sc_request', "requested_forDYNAMICjavascript:gs.getUserID()^active=true"); commented out for MVP 1 with no requests
+		// get number of change requests
+		//numChange = getStuffCount('change_request', "active=true^assigned_toDYNAMICjavascript:gs.getUserID()");
+		// get number of approvals
+		numApproval = getStuffCount('sysapproval_approver', "approverDYNAMICjavascript:gs.getUserID()^sysapprovalISNOTEMPTY^state=requested");
+		// get number of tasks
+		//numTask = getStuffCount('sc_task',"active=true^assigned_toDYNAMICjavascript:gs.getUserID()");
+		// sum up total
+		numRecords = +(numInc)+(+numReq)+(+numApproval)+(+numTask)+(+numChange);
+		
+		return numRecords;
+	}
+	
+	function getStuffCount(table, filter) {
+		var ga = new GlideAggregate(table);
+		ga.addEncodedQuery(filter);
+		ga.addAggregate('COUNT');
+		ga.query();
+		var count = 0;
+		if(ga.next()) {
+			count = ga.getAggregate('COUNT');
+		}
+		return count;
+	}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-10 23:38:21</sys_created_on>
+        <sys_id>1fad6b2f0f1132006df006bce1050e84</sys_id>
+        <sys_mod_count>132</sys_mod_count>
+        <sys_name>ucd_Icon Link</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_1fad6b2f0f1132006df006bce1050e84</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-02-14 19:01:48</sys_updated_on>
+        <template><![CDATA[<div id="icon-links-container">
+  <a ng-if="::(options.link_template == 'Circle Icon')" ng-href="{{::options.href}}" class="circle_icon" target="{{::options.target}}">
+    <div class="text-center">
+      <!-- class="d-flex align-self-center mr-4" -->
+	<img src="{{::options.image}}" height="125" width="125" style="padding-bottom: 10px;"/>
+    </div>
+    <div class="text-center">      
+    	<h3 class="text-{{::options.color}}" style="font-weight: 700"> {{::options.title}} 
+        <span ng-if="c.data.recordCount > 0 && c.data.title=='My Stuff'" class="label label-as-badge label-primary label-custom">{{c.data.recordCount}}</span>
+ 			</h3>
+    	<p style="color: #656565;">{{::options.short_description}}</p>
+    </div>
+  </a>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

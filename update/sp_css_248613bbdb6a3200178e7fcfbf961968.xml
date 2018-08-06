@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>/*****************************************************&#13;
+Getting the footer to remain at the bottom of the page&#13;
+******************************************************/&#13;
+html, body {&#13;
+  height: 100%;&#13;
+  margin: 0; padding: 0; /* To avoid scrollbars */&#13;
+}&#13;
+.page {&#13;
+  display: flex;&#13;
+  height: 100%;&#13;
+  flex-direction: column;&#13;
+}&#13;
+.body {&#13;
+  flex: 1 0 auto;&#13;
+}&#13;
+header, footer {&#13;
+  flex: none;&#13;
+}&#13;
+&#13;
+/*****************************************************&#13;
+Footer specific CSS&#13;
+******************************************************/&#13;
+.footer {&#13;
+    margin-top: 0;&#13;
+    padding: 0 0 0 0 6em;&#13;
+    background-color: #002855;&#13;
+    color: #fff&#13;
+}&#13;
+.footer h1,&#13;
+.footer h2,&#13;
+.footer h3,&#13;
+.footer h4,&#13;
+.footer h5,&#13;
+.footer h6,&#13;
+.footer .pane-title {&#13;
+    font-size: 16px;&#13;
+    font-size: 1rem;&#13;
+    line-height: 1.625;&#13;
+    margin: .75em 0 .25em;&#13;
+    padding: 0;&#13;
+    color: #002855;&#13;
+    font-style: normal;&#13;
+    font-weight: 700;&#13;
+    font-size: 25px;&#13;
+    font-size: 1.5625rem;&#13;
+    line-height: 1.04;&#13;
+    color: #fff;&#13;
+    margin-bottom: .5em&#13;
+}&#13;
+.footer h1:first-child,&#13;
+.footer h2:first-child,&#13;
+.footer h3:first-child,&#13;
+.footer h4:first-child,&#13;
+.footer h5:first-child,&#13;
+.footer h6:first-child,&#13;
+.footer .pane-title:first-child {&#13;
+    margin-top: 0&#13;
+}&#13;
+.footer a {&#13;
+    color: #fff&#13;
+}&#13;
+.flex-footer__item {&#13;
+    margin-bottom: 2em;&#13;
+    padding-right: 1em&#13;
+}&#13;
+.flex-footer__item:last-child {&#13;
+    padding-right: 0&#13;
+}&#13;
+.o-flex-region,&#13;
+.flex-footer {&#13;
+    display: -ms-flexbox;&#13;
+    display: flex;&#13;
+    -ms-flex-wrap: wrap;&#13;
+    flex-wrap: wrap;&#13;
+    -ms-flex-pack: justify;&#13;
+    justify-content: space-between&#13;
+}&#13;
+.o-flex-region__item,&#13;
+.flex-footer__item {&#13;
+    -ms-flex-positive: 1;&#13;
+    flex-grow: 1;&#13;
+    margin-bottom: 1em;&#13;
+    width: 100%&#13;
+}&#13;
+</css>
+        <name>UCD Service Portal Footer</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-12 20:01:00</sys_created_on>
+        <sys_id>248613bbdb6a3200178e7fcfbf961968</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>UCD Service Portal Footer</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_css_248613bbdb6a3200178e7fcfbf961968</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-05-22 22:08:06</sys_updated_on>
+    </sp_css>
+</record_update>

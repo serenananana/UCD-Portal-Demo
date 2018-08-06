@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.view-all {
+	box-sizing: border-box;
+  //height: 25px;
+  text-align: right;
+  color: #C99700;
+}
+
+.header-text {
+  font-size: 16px;
+  font-family: SourceSansPro, Helvetica;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd_kb_suggested_articles</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Suggested Articles</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.articles = [];
+	var z = new GlideRecord('u_suggested_knowledge');
+	if (z.isValid()) {
+		z.setLimit(options.max_number || 5);
+		z.orderBy('u_order');
+		z.query();
+		while (z.next()) {
+			if (!z.canRead())
+				continue;
+			var a = {};
+			a.short_description = z.u_title.getDisplayValue();
+			a.sys_id = z.u_knowledge_record.sys_id.getDisplayValue();
+			data.articles.push(a);
+		}
+		z = new GlideRecord('u_suggested_knowledge');
+		z.query();
+		var numArts = 0;
+		while (z.next()) {
+			if (!z.canRead()) continue;
+			numArts += 1;
+		}
+		data.numShown = options.max_number || 5;
+		data.numTotal = numArts;	
+	}
+	else {
+		z = new GlideRecord('kb_knowledge');
+		z.setLimit(options.max_number || 5);
+		z.orderBy('u_order');
+		z.query();
+		while (z.next()) {
+			if (!z.canRead())
+				continue;
+			var a = {};
+			a.short_description = z.short_description.getDisplayValue();
+			a.sys_id = z.sys_id.getDisplayValue();
+			data.articles.push(a);
+		}
+		z = new GlideRecord('kb_knowledge');
+		z.query();
+		var numArts = 0;
+		while (z.next()) {
+			if (!z.canRead()) continue;
+			numArts += 1;
+		}
+		data.numShown = options.max_number || 5;
+		data.numTotal = numArts;
+	}
+})()
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-03-29 16:54:32</sys_created_on>
+        <sys_id>2977ccf9db313200178e7fcfbf961905</sys_id>
+        <sys_mod_count>76</sys_mod_count>
+        <sys_name>ucd_KB Suggested Articles</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_2977ccf9db313200178e7fcfbf961905</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-05 21:12:51</sys_updated_on>
+        <template><![CDATA[          <div class="panel o-box">
+            <h2 class="panel__title">Suggested Articles</h2>
+            <section>
+              <ul class="list--arrow list--flush">
+                <li ng-repeat="a in data.articles" class="m-b">
+    							<a href="?id=ucd_kb_article&sys_id={{::a.sys_id}}">{{::a.short_description}}</a>
+               	</li>
+              </ul>
+            </section>
+          </div>
+
+<!--<div class="panel panel-default" ng-if="data.articles.length > 0" >
+
+  <div class="panel-heading"> 
+    <div class="panel-title ng-binding"> <strong>Suggested Articles</strong> </div>
+  </div>
+  <div class="panel-body">
+  	<div ng-repeat="a in data.articles" class="m-b">
+    	<a href="?id=ucd_kb_article&sys_id={{::a.sys_id}}">{{::a.short_description}}</a>
+  	</div>
+  </div>
+  
+  <div class="panel-footer">
+    <h5> Showing {{::data.numShown}} of {{::data.numTotal}}
+    	<a class="pull-right" href="?id=ucd_kb_view_suggested"> View All </a>
+    </h5>
+  </div>
+</div>-->
+<!-- sp-panel -->]]></template>
+    </sp_widget>
+</record_update>

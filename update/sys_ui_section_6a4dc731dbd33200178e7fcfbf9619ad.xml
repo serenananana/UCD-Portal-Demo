@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_section caption="Category Details" section_id="6a4dc731dbd33200178e7fcfbf9619ad" sys_domain="global" table="kb_category" version="3" view="Category_Details">
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Category Details</caption>
+            <header>false</header>
+            <name>kb_category</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>aztan</sys_created_by>
+            <sys_created_on>2017-06-12 20:53:03</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>6a4dc731dbd33200178e7fcfbf9619ad</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Category Details</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+            <sys_update_name>sys_ui_section_6a4dc731dbd33200178e7fcfbf9619ad</sys_update_name>
+            <sys_updated_by>aztan</sys_updated_by>
+            <sys_updated_on>2017-06-12 20:53:03</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Category Details" name="Category_Details">999c0bfddb933200178e7fcfbf96198b</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	var c = this;
+	var deregister = $rootScope.$on("sp.update.breadcrumbs", function(e, list) {
+		c.breadcrumbs = list;
+	});
+	
+	$scope.$on('$destroy', function(){ 
+		deregister();
+	});
+	
+
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>i {
+margin-top: 12px;
+}
+
+.nav-pills &gt; li + li {
+    margin-left: 1px;
+}
+.nav-sm &gt; li &gt; a{padding:7px 8px !important;}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-breadcrumbs</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_breadcrumbs</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */
+data.category = $sp.getParameter('parent');
+var cat = new GlideRecord('sc_category');
+	cat.get(data.category);
+	data.title = cat.getValue('title');
+  data.pageID = $sp.getParameter('id');
+	data.catID = $sp.getParameter('ucd_category')
+	var category = new GlideRecord('sc_category');
+	category.get(data.catID);
+	data.cat = category.getValue('title');
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-21 16:54:18</sys_created_on>
+        <sys_id>40ba36870f2132006df006bce1050e63</sys_id>
+        <sys_mod_count>80</sys_mod_count>
+        <sys_name>ucd_breadcrumbs</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_40ba36870f2132006df006bce1050e63</sys_update_name>
+        <sys_updated_by>kloves-alxcrlsn</sys_updated_by>
+        <sys_updated_on>2017-12-06 22:45:55</sys_updated_on>
+        <template><![CDATA[
+<ul class="nav nav-pills nav-sm" aria-label="${Navigation breadcrumbs}">
+  <li><a ng-href="?id={{portal.homepage_dv}}">${Home}</a></li>
+  <li aria-hidden="true"><i class="fa fa-chevron-right"></i></li>
+  <li ng-if="!c.breadcrumbs"><a href>{{page.title}}</a></li>
+  <li ng-repeat-start="item in c.breadcrumbs">
+    <a ng-href="{{item.url}}">{{item.label}}</a>
+  </li>
+  <li aria-hidden="true" ng-if="!$last" ng-repeat-end>
+    <i class="fa fa-chevron-right"></i>
+  </li>
+</ul>
+ <!-- <ul class="nav nav-pills nav-sm">
+  
+  <li><a ng-href="?id={{portal.homepage_dv}}">${Home}</a></li>
+  
+  <li><i class="fa fa-chevron-right"></i></li>
+  
+<li ng-if="data.pageID == 'ucd_view_service_sp'">
+      <a href ="?id=ucd_services&ucd_catalog=5ec4eed5134143003527bd122244b0af&ucd_category_id={{data.category}}">{{data.title}}</a>
+   </li>
+  
+  <li ng-if="!$last && data.pageID == 'ucd_view_service_sp' " ng-repeat-end>
+      <i class="fa fa-chevron-right"></i>
+   </li>
+  
+  <li ng-if="!c.breadcrumbs && data.pageID!='ucd_view_service_sp' && data.pageID!='ucd_cat_item'">
+      <a href>{{page.title}}</a>
+   </li>
+  
+  <li ng-if="!c.breadcrumbs && data.pageID=='ucd_view_service_sp'">
+      <a  href>{{data.cat}}</a>
+   </li>
+  
+  <li ng-if="!c.breadcrumbs &&  data.pageID=='ucd_cat_item' ">
+      <a href = "?id=ucd_services&ucd_catalog=5ec4eed5134143003527bd122244b0af&ucd_category_id={{data.category}}">{{data.title}}</a>
+   </li>
+  
+  <li ng-if="!c.breadcrumbs &&  data.pageID=='ucd_cat_item' ">
+      <i class="fa fa-chevron-right"></i>
+   </li>
+   <li ng-if="!c.breadcrumbs &&  data.pageID=='ucd_cat_item' ">
+      <a href = "?id=ucd_view_service_sp&ucd_category={{data.catID}}&ucd_catalog=5ec4eed5134143003527bd122244b0af&parent={{data.category}}">{{data.cat}}</a>
+   </li>
+  
+    <li ng-if="!c.breadcrumbs && data.pageID='ucd_cat_item' ">
+      <a href>{{page.title}}</a>
+   </li>
+  <li ng-repeat-start="item in c.breadcrumbs">
+      <a ng-href="{{item.url}}">{{item.label}}</a>
+   </li>
+  
+  <li ng-if="!$last" ng-repeat-end>
+      <i class="fa fa-chevron-right"></i>
+   </li>
+</ul>-->]]></template>
+    </sp_widget>
+</record_update>

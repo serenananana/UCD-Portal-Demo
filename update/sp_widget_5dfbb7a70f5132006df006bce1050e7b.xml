@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $timeout) {
+	$scope.$on("$sp.sc_category.retrieve_subcategories", function(evt, category) {
+		if (!category.subcategories) {
+			$scope.server.get({
+				action: "retrieve_nested_categories",
+				parentID: category.sys_id
+			}).then(function(response) {
+				category.subcategories = response.data.subcategories;
+			})
+		}
+	})
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.list-group-item {
+  padding-right: 0;
+  border: none;
+  
+  .fa-fw {
+    margin-right: 5px;
+  }
+}
+
+.label-as-badge {
+  margin-right: 10px;
+}
+
+.indent-category {
+  margin-left: 25px;
+}
+
+.selected {
+  color: $primary !important;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-categories-sidebar</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Categories Sidebar</name>
+        <option_schema>[{"name":"hide_xs","label":"Hide at XS","type":"boolean"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[var catalogs = [];
+var categories = [];
+getCatalogs(catalogs);
+for (var index = 0; index < catalogs.length; index++) {
+	getCategories(catalogs[index], categories);
+}
+
+// Sort categories by title. then assign to data object
+// Note: adds some time to load due to sorting
+categories.sort(function(a,b) {
+	if (a.title < b.title) return -1;
+	if (a.title > b.title) return 1;
+	return 0;
+});
+data.categories = categories;
+
+/**
+ * Retrieves all catalogs.
+ */
+function getCatalogs(catalogs){
+	var records = new GlideRecord('sc_catalog');
+	records.addActiveQuery();
+	records.addQuery('active', true);
+	records.orderBy('name');
+	records.query();
+	while (records.next()){
+		if ($sp.canReadRecord(records)) {
+			catalogs.push(records.sys_id.getDisplayValue());
+		}
+	}
+}
+
+/**
+ * Retrieves all categories from the passed-in catalog.
+ */
+function getCategories(catalog, categories) {
+	var gr = new GlideRecord('sc_category');
+	//gr.addQuery('sys_class_name', 'sc_category');
+	gr.addActiveQuery();
+	gr.addQuery('sc_catalog', catalog);
+	gr.orderBy('title');
+	gr.query();
+
+	while (gr.next()){
+		// Check if the user can read the category, and if its a child-category
+		// Note: empty categories fail this check
+		if ($sp.canReadRecord(gr) && gr.parent == '') {
+			var category = {};
+			category.title = gr.title.getDisplayValue();
+			category.description = gr.description.getDisplayValue();
+			category.sys_id = gr.sys_id.getDisplayValue();
+			category.picture = gr.icon.getDisplayValue();
+			categories.push(category);
+		} else
+			continue;
+	}
+}
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-11 00:40:44</sys_created_on>
+        <sys_id>5dfbb7a70f5132006df006bce1050e7b</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>ucd_Categories Sidebar</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_5dfbb7a70f5132006df006bce1050e7b</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-03-21 16:55:30</sys_updated_on>
+        <template><![CDATA[<div ng-class="::{'hidden-xs' : options.hide_xs}" class="panel panel-{{::options.color}} b">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <span ng-if="::options.glyph">
+        <fa name="{{::options.glyph}}" />
+      </span>{{::options.title}}</h4>
+  </div>
+  <div class="list-group no-radius alt">
+    <ucd-sp-category-list-item ng-repeat="cat in data.categories"
+                           category="cat"
+                           omit-badges="options.omit_badges"
+                           level="0"></ucd-sp-category-list-item>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

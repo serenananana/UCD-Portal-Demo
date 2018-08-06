@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>primary</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>0</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">e43aff670f5132006df006bce1050e21</sp_column>
+        <sp_widget display_value="ucd_Categories Sidebar">5dfbb7a70f5132006df006bce1050e7b</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-11 00:54:19</sys_created_on>
+        <sys_id>801f776b0f5132006df006bce1050edf</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Categories</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_801f776b0f5132006df006bce1050edf</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-03-11 00:56:14</sys_updated_on>
+        <title>Categories</title>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=801f776b0f5132006df006bce1050edf"/>
+</record_update>

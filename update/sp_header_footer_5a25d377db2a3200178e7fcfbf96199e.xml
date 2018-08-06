@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_header_footer">
+    <sp_header_footer action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+  /* widget controller */
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* Sticky footer styles-------------------------------------------------- */&#13;
+html {&#13;
+  position: relative;  &#13;
+  min-height: 100%;&#13;
+}&#13;
+&#13;
+body {  &#13;
+  /* Margin bottom by footer height */  &#13;
+  margin-bottom: 60px;&#13;
+}&#13;
+.footer {  &#13;
+  position: relative;  &#13;
+  bottom: 0;  &#13;
+  width: 100%;  &#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-footer</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Footer</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_header_footer</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-12 19:48:49</sys_created_on>
+        <sys_id>5a25d377db2a3200178e7fcfbf96199e</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>ucd_Footer</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_header_footer_5a25d377db2a3200178e7fcfbf96199e</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-05-15 20:09:01</sys_updated_on>
+        <template><![CDATA[<footer class="l-footer footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-spacer">
+      <hr class="footer-spacer__hr hr-invert">
+      <div class="footer-spacer__logo">
+        <a href="https://www.ucdavis.edu/" class=""><img src="/uc-logo-white.svg" class="ucd-logo" alt="UC Davis Logo" /></a>
+      </div>
+    </div>
+    <div class="uc-footer">
+      <p><a href="https://www.ucdavis.edu/">University of California, Davis</a>, One Shields Avenue, Davis, CA 95616 | 530-752-1011</p>
+      <ul class="list--pipe">
+        <li><a href="http://occr.ucdavis.edu/poc/">Principles of Community</a></li>
+        <li><a href="http://www.universityofcalifornia.edu/">University of California</a></li>
+      </ul>
+      <p>Copyright © The Regents of the University of California, Davis campus. All rights reserved.</p>
+	</div>
+  </div>
+</footer>]]></template>
+    </sp_header_footer>
+</record_update>

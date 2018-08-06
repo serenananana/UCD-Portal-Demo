@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($rootScope) {
+	var c = this;
+	
+	$rootScope.$on('selectedKB', function(event,data) {
+		c.data.kbId = data.id;
+		c.server.update();
+	});
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.o-media, .focal-link, .media-link__wrapper {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-right: 15px;
+}
+
+.custom-cat-grid {
+  .o-media__body {
+    min-width: 70%;
+
+    h2 {
+      @include font-size(16px, 1.1);
+    }
+    p {
+      @include font-size(12px, 1.3);
+    }
+  }
+  .three-col-grid__item {
+    padding: $spacer 0;
+    margin: 0;
+    border-bottom: 1px solid $ucd-blue;
+
+    &amp;:nth-of-type(1) {
+      border-top: 1px solid $ucd-blue;
+    }
+
+    @include breakpoint($bp-narrow--up){
+      padding: 3%;
+      width: 33.33%;
+
+      &amp;:nth-of-type(1),
+      &amp;:nth-of-type(2),
+      &amp;:nth-of-type(3) {
+        border-top: 1px solid $ucd-blue;
+      }
+
+      &amp;:nth-of-type(3n-1),
+      &amp;:nth-of-type(3n-2) {
+        border-right: 1px solid $ucd-blue;
+      }
+    }
+
+    @include breakpoint($bp-small){
+      padding: 2%;
+      width: 50%;
+
+      &amp;:nth-of-type(1),
+      &amp;:nth-of-type(2) {
+        border-top: 1px solid $ucd-blue;
+      }
+
+      &amp;:nth-of-type(2n - 1) {
+        border-right: 1px solid $ucd-blue;
+      }
+    }
+  }
+}
+
+// 3 col floating layout
+$three-col-gutter: 3.5%;
+$two-col-gutter: 2%;
+
+.no-flexbox {
+  .three-col-grid {
+    &amp;__item {
+      margin-bottom: $spacer;
+
+      @include breakpoint($bp-narrow--up){
+        width: 31%;
+        margin-right: $three-col-gutter;
+        margin-bottom: $three-col-gutter;
+        float: left;
+      }
+
+      @include breakpoint($bp-small){
+        width: 49%;
+        margin-right: $two-col-gutter;
+        margin-bottom: $two-col-gutter;
+        float: left;
+      }
+
+      @include breakpoint($bp-narrow--up){
+        &amp;:nth-of-type(3n+0) {
+          margin-right: 0;
+        }
+        &amp;:nth-of-type(3n+1) {
+          clear: both;
+        }
+      }
+
+      @include breakpoint($bp-small){
+        &amp;:nth-of-type(2n+0) {
+          margin-right: 0;
+        }
+        &amp;:nth-of-type(2n+1) {
+          clear: both;
+        }
+      }
+
+    }
+  }
+}
+
+@include breakpoint($bp-small--up) {
+  .three-col-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    &amp;__item {
+      width: 33.3%;
+    }
+  }
+}
+
+.custom-cat-grid .o-media__body p {
+    font-size: 1.125rem;
+    line-height: 1.2;
+}
+
+a {
+  font-size: 1.4rem;
+}
+
+p {
+	line-height: 1.35em;
+}
+
+// internet explorer 11 
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    img {
+ 		height: 45.28px;
+ 		width: 45.28px;
+	}
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd-knowledge-article-list</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Knowledge Article List</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function () {
+    data.categoryPageUrl = "ucd_kb_category"; // Category page url
+    data.catParam = $sp.getParameter("kb_category"); // Get the sys_id from the URL
+    data.kb = $sp.getValue("kb_knowledge_base"); // sys_id for the KB for this portal
+    data.categories = []; // list of categories to display
+    var kb = data.kb;
+    data.documents = getDocuments(kb);
+    data.articlePageUrl = "ucd_app_kb_article";
+
+    //var api = new ScopedPortalAPI(); // loads UCD Portal API
+
+    // get previous KB selection from url
+    var prevKb = $sp.getParameter('kb');
+    if (prevKb != null) {
+        data.kb = prevKb;
+    }
+
+    var cats = new GlideRecord("kb_category");
+    if (input && input.kbId) {
+        data.kb = input.kbId;
+    }
+    cats.addQuery("parent_id", data.kb);
+    cats.addActiveQuery();
+    cats.addEncodedQuery("label!=General^label!=Virtualization^label!=Media & Events"); // Filter out General, Media & Events and Virtualization which are not shown in ESS
+    cats.query();
+    while (cats.next()) {
+        if (hasArts(cats.getUniqueValue())) // has articles
+            data.categories.push({ label: cats.getDisplayValue("label"), value: cats.getUniqueValue(), icon: cats.x_uocd2_ucd_portal_u_icon.getDisplayValue(), desc: cats.x_uocd2_ucd_portal_u_description.getDisplayValue() });
+    }
+
+    // get knowledge search widget
+    data.widget = $sp.getWidget('ucd-app-knowledge-base-search', {});
+
+
+    // Sort the final list of categories alphabetically
+    //	increasing
+    data.categories.sort(function (a, b) {
+        return (a.label < b.label) ? -1 : (a.label > b.label) ? 1 : 0;
+    });
+
+    function hasArts(category) {
+        if (hasArticle(category))
+            return true;
+        else { // check subcategories
+            var sub = new GlideRecord('kb_category');
+            sub.addQuery('parent_id', category);
+            sub.query();
+            while (sub.next()) {
+                if (hasArticle(sub.getUniqueValue())) {
+                    return true;
+                }
+                return false;
+            }
+        }
+    }
+
+    function hasArticle(category) {
+        var arts = new GlideRecord('kb_knowledge');
+        arts.addQuery("kb_category", category);
+        arts.addQuery('workflow_state', 'published');
+        arts.query();
+        if (arts.next()) {
+            return true;
+        }
+        return false;
+    }
+
+    function getDocuments(kb) {
+        var d = [];
+        var gr = new GlideRecord('kb_knowledge');
+        gr.addQuery('kb_knowledge_base', kb);
+        gr.addQuery('workflow_state', 'published');
+        //gr.addQuery('valid_to', '>=', (new GlideDate()).getLocalDate().getValue());
+        gr.orderBy('short_description');
+        gr.query();
+        while (gr.next()) {
+            var n = {};
+            $sp.getRecordValues(n, gr, 'sys_id,number,short_description,kb_category');
+            //n.topCat = $sp.getKBTopCategoryID(n.kb_category);
+            d.push(n);
+        }
+        return d;
+    }
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 17:18:23</sys_created_on>
+        <sys_id>12dcde1d0f1097006717590be1050e7b</sys_id>
+        <sys_mod_count>62</sys_mod_count>
+        <sys_name>ucd_Knowledge Article List</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_12dcde1d0f1097006717590be1050e7b</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-03-02 16:33:21</sys_updated_on>
+        <template><![CDATA[<div class="l-main" role="main">
+    <div class="l-content">
+        <div class="panel o-box--large">
+
+            <div class="o-media ">
+                <div class="o-media__figure">
+                    <img src="GetAnswers.png" width=40 height=40 />
+                </div>
+                <div class="o-media__body">
+                    <section class="u-space-bottom">
+                        <h2><span class="heading--weighted--weighted" style="color: #70c395; font-size: 3rem">MyAdmissions FAQ</span></h2>
+                    </section>
+                    <p>A repository of technical help for applicants to UC Davis</p>
+                    <sp-widget widget=data.widget></sp-widget>
+                </div>
+            </div>
+            <!--
+            <div class="custom-cat-grid three-col-grid">
+                <div class="three-col-grid__item" ng-repeat="category in c.data.categories">
+                    <div class="o-media ">
+                        <div class="o-media__figure">
+                            <a ng-href="?id={{c.data.categoryPageUrl}}&kb_category={{::category.value}}">
+                                <img src="{{category.icon}}" />
+                            </a>
+                        </div>
+                        <div class="o-media__body">
+                            <h2><a ng-href="?id={{c.data.categoryPageUrl}}&kb_category={{category.value}}&kb={{data.kb}}">{{category.label}}</a></h2>
+                            <p>{{category.desc}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                -->
+
+            <div ng-repeat="category in c.data.categories">
+                <h2 class="heading--weighted"><p>{{category.label}}</p></h2>
+                <p>
+                    <div ng-repeat="kb_article in c.data.documents">
+                        <div ng-if="kb_article.kb_category == category.value">
+                            <ul class="list--arrow list--flush">
+                                <li><a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{kb_article.short_description}}</a></li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </p>
+            </div>
+
+            <div ng-if="data.categories.length < 1">${The selected Knowledge Base has no categories}</div>
+        </div>
+
+        <!--<div class="panel panel-{{::c.options.color}} b">
+          <div class="panel-heading">
+            <h4 class="panel-title" ng-bind="::c.options.title"><fa ng-if="c.options.glyph" name="{{c.options.glyph}}" /></h4>
+          </div>
+          <div class="panel-body">
+            <div ng-repeat="category in c.data.categories">
+              <a ng-href="?id={{c.data.categoryPageUrl}}&kb_category={{::category.value}}">{{::category.label}}</a>
+            </div>
+          </div>
+        </div>-->
+]]></template>
+    </sp_widget>
+</record_update>

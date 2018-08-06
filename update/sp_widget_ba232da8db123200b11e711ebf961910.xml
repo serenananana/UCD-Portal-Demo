@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $rootScope) {
+	setInnerText();	
+  $rootScope.$broadcast('sp.update.breadcrumbs', $scope.data.breadcrumbs);
+	function setInnerText() {
+		for (var i = 0; $scope.data.items.length > i; i++) {
+			var item = $scope.data.items[i];
+			if (item.text.indexOf(">") == -1) {
+				item.inner_text = item.text.trim();
+				return;
+			}
+
+			var t = $("<div>" + item.text + "</div>");
+			t = t.text();
+			item.inner_text = t.trim();
+		}
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>true</has_preview>
+        <id>ucd_kb_suggested_page</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Suggested Page</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[data.categoryDisplay = gs.getMessage("Suggested Articles");
+data.breadcrumbs = [{label: data.categoryDisplay, url: '?id=ucd_kb_view_suggested'}];
+data.articlePageUrl = "ucd_kb_article";
+data.items = [];
+var z = new GlideRecord('u_suggested_knowledge');
+if (z.isValid()) {
+	z.orderBy('u_order');
+	z.query();
+	while (z.next()) {
+		if (!z.canRead()) continue;
+		var a = {};
+		a.short_description = z.u_title.getDisplayValue();
+		a.sys_id = z.u_knowledge_record.sys_id.getDisplayValue();
+		var art = new GlideRecord('kb_knowledge');
+		art.addQuery('sys_id', z.u_knowledge_record);
+		art.query();
+		art.next();
+		var auth = art.sys_created_by.getRefRecord();
+		a.author = art.sys_created_by.getDisplayValue();
+		a.sys_view_count = art.sys_view_count.getDisplayValue();
+		a.published = art.published.getDisplayValue();
+		a.text = art.text.getDisplayValue();
+		/*
+		a.author = z.u_knowledge_record.sys_created_by.first_name.getDisplayValue() + " " + z.u_knowledge_record.sys_created_by.last_name.getDisplayValue();
+		a.sys_view_count = z.u_knowledge_record.sys_view_count.getDisplayValue();
+		a.published = z.u_knowledge_record.published.getDisplayValue();
+		a.text = z.u_knowledge_record.text.getDisplayValue();
+		*/
+		data.items.push(a);
+	}
+}
+else {
+	z = new GlideRecord('kb_knowledge');
+	z.setLimit(options.max_number || 20);
+	z.orderBy('u_order');
+	z.query();
+	while (z.next()) {
+		if (!z.canRead()) continue;
+		var a = {};
+		a.short_description = z.short_description.getDisplayValue();
+		a.sys_id = z.sys_id.getDisplayValue();
+		a.text = z.text.getDisplayValue();
+		data.items.push(a);
+		/*var auth = new GlideRecord('sys_user');
+		auth.addQuery('user_name', z.sys_created_by.getDisplayValue());
+		auth.query();
+		if (auth.next()) {
+			a.author = auth.first_name + " " + auth.last_name; //.first_name + " " + z.sys_created_by.last_name;
+		}
+		else a.author = z.sys_created_by.getDisplayValue();
+		a.sys_view_count = z.sys_view_count.getDisplayValue();
+		a.published = z.published.getDisplayValue();*/
+	}
+}
+data.breadcrumbs.unshift({label: gs.getMessage("Knowledge Base"), url: '?id=ucd_kb_view2'});
+
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>tnohren</sys_created_by>
+        <sys_created_on>2017-04-19 22:54:12</sys_created_on>
+        <sys_id>ba232da8db123200b11e711ebf961910</sys_id>
+        <sys_mod_count>65</sys_mod_count>
+        <sys_name>ucd_KB Suggested Page</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_ba232da8db123200b11e711ebf961910</sys_update_name>
+        <sys_updated_by>tnohren</sys_updated_by>
+        <sys_updated_on>2017-05-19 16:29:56</sys_updated_on>
+        <template><![CDATA[<div>
+  <div class="panel panel-{{::options.color}} b">
+    <div class="panel-heading">
+     	<h4 class="panel-title">Suggested Articles</h4>
+    </div>
+    <div class="panel-body">
+     	<div ng-if="data.items.length == 0">
+       	(${No articles})
+     	</div>
+     	<div ng-repeat="kb_article in data.items" class="sp-kb-topic-article m-b-lg">
+       	<h4>
+         	<a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a>
+       	</h4>
+       	<!--<div style="max-height: 3em; overflow: hidden; padding-top:4px;">{{::kb_article.inner_text}}</div>
+       	<div class="kb-about" style="padding-top:4px;">
+         	<!--<span class="about-outer-span">
+           	<span class="author pad-right" ng-if="kb_article.author">
+             	<glyph sn-char="user" class="pad-right" />
+             	${Authored by {{::kb_article.author}}}
+           	</span>
+           	<span ng-if="kb_article.sys_view_count == 1" class="views pad-right">
+             	<span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+             	${{{::kb_article.sys_view_count}} View}
+           	</span>
+           	<span ng-if="kb_article.sys_view_count > 1 || kb_article.sys_view_count == 0" class="views pad-right">
+             	<span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+             	${{{::kb_article.sys_view_count}} Views}
+           	</span>
+           	<span class="published pad-right">
+             	<span class="pad-right">&#8226;</span> <glyph sn-char="calendar" class="pad-right" />
+             	<sn-day-ago date="kb_article.published"/>
+           	</span>
+           	<span ng-if="kb_article.rating">
+             	<span class="pad-right">&#8226;</span> <uib-rating ng-model="::kb_article.rating" max="5" readonly="true"/>
+           	</span>
+         	</span>
+       	</div> -->
+     	</div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

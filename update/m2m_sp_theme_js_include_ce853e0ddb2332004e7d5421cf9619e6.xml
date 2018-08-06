@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_theme_js_include">
+    <m2m_sp_theme_js_include action="INSERT_OR_UPDATE">
+        <order>1</order>
+        <sp_js_include display_value="Modernizr Custom">5635364ddb2332004e7d5421cf961929</sp_js_include>
+        <sp_theme display_value="ucd_Stock">951a232f0f1132006df006bce1050ede</sp_theme>
+        <sys_class_name>m2m_sp_theme_js_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-06-22 21:29:30</sys_created_on>
+        <sys_id>ce853e0ddb2332004e7d5421cf9619e6</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Modernizr Custom.ucd_Stock</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>m2m_sp_theme_js_include_ce853e0ddb2332004e7d5421cf9619e6</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-06-22 21:31:26</sys_updated_on>
+    </m2m_sp_theme_js_include>
+</record_update>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>0</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">97511cd60f4947006717590be1050ec8</sp_column>
+        <sp_widget display_value="ucd_breadcrumbs">40ba36870f2132006df006bce1050e63</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-08 20:18:56</sys_created_on>
+        <sys_id>49611cd60f4947006717590be1050ebe</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_49611cd60f4947006717590be1050ebe</sys_update_name>
+        <sys_updated_by>kloves-alxcrlsn</sys_updated_by>
+        <sys_updated_on>2017-09-08 20:19:10</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters/>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=49611cd60f4947006717590be1050ebe"/>
+</record_update>

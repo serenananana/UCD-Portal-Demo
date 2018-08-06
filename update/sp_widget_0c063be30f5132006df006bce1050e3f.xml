@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+  /* widget controller */
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.parent {
+  padding: 15px 15px 15px 15px;
+}
+
+#child-heading {
+  height: 52px;
+}
+
+#child-body {
+  height: 115px;
+  overflow: hidden;
+}
+
+.panel-footer {
+  text-align: center;
+  height: 31px;
+  padding: 5px 5px 5px 5px;
+}
+
+.panel-default {
+	border-color: #ddd;
+}
+
+.panel {
+	margin-bottom: 50px;
+  background-color: #fff;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .05)
+}
+
+.panel-heading {
+  background-color: #fff;
+  padding: 10px 15px;
+  padding-bottom: 0;
+  border-bottom: 1px solid transparent;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.panel-body {
+  margin: 5px 10px 10px 0px;
+}
+
+a, #category-link {
+  display: block;
+  text-align: left;
+  color: #002855;
+  text-decoration: none;
+}
+
+.text-muted {
+  color: black;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.cat-icon {
+  height: 42px;
+  width: 45px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  margin-right: 1em;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-category-blocks</id>
+        <internal>false</internal>
+        <link/>
+        <name>Category Blocks</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[var catalogs = [];
+var categories = [];
+getCatalogs(catalogs);
+for (var index = 0; index < catalogs.length; index++) {
+	getCategories(catalogs[index].sys_id, categories);
+}
+
+// Sort categories by title. then assign to data object
+// Note: adds some time to load due to sorting
+categories.sort(function(a,b) {
+	if (a.title < b.title) return -1;
+	if (a.title > b.title) return 1;
+	return 0;
+});
+data.categories = categories;
+
+/**
+ * Retrieves all catalogs.
+ */
+function getCatalogs(catalogs){
+	var records = new GlideRecord('sc_catalog');
+	records.addActiveQuery();
+	records.addQuery('active', true);
+	records.orderBy('name');
+	records.query();
+	while (records.next()){
+		var catalog = {};
+		catalog.title = records.title.getDisplayValue();
+		catalog.description = records.description.getDisplayValue();
+		catalog.picture = records.desktop_image.getDisplayValue();
+		catalog.sys_id = records.sys_id.getDisplayValue();
+		catalogs.push(catalog);
+	}
+}
+
+/**
+ * Retrieves all categories from the passed-in catalog.
+ */
+function getCategories(catalog, categories) {
+	var gr = new GlideRecord('sc_category');
+	//gr.addQuery('sys_class_name', 'sc_category');
+	gr.addActiveQuery();
+	gr.addQuery('sc_catalog', catalog);
+	gr.orderBy('title');
+	gr.query();
+	
+	while (gr.next()){
+		// Check if the user can read the category, if its a non-child category
+		// Note: empty categories fail this check
+		if ($sp.canReadRecord(gr) && gr.parent == '') {
+			var category = {};
+			category.title = gr.title.getDisplayValue();
+			category.description = gr.description.getDisplayValue();
+			category.sys_id = gr.sys_id.getDisplayValue();
+			category.picture = gr.icon.getDisplayValue();
+			categories.push(category);
+		} else
+			continue;
+	}
+}]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-11 00:14:42</sys_created_on>
+        <sys_id>0c063be30f5132006df006bce1050e3f</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Category Blocks</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_0c063be30f5132006df006bce1050e3f</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-03-21 16:57:11</sys_updated_on>
+        <template><![CDATA[<div class="panel parent">
+  <div class="panel-header text-left">
+  	<h1>SERVICE CATEGORIES</h1>
+  </div>
+  <div class="parent panel-body">
+    <div ng-repeat="category in data.categories">
+    	<ucd-sp-category-block category="category"></ucd-sp-category-block>
+  	</div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

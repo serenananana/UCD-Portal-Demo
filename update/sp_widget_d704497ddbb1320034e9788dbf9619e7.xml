@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.side-margins {
+  margin-top: 69px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd_service_items</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Service Items</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Service sys_id from the URL
+	data.service_id = $sp.getParameter('sys_id');
+	
+	/* Due to some terrible design decisions by ServiceNow,
+	there are two tables in which a Catalog Item may be associated with a
+	Category (sc_cat_item.category and sc_cat_item_category). A 
+	Catalog Item may be in either table (not required to be in both).
+	*/
+	
+	// All items for this category
+	data.items = [];
+	
+	// First way of querying via sc_cat_item.category
+	data.items = [];
+	var items = new GlideRecord('sc_cat_item');
+	items.addActiveQuery();
+	items.addQuery('category', data.service_id);
+	items.orderBy('name'); // Array is sorted at end, but this speeds up the sort time
+	items.query();
+	while (items.next()) {
+		var item = {};
+		item.name = items.name.getDisplayValue();
+		item.short_description = items.short_description.getDisplayValue();
+		item.sys_id = items.getUniqueValue();
+		data.items.push(item);
+	}
+	
+	// Second way of querying via sc_cat_item_category
+	items = new GlideRecord('sc_cat_item_category');
+	items.addQuery('sc_category', data.service_id);
+	items.query();
+	while (items.next()) {
+		var itemRecord = new GlideRecord('sc_cat_item');
+		itemRecord.get(items.sc_cat_item);
+		var catItem = {};
+		catItem.name = itemRecord.name.getDisplayValue();
+		catItem.short_description = itemRecord.short_description.getDisplayValue();
+		catItem.sys_id = itemRecord.getUniqueValue();
+		
+		// Check if this item hasn't already been cross-listed in previous query
+		// Loops through the array, but should be relatively small
+		var inArray = false;
+		for (var i = 0; i < data.items.length; ++i) {
+			if (data.items[i].sys_id == catItem.sys_id)
+				inArray = true;
+		}
+		if (!inArray)
+			data.items.push(catItem);
+	}
+	
+	// Sort the array of items by item.name (ascending order)
+	// Note: have to sort array because of two separate queries
+	data.items.sort(function(a,b) {
+		return a.name - b.name;
+	});
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt12</sys_created_by>
+        <sys_created_on>2017-03-29 21:19:15</sys_created_on>
+        <sys_id>d704497ddbb1320034e9788dbf9619e7</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name>ucd_Service Items</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_d704497ddbb1320034e9788dbf9619e7</sys_update_name>
+        <sys_updated_by>josephdt12</sys_updated_by>
+        <sys_updated_on>2017-03-30 15:33:26</sys_updated_on>
+        <template><![CDATA[<div>
+  <div ng-if="data.items.length == 1">
+    <a class="btn btn-lg btn-primary side-margins"
+       href="?id=ucd_sc_cat_item&sys_id={{::data.items[0].sys_id}}&parent={{::data.service_id}}">
+      Request this service!
+    </a>
+  </div>
+  <div ng-if="data.items.length > 1">
+    <div class="panel panel-primary side-margins">
+      <div class="panel-heading">
+      	Related Services
+      </div>
+      <div class="panel-body">
+        <div ng-repeat="item in data.items">
+          <a href="?id=ucd_sc_cat_item&sys_id={{item.sys_id}}&parent={{::data.service_id}}">
+            {{item.name}}
+          </a>
+        </div>
+      </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

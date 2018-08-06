@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope, $window) {
+	var c = this;
+
+	$scope.subSelected = -1;
+	$scope.subSubSelected = -1;
+
+	// Saving the current subcategory and subsubcategory for department filter
+	// Note: ng-repeat inherits the scope with its own instances of variables
+	//	so accessing the same variable occurs via $parent, $parent.$parent
+	$scope.currSub = {};
+	$scope.currSubSub = {};
+	
+	// Add selected KB to KB homepage breadcrumb
+	var kbHomepage = "?id=ucd_kb_view2&kb="+$scope.data.kbase;
+	$scope.data.breadcrumbs = [{label: "Knowledge Base", url: kbHomepage}];
+
+	
+	// Broadcasts the category selection for the ucd_KB Category Page widget
+	$scope.categoryBroadcast = function(subcat, subsubcat) {
+		// Update breadcrumbs - KB and category always occur
+		$scope.data.breadcrumbs = [{label: "Knowledge Base", url: kbHomepage}];
+		  if(window.location.href.indexOf("#articles") > -1) { // allow back button usage and breadcrumb usage
+				$scope.data.breadcrumbs.push({
+					label: c.data.cat.label,
+					url: '?id=ucd_kb_category&kb_category=' + c.data.cat.id
+			});
+		  } else {
+			$scope.data.breadcrumbs.push({
+				label: c.data.cat.label,
+				url: '?id=ucd_kb_category&kb_category=' + c.data.cat.id+"#articles"
+			});
+		 }
+
+		// Optional subcat breadcrumb update
+		if (subcat) {
+			if(window.location.href.indexOf("#articles") > -1) { // allow back button usage and breadcrumb usage
+			$scope.data.breadcrumbs.push({
+				label: subcat.label,
+				url: '?id=ucd_kb_category&kb_category=' + subcat.id
+			});
+			} else {
+				$scope.data.breadcrumbs.push({
+				label: subcat.label,
+				url: '?id=ucd_kb_category&kb_category=' + subcat.id+"#articles"
+			});
+			}
+		}
+
+		// Optional subsubcat breadcrumb update
+		if (subsubcat) {
+			if(window.location.href.indexOf("#articles") > -1) { // allow back button usage and breadcrumb usage
+			$scope.data.breadcrumbs.push({
+				label: subsubcat.label,
+				url: '?id=ucd_kb_category&kb_category=' + subsubcat.id
+			});
+			} else {
+				$scope.data.breadcrumbs.push({
+				label: subsubcat.label,
+				url: '?id=ucd_kb_category&kb_category=' + subsubcat.id+"#articles"
+			});
+			}
+		}
+
+		// Broadcast breadcrumbs and selected category
+		$rootScope.$broadcast('sp.update.breadcrumbs', $scope.data.breadcrumbs);
+		if (subsubcat) {
+			$rootScope.$broadcast('selectedCat', subsubcat);
+		}
+		else if (subcat) {
+			$rootScope.$broadcast('selectedCat', subcat);
+		}
+		else {
+			$rootScope.$broadcast('selectedCat', c.data.cat);
+		}
+	};
+
+	// Broadcast a subcategory
+	$scope.subBroadcast = function(subcat, index, parent) {
+		if (index == $scope.subSelected)
+			$scope.categoryBroadcast();
+		else
+			$scope.categoryBroadcast(subcat);
+	};
+
+	// Broadcast a subsubcategory
+	$scope.subSubBroadcast = function(subsub, index, parent) {
+		if (index == $scope.subSubSelected)
+			$scope.categoryBroadcast(parent);
+		else
+			$scope.categoryBroadcast(parent, subsub);
+	};
+
+	// Select subcategory and reset subsubcategory selections
+	$scope.subActive = function(index) {
+		if (index == $scope.subSelected)
+			$scope.subSelected = -1;
+		else
+			$scope.subSelected = index;
+
+		$scope.subSubSelected = -1;
+	};
+
+	// Select subsubcategory
+	$scope.subSubActive = function(index) {
+		// Allows unselecting a subsubcategory
+		if ($scope.subSubSelected == index)
+			$scope.subSubSelected = -1;
+		else
+			$scope.subSubSelected = index;
+	};
+
+	// Listener for department filter selection
+	$rootScope.$on('selectedDept', function(event, data) {
+		c.data.selectedDepts = data;
+		c.data.currCategory = c.data.currCategory;
+
+		// After receiving the response from the server
+		// update the active class
+		c.server.update().then(function(response) {
+			// Look for the currently selected subcategory within the new subcategory list
+			// If it exists, change to the new index location
+			for (var i = 0; i < response.subCategories.length; ++i) {
+				if ($scope.currSub != null &&
+						$scope.currSub.label == response.subCategories[i].label) {
+					$scope.subSelected = i;
+				}
+			}
+
+			// Look for the currently selected subsubcategory within the
+			// new subsubcategory list. If it exists, change to the new index location
+			if (response.subCategories.length > 0 && $scope.currSubSub) {
+				var foundSub = false;
+				for (var j = 0; j < response.subSubCategories[$scope.currSub.label].length; ++j) {
+					if (response.subSubCategories[$scope.currSub.label][j].label == $scope.currSubSub.label) {
+						$scope.subSubSelected = j;
+						foundSub = true;
+					}
+				}
+
+				// Currently selected subsubcategory is no longer visible,
+				// so move the selection up to the parent
+				if (!foundSub) {
+					$scope.subSubSelected = -1;	// Reset subsub selection
+					$scope.currSubSub = null; // Reset current subsub
+					$scope.categoryBroadcast($scope.currSub); // Rebroadcast parent category
+				}
+			}
+		});
+	});
+	
+	// Refresh page
+	$scope.refresh = function() {
+		window.reload(true);
+	};
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.just-padding {&#13;
+  padding: 15px;&#13;
+}&#13;
+&#13;
+.list-group.list-group-root {&#13;
+  padding: 0;&#13;
+  overflow: hidden;&#13;
+}&#13;
+&#13;
+.list-group.list-group-root .list-group {&#13;
+  margin-bottom: 0;&#13;
+}&#13;
+&#13;
+.list-group.list-group-root .list-group-item {&#13;
+  border-radius: 0;&#13;
+  border-width: 1px 0 0 0;&#13;
+}&#13;
+&#13;
+.list-group.list-group-root &gt; .list-group-item:first-child {&#13;
+  border-top-width: 0;&#13;
+}&#13;
+&#13;
+.subcat{&#13;
+  padding-left: 30px;&#13;
+}&#13;
+&#13;
+.subcat2 {&#13;
+  padding-left: 30px;&#13;
+}&#13;
+&#13;
+.list-group-item .glyphicon {&#13;
+  margin-right: 5px;&#13;
+}&#13;
+&#13;
+.smol-icon {&#13;
+	height: 25px;&#13;
+  width: auto;&#13;
+}&#13;
+&#13;
+.list-group-item {&#13;
+  cursor: pointer;&#13;
+  cursor: hand;&#13;
+}&#13;
+&#13;
+.sub-nav ul a {&#13;
+	font-size: 1.2rem;&#13;
+}&#13;
+&#13;
+.ucd-custom {&#13;
+     float: right;&#13;
+}&#13;
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd-kb-categories-collapsible</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Categories Collapsible</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Populate data object
+	data.kbase = '7c2d56f42bd89200e0b209d417da153e'; // IT - Public
+	
+	var checkUrlforKb = $sp.getParameter('kb');
+	if(checkUrlforKb != null) {
+		data.kbase = $sp.getParameter('kb');
+	}
+	
+	data.currCategory = $sp.getParameter('kb_category'); // Current category
+	// get parent kbase
+	var gr = new GlideRecord('kb_category');
+	gr.get('sys_id', data.currCategory);
+	if(gr.parent_id != null) { // current category is a subcategory
+		var parentId = getParent(gr, data.currCategory);
+		if(parentId!=null) {
+			data.kbase = parentId;
+		}
+	} else { // current category is parent KB
+		data.kbase = gr.parent_id;
+	}
+	
+	// If calling server.update(), can no longer use getParameter()
+	if (input)
+		data.currCategory = input.currCategory;
+	data.count = 0;	// 
+	
+	// Array for subcategories
+	// Dictionaries for subsubcategories (subcategory -> subsubcategories)
+	// Example: {'Software': ['GitHub', 'ServiceNow']}
+	data.subCategories = [];
+	data.subSubCategories = {};
+	
+	var subCatObj;
+	var subCatOtherObj;
+	
+	// Get current category
+	var cat = new GlideRecord('kb_category');
+	cat.get(data.currCategory);
+	if(cat.parent_id.parent_id == data.kbase) { // subcat
+		data.isSubcat = true;
+	}
+	data.cat = createCategoryObject(cat.getUniqueValue());
+	
+	// Get subcategories within this category
+	var subCat = new GlideRecord('kb_category');
+	subCat.addActiveQuery();
+	subCat.addQuery('parent_id', data.currCategory);
+	subCat.orderBy('label');
+	subCat.query();
+	while (subCat.next()) {
+		// Counts of articles within each sub/subcategory
+		var subCount = 0;
+		var subSubCount = 0;
+		
+		// Begin building Knowledge aggregate if no articles found
+		// then the category will not be shown if it has no subsubcategory articles
+		var subKnowledge = new GlideAggregate('kb_knowledge');
+		subKnowledge.addAggregate('COUNT');
+		subKnowledge.addQuery('kb_knowledge_base', data.kbase);
+		subKnowledge.addQuery('kb_category', subCat.getUniqueValue());
+		subKnowledge.addQuery('workflow_state', 'published');
+		
+		// If a department filter is selected, add to Knowledge query
+		if (input && input.selectedDepts[0].id != 0) {
+			var query = "author=" + input.selectedDepts[0].id;
+			for(var j = 1; j < input.selectedDepts.length; j++){
+				query += "^ORauthor=" + input.selectedDepts[j].id;
+			}
+			subKnowledge.addEncodedQuery(query);
+		}
+		
+		// Query for Knowledge Articles within this subcategory
+		subKnowledge.query();
+		if (subKnowledge.next()) {
+			subCount = subKnowledge.getAggregate('COUNT');
+			if(subCount > 0) {
+				data.hasSub = true;
+			}
+		}
+		// Create subcategory object
+		// Check for Other
+		if(subCat.label != "Other") {
+			subCatObj = createCategoryObject(subCat.getUniqueValue());
+		} else {
+			subCatOtherObj = createCategoryObject(subCat.getUniqueValue());
+			data.hasOther = true;
+			data.subCountOther = subCount;
+		}
+		// Add this subcategory to array of subcategories
+		// and create dictionary entry
+		if(subCat.label != "Other") { // If subcat is not Other
+			if(!catExists(subCatObj.label, data.subCategories)) {
+				data.subCategories.push(subCatObj);
+				data.subSubCategories[subCatObj.label] = [];
+			}
+		}
+		
+		// Get subsubcategories within each subcategory
+		var subSubCat = new GlideRecord('kb_category');
+		subSubCat.addActiveQuery();
+		subSubCat.addQuery('parent_id', subCat.getUniqueValue());
+		subSubCat.orderBy('label');
+		subSubCat.query();
+		while (subSubCat.next()) {
+			// Begin building Knowledge query; if no articles found
+			// then the subcategory will not be shown
+			var subSubKnowledge = new GlideAggregate('kb_knowledge');
+			subSubKnowledge.addAggregate('COUNT');
+			subSubKnowledge.addQuery('kb_category', subSubCat.getUniqueValue());
+			subSubKnowledge.addQuery('workflow_state', 'published');
+
+			// If a department filter is selected, add to Knowledge query
+			if (input && input.selectedDepts[0].id != 0) {
+				var query = "author=" + input.selectedDepts[0].id; // Ignore dumb errors
+				for (var j = 1; j < input.selectedDepts.length; j++) { // Ignore dumb errors
+					query += "^ORauthor=" + input.selectedDepts[j].id;
+				}
+				subSubKnowledge.addEncodedQuery(query);
+			}
+
+			// Query for Knowledge Articles within this subcategory
+			subSubKnowledge.query();
+			if (subSubKnowledge.next())
+				subSubCount = subSubKnowledge.getAggregate('COUNT');
+			
+			// If subsubcategory has no articles, don't display
+			if (subSubCount == 0)
+				continue;
+			
+			// Create subsubcategory object
+			var subSubCatObj = createCategoryObject(subSubCat.getUniqueValue());
+			
+			// Add this subsubcategory to the dictionary
+		if(subCat.label != "Other") { // Subcat is not Other
+			if(!catExists(subSubCatObj.label, data.subSubCategories)) 
+				data.subSubCategories[subCatObj.label].push(subSubCatObj);
+			}
+		}
+		
+		// If subcategory has no articles and no subsubcategories
+		// pop from the array (it was first added and then checked for content)
+		if (subCount == 0 && data.subSubCategories[subCatObj.label].length == 0) {
+			data.subCategories.pop();
+		}
+	}
+	 // Add Other subcategory last
+   if(data.hasOther) {
+		 if(data.subCountOther > 0)
+			data.subCategories.push(subCatOtherObj);
+   }
+	
+	/** Creates a category object given an ID.
+	 * Contains the category sys_id, label, and icon.
+	 */
+	function createCategoryObject(id) {
+		if (id == null)
+			return null;
+		
+		var record = new GlideRecord('kb_category');
+		record.get(id);
+		return {
+			id: record.getUniqueValue(),
+			label: record.getDisplayValue('label'),
+			icon: record.getDisplayValue('x_uocd2_ucd_portal_u_icon')
+		}
+	}
+	
+	/** Checks if category exists already
+	* Requires category label and array to search
+	*/
+	function catExists(label, arr) {
+		for(var i=0; i<arr.length; i++) {
+			if(arr[i].label == label) {
+				return true
+			}
+		}
+			return false;
+	}
+	
+	/**
+	* Returns parent KB of category
+	*/
+	function getParent(categoryRecord, input) {
+		
+		categoryRecord.get('sys_id', input);
+
+		var parentLabel = '';
+		if(categoryRecord) {
+			var parent = categoryRecord.getValue('parent_id');
+			parentLabel = categoryRecord.parent_id.getDisplayValue();
+			while (parent && parent != null) { // is subcategory
+				var parentCat = new GlideRecord('kb_category');
+				if(parentCat.get(parent)) {				
+					var label = parentCat.getDisplayValue('label');
+					var id = parentCat.getUniqueValue();
+
+					parent = parentCat.getValue('parent_id');
+					parentLabel = label;
+				} else { // is parent already
+						return parent;
+				}
+			}
+			return parent;
+		} else {
+			return null;
+		}
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>cglam</sys_created_by>
+        <sys_created_on>2017-06-06 17:28:35</sys_created_on>
+        <sys_id>49f46b3f13c3f200d26f5e7f3244b027</sys_id>
+        <sys_mod_count>448</sys_mod_count>
+        <sys_name>ucd_KB Categories Collapsible</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_49f46b3f13c3f200d26f5e7f3244b027</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-02-15 19:00:17</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box--flush" ng-if="data.hasSub">
+  <div class="sub-nav">
+    <h2 class="sub-nav__title">
+      {{c.data.cat.label}} 
+    </h2>
+    <ul id="catContainer" class="menu">
+      <!-- Subcategories -->
+      <li ng-repeat="subcat in c.data.subCategories">
+        <a ng-class="{'active': $index == subSelected}"
+           data-toggle="collapse" 
+           data-parent="#catContainer" 
+           data-target="#{{subcat.id}}"
+           ng-click="subBroadcast(subcat, $index, c.data.cat); subActive($index);
+                     $parent.currSub = subcat">
+          {{subcat.label}}
+           <i class="glyphicon" ng-show="c.data.subSubCategories[subcat.label].length > 0"
+             ng-class="{'glyphicon-chevron-down': $index == subSelected,
+          'glyphicon-chevron-left': $index != subSelected}"></i>
+           <!--<i class="sub-nav__item" 
+             ng-show="c.data.subSubCategories[subcat.label].length > 0"
+             ng-class="{'sub-nav__item--open': $index == subSelected,
+                       'sub-nav__item': $index != subSelected}">
+          </i>-->
+        </a>
+        <!-- Subsubcategories -->
+        <ul class="collapse menu"  
+            ng-class="{'in': c.data.subSubCategories[subcat.label].length > 0 &&
+                        			$index == subSelected}"
+            id="{{subcat.id}}">
+          <li ng-repeat="subsubcat in c.data.subSubCategories[subcat.label]">
+            <a class="sub-nav__item sub-nav__item--open" 
+               ng-class="{'active': $index == subSubSelected && $parent.$index == subSelected}"
+               ng-click="subSubBroadcast(subsubcat, $index, subcat); subSubActive($index); 
+                         $parent.$parent.currSubSub = subsubcat">
+              {{subsubcat.label}}
+            </a>
+          </li>
+        </ul> 
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+<!-- without syling
+<div class="panel-group">
+  <div class="panel panel-default">
+    <!-- Current category header 
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <img ng-show="c.data.cat.icon" class="smol-icon" ng-src="{{c.data.cat.icon}}"/>
+        {{c.data.cat.label}}
+      </h4>
+    </div>
+
+    <div id="catContainer" class="list-group list-group-root">
+      <!-- Subcategories 
+      <!-- Child of the accordion container needs to be a panel for accordion 
+      <div class="panel" ng-repeat="subcat in c.data.subCategories">
+        <!-- Subcategory label 
+        <a class="list-group-item" ng-class="{'active': $index == subSelected}"
+           data-toggle="collapse" data-parent="#catContainer" data-target="#{{subcat.id}}"
+           ng-click="subBroadcast(subcat, $index, c.data.cat); subActive($index);
+                     $parent.currSub = subcat">
+          <i class="glyphicon" ng-show="c.data.subSubCategories[subcat.label].length > 0"
+             ng-class="{'glyphicon-chevron-down': $index == subSelected,
+                       'glyphicon-chevron-right': $index != subSelected}"></i>
+          {{subcat.label}}
+        </a>
+
+        <!-- Subsubcategories 
+        <div class="collapse"
+             ng-class="{'in': c.data.subSubCategories[subcat.label].length > 0 &&
+                        			$index == subSelected}"
+             id="{{subcat.id}}">
+          <div ng-repeat="subsubcat in c.data.subSubCategories[subcat.label]">
+            <a class="list-group-item subcat2"
+               ng-class="{'active': $index == subSubSelected && $parent.$index == subSelected}"
+               ng-click="subSubBroadcast(subsubcat, $index, subcat); subSubActive($index);
+                         $parent.$parent.currSubSub = subsubcat">
+              {{subsubcat.label}}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+]]></template>
+    </sp_widget>
+</record_update>

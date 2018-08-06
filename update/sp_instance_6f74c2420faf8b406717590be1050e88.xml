@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>4</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="2">1c61c2ce0f6f8b406717590be1050e7e</sp_column>
+        <sp_widget display_value="">c642c6ce0f6f8b406717590be1050edc</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2018-01-10 16:40:25</sys_created_on>
+        <sys_id>6f74c2420faf8b406717590be1050e88</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>Last Modified</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_6f74c2420faf8b406717590be1050e88</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2018-01-17 18:45:17</sys_updated_on>
+        <title>Last Modified</title>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"facet_id": {
+		"value": "modified",
+		"displayValue": "modified"
+	},
+	"template": {
+		"value": "ucd_kb_facet_query_template",
+		"displayValue": "Simple Query Template"
+	},
+	"custom_template": {
+		"value": "",
+		"displayValue": ""
+	},
+	"facet_options": {
+		"value": "[{\"label\":\"Past 2 Years\",\"id\":\"more_ago\",\"order\":1,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@year@ago@2\",\"display_value\":\"sys_updated_onRELATIVEGT@year@ago@2^sys_updated_onRELATIVELT@year@ago@1\"}]},{\"label\":\"Past Year\",\"id\":\"year_ago\",\"order\":2,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@year@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@year@ago@1^sys_updated_onRELATIVELT@month@ago@1\"}]},{\"label\":\"Past Month\",\"id\":\"month_ago\",\"order\":3,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@month@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@month@ago@1^sys_updated_onRELATIVELT@dayofweek@ago@7\"}]},{\"label\":\"Past Week\",\"id\":\"week_ago\",\"order\":4,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@7\",\"display_value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@2^sys_updated_onRELATIVELT@dayofweek@ago@1\"}]},{\"label\":\"Past 24 Hours\",\"id\":\"day_ago\",\"order\":5,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@1\"}]}]",
+		"displayValue": "[{\"label\":\"Past 2 Years\",\"id\":\"more_ago\",\"order\":1,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@year@ago@2\",\"display_value\":\"sys_updated_onRELATIVEGT@year@ago@2^sys_updated_onRELATIVELT@year@ago@1\"}]},{\"label\":\"Past Year\",\"id\":\"year_ago\",\"order\":2,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@year@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@year@ago@1^sys_updated_onRELATIVELT@month@ago@1\"}]},{\"label\":\"Past Month\",\"id\":\"month_ago\",\"order\":3,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@month@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@month@ago@1^sys_updated_onRELATIVELT@dayofweek@ago@7\"}]},{\"label\":\"Past Week\",\"id\":\"week_ago\",\"order\":4,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@7\",\"display_value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@2^sys_updated_onRELATIVELT@dayofweek@ago@1\"}]},{\"label\":\"Past 24 Hours\",\"id\":\"day_ago\",\"order\":5,\"query\":[{\"table\":\"\",\"value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@1\",\"display_value\":\"sys_updated_onRELATIVEGT@dayofweek@ago@1\"}]}]"
+	},
+	"min_result_count": {
+		"value": null,
+		"displayValue": ""
+	},
+	"min_scroll_count": {
+		"value": null,
+		"displayValue": ""
+	}
+}]]></widget_parameters>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=6f74c2420faf8b406717590be1050e88"/>
+</record_update>

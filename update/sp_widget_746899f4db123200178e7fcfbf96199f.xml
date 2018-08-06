@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $animate, $rootScope) {
+  $scope.$watch("data.task", function() {
+    $scope.task = $scope.data.task; // copy for shortcuts above
+  })
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.word-wrap{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd-approval-record</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Approval record</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[var gr = $sp.getRecord();
+var task = getRecordBeingApproved(gr);
+var t = {};
+t.table = task.getLabel();
+
+data.change_variables = [];
+if(t.table == "Change Request") { // Gather change request details specific for custom UCD Change Request
+	data.change_request = true;
+	t = $sp.getFieldsObject(task, 'number, short_description, opened_by, description, justification, implementation_plan, risk_impact_analysis, backout_plan, test_plan, u_communication, u_disasterrecovery');
+	if(task.description) {
+		data.change_desc = task.description.toString(); 
+		data.change_variables.push({label: "Description", display_value: data.change_desc});
+	}
+	if(task.start_date) { data.change_start = task.start_date.toString(); }
+	if(task.end_date) { data.change_end = task.end_date.toString(); }
+	if(task.justification) {
+		data.change_justification = task.justification.toString();
+		data.change_variables.push({label: "Justification", display_value: data.change_justification});
+	}
+	if(task.implementation_plan) {
+		data.change_implementation = task.implementation_plan.toString();
+		data.change_variables.push({label: "Implementation plan", display_value: data.change_implementation});
+	}
+	if(task.risk_impact_analysis) {
+		data.change_risk = task.risk_impact_analysis.toString();
+		data.change_variables.push({label: "Risk and impact analysis", display_value: data.change_risk});
+	}
+	if(task.backout_plan) {
+		data.change_backout = task.backout_plan.toString();
+		data.change_variables.push({label: "Backout plan", display_value: data.change_backout});
+	}
+	if(task.test_plan) {
+		data.change_test_plan = task.test_plan.toString();
+		data.change_variables.push({label: "Test plan", display_value: data.change_test_plan});
+	}
+	if(task.u_communication) {
+		data.change_communication = task.u_communication.toString();
+		data.change_variables.push({label: "Communication plan", display_value: data.change_communication});
+	}
+	if(task.u_disasterrecovery) {
+		data.change_disaster = task.u_disasterrecovery.toString();
+		data.change_variables.push({label: "Disaster recovery plan", display_value: data.change_disaster});
+	}
+}
+else {
+	t = $sp.getFieldsObject(task, 'number,short_description,opened_by,requested_by,u_task_requested_for,start_date,end_date,price,recurring_price,recurring_frequency,');
+}
+
+// store task details for non-itil visibility
+data.isItil = gs.hasRole('itil');
+if(!data.isItil) {
+	if(task.number) data.task_num = task.number.toString();
+	if(task.short_description) data.task_short_desc = task.short_description.toString();
+	if(task.opened_by) data.task_opened_by = task.opened_by.getDisplayValue();
+	if(task.u_task_requested_for) data.task_requested_for = task.u_task_requested_for.getDisplayValue();
+} else {
+	if(task.u_task_requested_for) {
+		if(task.u_task_requested_for != null && task.u_task_requested_for != '') data.itil_task_requested_for = task.u_task_requested_for.getDisplayValue();
+	}
+}
+
+
+var items = [];
+var idx = 0;
+var itemsGR = new GlideRecord("sc_req_item");
+itemsGR.addQuery("request", task.sys_id);
+itemsGR.query();
+while (itemsGR.next()) {
+  var item = {};
+  item.short_description = itemsGR.short_description.toString();
+  if (itemsGR.getValue("price") > 0)
+	  item.price = itemsGR.getDisplayValue("price");
+  
+  if (itemsGR.getValue("recurring_price") > 0) {
+	  item.recurring_price = itemsGR.getDisplayValue("recurring_price");
+		item.recurring_frequency = itemsGR.getDisplayValue("recurring_frequency");
+  }
+  
+  if (itemsGR)
+	  item.variables = $sp.getRecordVariablesArray(itemsGR);
+  
+  items[idx] = item;
+  idx++;
+}
+
+data.items = items;
+data.sys_id = gr.getUniqueValue();
+data.task = t;
+if (task) {
+  data.variables = $sp.getRecordVariablesArray(task);
+}
+
+function getRecordBeingApproved(gr) {
+  if (!gr.sysapproval.nil())
+    return gr.sysapproval.getRefRecord();
+
+  return gr.document_id.getRefRecord();
+}
+
+var ticketConversationOptions = {
+	sys_id: task.getUniqueValue(),
+	table: task.getTableName(),
+	title: gs.getMessage("Activity Stream"),
+	placeholder: gs.getMessage("Type your message here..."),
+	placeholderNoEntries: gs.getMessage("Start a conversation..."),
+	btnLabel: gs.getMessage("Send")
+};
+
+data.ticketConversation = $sp.getWidget('widget-ticket-conversation', ticketConversationOptions);]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-04-20 16:45:35</sys_created_on>
+        <sys_id>746899f4db123200178e7fcfbf96199f</sys_id>
+        <sys_mod_count>106</sys_mod_count>
+        <sys_name>ucd_Approval record</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_746899f4db123200178e7fcfbf96199f</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-09-15 20:39:19</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box--large">
+	<h2 class="panel__title" ng-if="data.isItil">${Approval request for {{::task.table}} {{::task.number.display_value}}}</h2>
+  <h2 class="panel__title" ng-if="!data.isItil">Approval request for {{::task.table}} {{data.task_num}}</h2>
+  <section>
+    <div ng-if="task.short_description" class="ng-binding ng-scope" style="font-size:1.3rem;">{{::task.short_description.display_value}}</div>
+    <div ng-if="task.opened_by" class="ng-binding ng-scope"><label>${Opened by}</label> {{::task.opened_by.display_value}}</div>
+    <div ng-if="task.requested_by" class="ng-binding ng-scope"><label>${Requestor}</label> {{::task.requested_by.display_value}}</div>
+    <div ng-if="data.itil_task_requested_for" class="ng-binding ng-scope"><label>${Requested on behalf of}</label>{{data.itil_task_requested_for}}</div>
+    <div ng-if="task.start_date" class="ng-binding ng-scope"><label>${Start}</label> {{::task.start_date.display_value}}</div>
+    <div ng-if="task.end_date" class="ng-binding ng-scope"><label>${End}</label> {{::task.end_date.display_value}}</div>
+    <div ng-if="task.price.value > 0 " class="ng-binding ng-scope"><label>${Price}</label> {{::task.price.display_value}}
+      <span ng-if="task.recurring_frequency.value != null" class="ng-binding ng-scope"><label>${Recurring price}</label> {{::task.recurring_price.display_value}} {{task.recurring_frequency.display_value}}</span>
+    </div>
+     <!-- Change request details -->
+    <div ng-if="data.change_request"> 
+      <div ng-if="data.change_start" class="ng-binding ng-scope"><label>${Start date}</label>{{data.change_start}}</div>
+      <div ng-if="data.change_end" class="ng-binding ng-scope"><label>${End date}</label>{{data.change_end}}</div>
+    </div>
+    <!-- non-itil task details-->
+    <div ng-if="data.task_short_desc" class="ng-binding ng-scope" style="font-size:1.3rem;">{{data.task_short_desc}}</div>
+    <div ng-if="data.task_opened_by" class="ng-binding ng-scope"><label>${Opened by}</label> {{data.task_opened_by}}</div>
+   	<div ng-if="data.task_requested_for" class="ng-binding ng-scope"><label>${Requested on behalf of}</label>{{data.task_requested_for}}</div>
+
+    <div class="u-space-bottom"></div>
+
+    <!-- Change Details button -->
+    <div ng-if="data.change_variables.length > 0" ng-init="variable_toggle=true" class="ng-scope">
+      <a href="" class="btn u-space-bottom" ng-click="variable_toggle = !variable_toggle" style="cursor: pointer">Details         
+        <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+      </a>
+  	<div class="panel-body">
+  		<table class="table table-responsive">
+    		<tbody>
+      		<tr ng-repeat="var in data.change_variables" ng-if="variable_toggle" class="ng-scope">
+        		<td style="word-wrap: break-word; overflow-wrap: break-word;"> {{::var.label}}</td>
+        		<td class="word-wrap">{{::var.display_value}}</td>
+      		</tr>
+    		</tbody>
+  		</table>
+  		</div>
+    </div>
+
+    <!-- Multiple items in Request -->
+    <div ng-if="data.items.length > 0">
+      <h4>${Items in this Request}</h4>
+      <div ng-repeat="item in data.items">
+        <h4>
+          {{::item.short_description}}
+        </h4>
+
+        <div ng-if="item.price">${Price} {{::item.price}}
+          <span ng-if="item.recurring_price">${Recurring price} {{::item.recurring_price}} {{::item.recurring_frequency}}</span>
+        </div>
+
+        <div ng-if="item.variables.length > 0" ng-init="variable_toggle=true">
+          <h5 ng-click="variable_toggle = !variable_toggle" style="cursor: pointer;">
+            <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+            ${Details}
+          </h5>
+          <div ng-repeat="variable in item.variables" class="m-b-xs" ng-if="variable_toggle">
+            <label>{{::variable.label}}</label>
+            <div>{{::variable.display_value}}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+		<!-- RITM Details button-->
+    <div ng-if="data.variables.length > 0" ng-init="variable_toggle=true" class="ng-scope">
+      <a href="" class="btn u-space-bottom" ng-click="variable_toggle = !variable_toggle" style="cursor: pointer">Details         
+        <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+      </a>
+  <div class="panel-body">
+  <table class="table table-responsive">
+    <tbody>
+      <tr ng-repeat="variable in data.variables" ng-if="variable_toggle" class="ng-scope">
+        <td style="word-wrap: break-word; overflow-wrap: break-word;"> {{::variable.label}}</td>
+        <td class="word-wrap">{{::variable.display_value}}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+    </div>
+ </section>
+</div>
+
+  <div>
+      <fieldset disabled>
+      <sp-model form-model="data.f" mandatory="mandatory"></sp-model>
+
+			</fieldset>
+</div>
+ <sp-widget widget="data.ticketConversation" />
+
+
+<!-- without styling
+<div>
+<div class="panel panel-{{::options.color}} b">
+
+  
+  <div class="panel-heading">
+    <h4 class="panel-title">${Approval request for {{::task.table}} {{::task.number.display_value}}}</h4>
+  </div>
+
+  <div class="panel-body">
+    <div ng-if="task.short_description">{{::task.short_description.display_value}}</div>
+    <div ng-if="task.opened_by"><label>${Opened by}</label> {{::task.opened_by.display_value}}</div>
+    <div ng-if="task.requested_by"><label>${Requestor}</label> {{::task.requested_by.display_value}}</div>
+    <div ng-if="task.start_date"><label>${Start}</label> {{::task.start_date.display_value}}</div>
+    <div ng-if="task.end_date"><label>${End}</label> {{::task.end_date.display_value}}</div>
+    <div ng-if="task.price.value > 0"><label>${Price}</label> {{::task.price.display_value}}
+      <span ng-if="task.recurring_frequency.value != null"><label>${Recurring price}</label> {{::task.recurring_price.display_value}} {{task.recurring_frequency.display_value}}</span>
+    </div>
+
+    <div ng-if="data.items.length > 0">
+      <h4>${Items in this Request}</h4>
+      <div ng-repeat="item in data.items">
+        <h4>
+          {{::item.short_description}}
+        </h4>
+
+        <div ng-if="item.price">${Price} {{::item.price}}
+          <span ng-if="item.recurring_price">${Recurring price} {{::item.recurring_price}} {{::item.recurring_frequency}}</span>
+        </div>
+
+        <div ng-if="item.variables.length > 0" ng-init="variable_toggle=false">
+          <h5 ng-click="variable_toggle = !variable_toggle" style="cursor: pointer;">
+            <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+            ${Details}
+          </h5>
+          <div ng-repeat="variable in item.variables" class="m-b-xs" ng-if="variable_toggle">
+            <label>{{::variable.label}}</label>
+            <div>{{::variable.display_value}}</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div ng-if="data.variables.length > 0" ng-init="variable_toggle=true">
+      <h4 ng-click="variable_toggle = !variable_toggle" style="cursor: pointer;">
+        <span class="glyphicon" ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+        ${Details}
+      </h4>
+  <div class="panel-body">
+  <table class="table table-responsive">
+    <tbody>
+      <tr ng-repeat="variable in data.variables" ng-if="variable_toggle">
+        <td style="word-wrap: break-word; overflow-wrap: break-word;"> {{::variable.label}}</td>
+        <td class="word-wrap">{{::variable.display_value}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    </div>
+  </div>
+  
+   <div>
+      <fieldset disabled>
+      <sp-model form-model="data.f" mandatory="mandatory"></sp-model>
+
+			</fieldset>
+</div>
+ <sp-widget widget="data.ticketConversation" />
+</div>-->]]></template>
+    </sp_widget>
+</record_update>

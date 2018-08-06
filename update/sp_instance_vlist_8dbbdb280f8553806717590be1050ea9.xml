@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance_vlist">
+    <sp_instance_vlist action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <display_field>short_description</display_field>
+        <field_list/>
+        <filter/>
+        <glyph/>
+        <id/>
+        <maximum_entries>5</maximum_entries>
+        <order>0</order>
+        <order_by/>
+        <order_direction>asc</order_direction>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="2">c2907df2db200300178e7fcfbf9619d8</sp_column>
+        <sp_page display_value="ucd_ritm">f190b532db200300178e7fcfbf961955</sp_page>
+        <sp_widget display_value="">c243abac0f8553806717590be1050e79</sp_widget>
+        <sys_class_name>sp_instance_vlist</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-03-21 20:44:39</sys_created_on>
+        <sys_id>8dbbdb280f8553806717590be1050ea9</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>State</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_vlist_8dbbdb280f8553806717590be1050ea9</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-05-22 17:52:23</sys_updated_on>
+        <table>sc_req_item</table>
+        <title>State</title>
+        <url/>
+        <widget_parameters/>
+    </sp_instance_vlist>
+    <sys_translated_text action="delete_multiple" query="documentkey=8dbbdb280f8553806717590be1050ea9"/>
+</record_update>

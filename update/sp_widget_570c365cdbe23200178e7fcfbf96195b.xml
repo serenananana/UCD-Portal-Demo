@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope, $location, spUtil, $timeout) {
+	if ($scope.data.dataTableWidget)
+		angular.extend($scope.data.dataTableWidget.options, $scope.options);
+
+	$scope.$on('data_table.click', function(e, parms) {
+		var oid = $location.search().id;
+		var p = $scope.data.page_id || 'ucd_ticket';
+		var s = {id: p, table: parms.table, sys_id: parms.sys_id, view: $scope.data.view};
+		if (oid == p) {
+			s.spa = 1;
+			var t = $location.search();
+			s = angular.extend(t, s);
+			$rootScope.$broadcast('$sp.list.click', s);
+		}
+		
+		$location.search(s);
+	});
+	
+	$scope.$on('select2.ready', function(e, $el){
+		if ($scope.data.invalid_table){
+			e.stopPropagation();
+			$el.select2('open');
+		}
+	})
+	
+	$scope.selectedTable = {
+		displayValue: $scope.data.table,
+		value: $scope.data.table
+	}
+	
+	function resetParams(){
+		delete $scope.data.p;
+		delete $scope.data.o;
+		delete $scope.data.d;
+		delete $scope.data.q;
+		delete $scope.data.table;
+	}
+
+	$scope.onChange = function() {
+		resetParams();
+		$scope.data.table = $scope.selectedTable.value;
+		$scope.data.fields = "";  // reset
+		$scope.data.invalid_table = false;
+		getData(true);
+	}
+
+	function getData(updateUrl) {
+		var f = $scope.data;
+		spUtil.update($scope).then(function(data) {
+				$scope.data.dataTableWidget = null;
+				$timeout(function(){
+					$scope.data.dataTableWidget = data.dataTableWidget;
+					angular.extend($scope.data.dataTableWidget.options, $scope.options);
+					if (updateUrl)
+						setPermalink(f.table);
+				});
+		});
+	}
+	
+	function setPermalink(table) {
+		$scope.ignoreLocationChange = true;
+		var searchParms = $location.search();
+		var search = {
+			spa: 1, 
+			table: table,
+			id: searchParms.id
+		};
+		$location.search(search);
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.widget-data-table .clearfix{&#13;
+	display: none;&#13;
+}</css>
+        <data_table>sp_instance_table</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,maximum_entries,glyph,color,sp_page,field_list</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-data-table-from-url</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Data Table from URL Definition</name>
+        <option_schema>[{"hint":"Show Instance option title instead of the table's plural label","name":"use_instance_title","label":"Use Instance Title","type":"boolean"}]</option_schema>
+        <public>false</public>
+        <roles>snc_external,snc_internal</roles>
+        <script><![CDATA[(function() {
+	deleteOptions(['table','field_list','filter','order_by', 'order_direction','order']);
+	if (input) {
+		data.table = input.table;
+		data.view = input.view;
+	} else {
+		data.table = $sp.getParameter('table') || $sp.getParameter('t');
+		data.view = $sp.getParameter('view');
+	}
+	
+	if (!data.table) {
+		data.invalid_table = true;
+		data.table_label = "";
+		return;
+	}
+
+	var gr = new GlideRecordSecure(data.table);
+	if (!gr.isValid()) {
+		data.invalid_table = true;
+		data.table_label = data.table;
+		return;
+	}
+	
+	// page is where the record URLs go
+	var sp_page = $sp.getValue('sp_page');
+	if (sp_page) {
+		var pageGR = new GlideRecord('sp_page');
+		pageGR.get(sp_page);
+		data.page_id = pageGR.id.getDisplayValue();
+	}
+	
+	// widget parameters
+	data.table_label = gr.getLabel();
+	data.fields = $sp.getListColumns(data.table, data.view);
+	//data.title = gr.getPlural();
+	data.title = gr.getED().getPlural();
+	copyParameters(data, ['p', 'o', 'd', 'filter']);
+	copyParameters(data, ['relationship_id', 'apply_to', 'apply_to_sys_id']);
+	data.show_new = true;
+	data.show_keywords  = true;
+	data.show_breadcrumbs = true;
+	data.fromUrl = true;
+
+	data.dataTableWidget = $sp.getWidget('widget-data-table', data);
+	
+	function copyParameters(to, names) {
+		names.forEach(function(name) {
+			data[name] = $sp.getParameter(name);
+		})
+	}
+	
+	// in case this widget is tied to the wrong instance type 
+	function deleteOptions(names) {
+		names.forEach(function(name) {
+			delete options[name];
+		})
+	}	
+})()]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-01 20:59:45</sys_created_on>
+        <sys_id>570c365cdbe23200178e7fcfbf96195b</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>ucd_Data Table from URL Definition</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_570c365cdbe23200178e7fcfbf96195b</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-05-01 21:17:06</sys_updated_on>
+        <template><![CDATA[<div>
+  <div ng-if="data.invalid_table">
+    <div class="alert alert-info">
+      <span ng-if="data.table_label">${Table not defined} '{{data.table_label}}'</span>
+      <span ng-if="!data.table_label">${Select table on field below or specify on URL} ?id=list&amp;table=table_name</span>
+    </div>
+    <sn-record-picker field="selectedTable" table="'sys_db_object'" 
+                      display-field="'label'" 
+                      value-field="'name'" 
+                      display-fields="'name'" 
+                      search-fields="'label,name'" page-size="100" on-change="onChange()" ></sn-record-picker>
+  </div>
+  <div ng-if="data.dataTableWidget && !data.invalid_table">
+  	<sp-widget widget="data.dataTableWidget"></sp-widget>
+  </div>  
+</div>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>.cust-container{&#13;
+    margin-top: -1%;&#13;
+    padding: 1%;&#13;
+  margin-bottom: 1%;&#13;
+}&#13;
+.cat-container{&#13;
+  margin-top: 10px !important; &#13;
+&#13;
+}&#13;
+</css>
+        <name>UCD SC Styles</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-08 19:19:10</sys_created_on>
+        <sys_id>e4a388de0f0947006717590be1050ebd</sys_id>
+        <sys_mod_count>10</sys_mod_count>
+        <sys_name>UCD SC Styles</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_css_e4a388de0f0947006717590be1050ebd</sys_update_name>
+        <sys_updated_by>kloves-alxcrlsn</sys_updated_by>
+        <sys_updated_on>2017-09-19 09:20:54</sys_updated_on>
+    </sp_css>
+</record_update>

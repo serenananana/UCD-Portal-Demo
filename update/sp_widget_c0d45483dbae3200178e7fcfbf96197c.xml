@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $rootScope, $timeout, spUtil, snRecordWatcher, spModal, $window) {
+  var c = this;
+			
+  if ($scope.options.portal == true || $scope.options.portal == 'true') {
+    $scope.contentColClass = "col-xs-12";
+	$scope.options.portal = true;
+	} else {
+		$scope.options.portal = false;
+		$scope.contentColClass = "col-sm-9";
+	}
+
+	$scope.data.op = "";
+  snRecordWatcher.initList("sysapproval_approver", "state=requested^approver=" + window.NOW.user_id);
+
+  function get() {
+    spUtil.update($scope);
+  }
+
+	$scope.$on('record.updated', function(name, data) {
+		get();
+	})
+
+  /* Approve reject actions
+	$scope.approve = function(id) {
+    $scope.data.op = "approved";
+    $scope.data.target = id;
+    get();
+  }
+	
+	$scope.reject = function(id) {
+		// ask user for comments
+		c.onPrompt(id);
+	}
+	
+	c.onPrompt = function(id) {
+		spModal.open({
+			title: 'Enter rejection comments',
+			message: '',
+			input: true,
+			value: c.rejectionComments
+		}).then(function(str) {
+			c.rejectionComments = str;
+			if(str) {
+				$scope.data.rejectionComments = str;
+				$scope.data.op = "rejected";
+				$scope.data.target = id;
+				get();
+			}
+		})
+	}*/
+	
+	this.getMaxShownLabel = function(maxEntries, totalCount) {
+		if (totalCount == data.count)
+			return "${First [0] of more than [1]}".replace('[0]', maxEntries).replace('[1]', totalCount);
+		
+		return "${First [0] of [1]}".replace('[0]', maxEntries).replace('[1]', totalCount);
+	};
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.btn-block{
+	padding: 6px 6px;
+}
+
+/* Extra small devices (phones, up to 480px) */
+@media screen and (max-width: 767px) {
+  .btn-responsive{ 
+    font-size: 100%;
+  }
+}
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .btn-responsive{ 
+    font-size: 100%;
+  }
+}
+/* tablets/desktops and up ----------- */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .btn-responsive{ 
+    font-size: 70%;
+    padding: 4px 4px;
+  }
+}
+/* large desktops and up ----------- */
+@media screen and (min-width: 1200px) {
+    .btn-responsive{ 
+    font-size: 100%;
+    }
+}
+
+.word-wrap{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  word-break: break-word;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color,glyph</field_list>
+        <has_preview>true</has_preview>
+        <id>ucd-my-approvals-active</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_My Approvals Active</name>
+        <option_schema>[{"hint":"If false, buttons are stacked on the right; if true, they are side-by-side","name":"portal","label":"Buttons stacked side by side","type":"boolean"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[/* Adding rejection comments not working
+if (input && input.op) {
+	if(input.op == "approved") {
+		var app = new GlideRecord("sysapproval_approver");
+		if (app.get(input.target)) {
+			app.state = input.op;
+			app.update();
+		}
+	}
+	else if(input.op =='rejected' && input.rejectionComments) {
+		var app = new GlideRecord("sysapproval_approver");
+		if(app.get(input.target)) {
+			app.comments = input.rejectionComments;
+			app.state = input.op;
+			app.update();
+		}
+	}
+}*/
+
+data.ViewApprovalPageMsg = gs.getMessage("View approval page");
+
+var gr = new GlideRecord('sysapproval_approver');
+
+if (input && input.newFilter) gr.addEncodedQuery(input.newFilter);
+else {
+	gr.addEncodedQuery("approverDYNAMICjavascript:gs.getUserID()^sysapprovalISNOTEMPTY^state=requested");
+}
+gr.orderByDesc('sys_updated_on'); // show most recent approvals first
+//gr.orderBy("sys_created_on");
+gr.query();
+
+data.count = gr.getRowCount();
+data.displayLimit = 50;
+
+var approvals = [];
+var ids = [];
+while (gr.next()) {
+	if (approvals.length == data.displayLimit)
+		break;
+	
+  var task = getRecordBeingApproved(gr);
+	if (!task.isValidRecord())
+		continue;
+
+  ids.push(gr.getUniqueValue());
+  var t = {};
+  t.number = task.getDisplayValue();
+  t.short_description = task.short_description.toString();
+  if (task.isValidField("opened_by") && !task.opened_by.nil())
+	  t.opened_by = task.opened_by.getDisplayValue();
+
+  // requestor >> opener
+  if (task.isValidField("requested_by") && !task.requested_by.nil())
+	  t.opened_by = task.requested_by.getDisplayValue();
+
+  if (task.start_date != null)
+	t.start_date = task.start_date.toString();
+  if (task.end_date != null)	
+	t.end_date = task.end_date.toString();
+  t.table = task.getLabel();
+  if (task.getValue("price") > 0)
+	  t.price = task.getDisplayValue("price");
+
+  if (task.getValue("recurring_price") > 0)
+	  t.recurring_price = task.getDisplayValue("recurring_price");
+
+  t.recurring_frequency = task.getDisplayValue("recurring_frequency");
+
+  var items = [];
+  var idx = 0;
+  var itemsGR = new GlideRecord("sc_req_item");
+  itemsGR.addQuery("request", task.sys_id);
+  itemsGR.query();
+  if (itemsGR.getRowCount() > 1)
+    t.short_description = itemsGR.getRowCount() + " requested items";
+
+  while (itemsGR.next()) {
+    var item = {};
+    item.short_description = itemsGR.short_description.toString();
+    if (itemsGR.getValue("price") > 0)
+      item.price = itemsGR.getDisplayValue("price");
+    if (itemsGR.getValue("recurring_price") > 0) {
+      item.recurring_price = itemsGR.getDisplayValue("recurring_price");
+      item.recurring_frequency = itemsGR.getDisplayValue("recurring_frequency");
+    }
+    if (itemsGR.getRowCount() == 1) {
+      item.variables = $sp.getRecordVariablesArray(itemsGR);
+      t.short_description = itemsGR.short_description.toString();
+    }
+
+    items[idx] = item;
+    idx++;
+  }
+
+  var j = {};
+  j.sys_id = gr.getUniqueValue();
+  j.table = gr.getRecordClassName();
+  j.task = t;
+  if (task)
+    j.variables = $sp.getRecordVariablesArray(task);
+
+  j.items = items;
+  j.state = gr.getValue("state");
+  j.stateLabel = gr.state.getDisplayValue();
+  approvals.push(j);
+}
+data.ids = ids;
+data.approvals = approvals;
+
+function getRecordBeingApproved(gr) {
+  if (!gr.sysapproval.nil())
+    return gr.sysapproval.getRefRecord();
+
+  return gr.document_id.getRefRecord();
+}
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-09 21:52:23</sys_created_on>
+        <sys_id>c0d45483dbae3200178e7fcfbf96197c</sys_id>
+        <sys_mod_count>20</sys_mod_count>
+        <sys_name>ucd_My Approvals Active</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_c0d45483dbae3200178e7fcfbf96197c</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-09-29 18:55:01</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box" ng-if="data.approvals.length != 0">
+    <h4 class="panel__title"><fa ng-if="::options.glyph.length" name="{{::options.glyph}}" class="m-r-sm" />${Requested Approvals}</h4>
+  <div ng-if="data.approvals.length == 0">
+  	${No pending approvals}
+  </div>
+  <div class="panel-body">
+    <div ng-repeat="approval in data.approvals" class="sp-approval m-b">
+      <div class="row">
+        <div ng-class="contentColClass">
+          <div ng-if="approval.task.number || approval.task.short_description">
+            <a ng-href="?id=ucd_approval&table=sysapproval_approver&sys_id={{::approval.sys_id}}" title="{{data.ViewApprovalPageMsg}}">
+              <span ng-if="approval.task.number">{{::approval.task.number}}</span>
+              <span ng-if="approval.task.number && approval.task.short_description"> - </span>
+              <span ng-if="approval.task.short_description">{{::approval.task.short_description}}</span>
+            </a>
+          </div>
+          <div ng-if="approval.task.opened_by"><label>${Requestor}</label> {{::approval.task.opened_by}}</div>
+          <div ng-if="approval.task.start_date"><label>${Start}</label> {{::approval.task.start_date}}</div>
+          <div ng-if="approval.task.end_date"><label>${End}</label> {{::approval.task.end_date}}</div>
+          <div ng-if="approval.task.price"><label>${Price}</label> {{::approval.task.price}}
+            <span ng-if="approval.task.recurring_price"><label>${Recurring price}</label> {{::approval.task.recurring_price}} {{::approval.task.recurring_frequency}}</span>
+          </div>
+          <!-- Hide details button 
+          <div ng-if="approval.items.length == 1">
+            <div ng-repeat="item in approval.items">
+              <div ng-if="item.variables.length > 0" ng-init="variable_toggle=false">
+                <a href="javascript:void(0)" ng-click="variable_toggle = !variable_toggle">
+                  <span class="glyphicon"
+                        ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}">
+                  </span>
+                  ${Details}
+                </a>
+                <div ng-repeat="variable in item.variables" ng-if="variable_toggle">
+                  <label class="text-muted">{{::variable.label}}</label>
+                  <div>{{::variable.display_value}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="approval.variables.length > 0" ng-init="variable_toggle=false">
+            <a href="javascript:void(0)" ng-click="variable_toggle = !variable_toggle">
+              <span class="glyphicon"
+                    ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}">
+              </span>
+              ${Details}
+            </a>
+            <div ng-repeat="variable in approval.variables" ng-if="variable_toggle">
+              <label>{{::variable.label}}</label>
+              <div class="word-wrap">{{::variable.display_value}}</div>
+            </div>
+          </div>
+        </div>-->
+
+        <!-- Removing approve reject buttons
+	<div ng-if="!options.portal" class="col-sm-3">
+          <button name="approve" ng-if="approval.state == 'requested'" class="btn btn-primary btn-block btn-responsive" style="border-width:1px;" ng-click="approve(approval.sys_id);">${Approve}</button>
+          <button name="reject" ng-if="approval.state == 'requested'" class="btn btn-default btn-block btn-responsive" ng-click="reject(approval.sys_id);">${Reject}</button>
+          <button ng-if="approval.state == 'approved'" class="btn btn-success btn-block">{{approval.stateLabel}}</button>
+          <button ng-if="approval.state == 'rejected'" class="btn btn-danger btn-block">{{approval.stateLabel}}</button>
+          <button ng-if="approval.state != 'requested'" class="btn btn-default btn-block" style="visibility:hidden">{{approval.stateLabel}}</button>
+        </div>
+        <div ng-if="options.portal && approval.state == 'requested'" class="col-xs-6">
+          <button name="reject" class="btn btn-default btn-block" ng-click="reject(approval.sys_id);">${Reject}</button>
+        </div>
+        <div ng-if="options.portal && approval.state == 'requested'" class="col-xs-6">
+          <button name="approve" class="btn btn-primary btn-block" ng-click="approve(approval.sys_id);">${Approve}</button>
+        </div>
+        <div ng-if="options.portal && approval.state != 'requested'" class="col-xs-12">
+          <button ng-if="approval.state == 'approved'" class="btn btn-success btn-block">{{approval.stateLabel}}</button>
+          <button ng-if="approval.state == 'rejected'" class="btn btn-danger btn-block">{{approval.stateLabel}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer" ng-if="data.count > data.displayLimit">
+    <h4>First {{data.displayLimit}} of {{data.count}}
+      <a class="pull-right" href='?id=ucd_approvals'>View all</a>
+    </h4>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

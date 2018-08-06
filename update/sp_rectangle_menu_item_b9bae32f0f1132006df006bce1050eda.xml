@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_rectangle_menu_item">
+    <sp_rectangle_menu_item action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <color>default</color>
+        <condition/>
+        <display_1/>
+        <display_2/>
+        <display_date/>
+        <filter/>
+        <glyph/>
+        <hint/>
+        <kb_article/>
+        <kb_category/>
+        <kb_topic/>
+        <label>My Stuff</label>
+        <order>400</order>
+        <record_script><![CDATA[// maximum number of entries in this Menu
+var max = 30;
+
+var t = data;  // shortcut
+t.items = [];
+
+var u = gs.getUser().getID();
+
+// use record watchers to tell header when to update dropdown counts
+t.record_watchers = [];
+t.record_watchers.push({'table':'sysapproval_approver','filter':'state=requested^approver=' + u});
+t.record_watchers.push({'table':'service_task','filter':'active=true^opened_by=' + u});
+t.record_watchers.push({'table':'incident','filter':'active=true^caller_id=' + u});
+//t.record_watchers.push({'table':'sc_request','filter':'active=true^requested_for=' + u});
+
+var st = new GlideRecord('service_task');
+if (st.isValid()) {
+  st.addActiveQuery();
+  st.addQuery('opened_by', gs.getUserID());
+  st.orderByDesc('sys_updated_on');
+  st.setLimit(max);
+  st.query();
+  while (st.next()) {
+    var a = {};
+
+    a.short_description = st.short_description.getDisplayValue();
+    a.sys_id = st.sys_id.getDisplayValue();
+    a.number = st.number.getDisplayValue();
+    a.sys_updated_on = st.sys_updated_on.getDisplayValue();
+    
+    if (st.short_description.nil())
+      a.short_description = "(No description)";
+    a.__table = st.getTableName();
+    a.type = 'record';
+    a.sortOrder = (new GlideDateTime(st.sys_updated_on)).getNumericValue();
+    t.items.push(a);
+  }
+}
+
+var z = new GlideRecord('incident');
+z.addActiveQuery();
+z.addQuery('caller_id', gs.getUserID());
+if(gs.getUser().hasRole('itil'))
+	z.addEncodedQuery("stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^sys_updated_by!=javascript:gs.getUserName()^NQcaller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");
+else
+    z.addEncodedQuery("stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^NQcaller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");
+z.orderByDesc('sys_updated_on');
+z.setLimit(max);
+z.query();
+while (z.next()) {
+  var a = {};
+  
+  a.short_description = z.short_description.getDisplayValue();
+  a.sys_id = z.sys_id.getDisplayValue();
+  a.number = z.number.getDisplayValue();
+  a.sys_updated_on = z.sys_updated_on.getDisplayValue();
+  
+  if (z.short_description.nil())
+    a.short_description = "(No description)";
+  a.__table = z.getTableName();
+  a.type = 'record';
+  // FIXME getGlideObject() fails on non-global scope
+  //a.sortOrder = z.sys_updated_on.getGlideObject().getNumericValue();
+  a.sortOrder = (new GlideDateTime(z.sys_updated_on)).getNumericValue();
+  t.items.push(a);
+}
+
+// Requests
+/*var z = new GlideRecord('sc_request');
+z.addActiveQuery();
+z.addQuery('requested_for', gs.getUserID());
+z.orderByDesc('sys_updated_on');
+z.setLimit(max);
+z.query();
+while (z.next()) {
+  var ritm = new GlideRecord('sc_req_item');
+  ritm.addQuery('request', z.getUniqueValue());
+  ritm.query();
+  if (!ritm.next())
+    continue;
+
+  var a = {};
+
+  a.short_description = z.short_description.getDisplayValue();
+  a.sys_id = z.sys_id.getDisplayValue();
+  a.number = z.number.getDisplayValue();
+  a.sys_updated_on = z.sys_updated_on.getDisplayValue();
+  
+  if (ritm.hasNext())
+    a.short_description = ritm.getRowCount() + ' requested items';
+  else
+    a.short_description = ritm.cat_item.getDisplayValue() || ritm.getDisplayValue("short_description");
+  a.__table = z.getTableName();
+  a.type = 'request';
+
+  a.sortOrder = (new GlideDateTime(z.sys_updated_on)).getNumericValue();
+  t.items.push(a);
+}*/
+
+var approvals = [];
+var z = new GlideRecord('sysapproval_approver');
+z.addEncodedQuery("approverDYNAMICjavascript:gs.getUserID()^sysapprovalISNOTEMPTY^state=requested");
+z.orderByDesc('sys_updated_on');
+z.setLimit(max); // Avoid large amount of approvals being grabbed
+z.query();
+while (z.next()) {
+  var a = {};
+  
+  // Grab information from the record which the approval is for
+  var approvalRecord = z.document_id.getRefRecord();
+  a.short_description = approvalRecord.short_description.getDisplayValue();
+  a.number = approvalRecord.number.getDisplayValue();
+  
+  a.sys_id = z.getUniqueValue();
+  a.sys_updated_on = z.sys_updated_on.getDisplayValue();
+  a.__table = z.getRecordClassName();
+  a.type = 'approval';
+  
+  approvals.push(a);
+}
+
+t.items.sort(function(a, b) {
+  return b.sortOrder - a.sortOrder;
+});
+
+// Push approvals above the Incidents and Requests
+for (var i = approvals.length - 1; i >= 0; --i)
+  t.items.unshift(approvals[i]);
+
+t.items = t.items.slice(0, max); // only want first 30
+t.count = t.items.length;
+
+var link = {title: gs.getMessage('View all'), type: 'link', href: '?id=ucd_my_stuff', items: []};
+t.items.unshift(link); // put 'View all' first]]></record_script>
+        <sc_cat_item/>
+        <sc_category/>
+        <short_description/>
+        <sp_page display_value="ucd_my_stuff">ca7313e1dbea3200178e7fcfbf9619f9</sp_page>
+        <sp_rectangle_menu display_value="ucd_Header Menu">ee4a232f0f1132006df006bce1050e07</sp_rectangle_menu>
+        <sp_rectangle_menu_item/>
+        <sys_class_name>sp_rectangle_menu_item</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-10 23:25:33</sys_created_on>
+        <sys_id>b9bae32f0f1132006df006bce1050eda</sys_id>
+        <sys_mod_count>34</sys_mod_count>
+        <sys_name>My Stuff</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_rectangle_menu_item_b9bae32f0f1132006df006bce1050eda</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-11 18:49:55</sys_updated_on>
+        <table/>
+        <type>page</type>
+        <url/>
+        <url_target/>
+    </sp_rectangle_menu_item>
+    <sys_translated_text action="delete_multiple" query="documentkey=b9bae32f0f1132006df006bce1050eda"/>
+</record_update>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">b4da23e913cb3a003527bd122244b06d</sp_column>
+        <sp_widget display_value="HTML">8679ef89cb21120000f8d856634c9c4f</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>cglam</sys_created_by>
+        <sys_created_on>2017-05-30 18:08:11</sys_created_on>
+        <sys_id>f0ea6321130f3a003527bd122244b067</sys_id>
+        <sys_mod_count>20</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_f0ea6321130f3a003527bd122244b067</sys_update_name>
+        <sys_updated_by>cglam</sys_updated_by>
+        <sys_updated_on>2017-06-06 23:01:56</sys_updated_on>
+        <title/>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"html": {
+		"value": "<p style=\"text-align: center; font-size: 200%;\">We've hit a bump in the road. The page you're looking for cannot be found.</p>\n<p style=\"text-align: center;\"><a href=\"servicehub?id=ucd_index\"><img src=\"404.gif\" alt=\"\" width=\"200\" height=\"200\" /></a></p>\n<p style=\"text-align: center;\">Get back on the bike and go to the Service Hub to continue the journey.</p>\n<p style=\"text-align: center;\"><a href=\"servicehub?id=ucd_index\">Back to ServiceHub</a></p>",
+		"displayValue": "<p style=\"text-align: center; font-size: 200%;\">We've hit a bump in the road. The page you're looking for cannot be found.</p>\n<p style=\"text-align: center;\"><a href=\"servicehub?id=ucd_index\"><img src=\"404.gif\" alt=\"\" width=\"200\" height=\"200\" /></a></p>\n<p style=\"text-align: center;\">Get back on the bike and go to the Service Hub to continue the journey.</p>\n<p style=\"text-align: center;\"><a href=\"servicehub?id=ucd_index\">Back to ServiceHub</a></p>"
+	}
+}]]></widget_parameters>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=f0ea6321130f3a003527bd122244b067"/>
+</record_update>

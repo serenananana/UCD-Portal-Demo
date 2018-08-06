@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($filter, $location) {
+    var c = this;
+    c.options.glyph = c.options.glyph || 'search';
+    c.data.searchMsg = "Search the Knowledge Base";
+    c.options.title = c.options.title || c.data.searchMsg;
+
+    c.onSelect = function ($item, $model, $label) {
+        if ($item.type == "kb") {
+            $location.search({ id: 'ucd_app_kb_article', sys_id: $item.sys_id });
+        }
+    };
+
+    c.getResults = function (query) {
+        return c.server.get({ q: query }).then(function (response) {
+            var a = $filter('orderBy')(response.data.results, '-score');
+            return $filter('limitTo')(a, c.data.limit);
+        });
+    }
+
+    c.submitSearch = function () {
+        if (c.selectedState)
+            $location.search({ id: 'ucd_app_search', query: c.selectedState , kb_knowledge_base: 'e866fd85dbd49b840abf9c94db9619bf'});
+    }
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>ul.dropdown-menu {
+    min-width: 100%;
+    border-radius: 0px 0px 4px 4px;
+    margin:0px;
+}
+
+ul.dropdown-menu a.ta-item {
+	line-height: 20px;
+}
+
+ul.dropdown-menu i.ta-icon, i.ta-img {
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-align: center;
+    line-height: 20px;
+    float:left;
+    margin-right: 8px;
+}
+
+input[name="q"] {
+color: black;
+}
+
+.home-search {
+  margin-bottom: 20px;
+	.form-control {
+    border: 1;
+    border-radius: 0;
+    display: block;
+    width: 100%;
+    height: 36px;
+    font-size: 14px;
+    box-shadow: none;
+  }
+  .input-group-btn {
+  }
+  .btn {
+ 		width: auto;
+  	height: auto;
+    border: 1;
+    background-color: #fff;
+	&amp;:hover {
+      background-color: #4d6988;
+      border-radius: 0;
+    } 
+    
+	}
+  .sp-tagline-color {
+	color: $sp-tagline-color;
+  }
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color,size,glyph,title</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-app-knowledge-base-search</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_app_Knowledge Base search</name>
+        <option_schema>[{"name":"title","label":"Title","type":"string"},{"name":"color","label":"Color","type":"string"},{"name":"glyph","label":"glyph","type":"string"},{"name":"size","label":"Size","type":"string"},{"hint":"Number of typeahead search results returned (default 15)","name":"limit","label":"Limit","type":"integer"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.searchType = $sp.getParameter("t");
+	data.results = [];
+	data.kb = $sp.getValue("kb_knowledge_base");
+	data.searchMsg = gs.getMessage("Search the Knowledge Base");
+	data.limit = options.limit || 15;
+	var textQuery = '123TEXTQUERY321';
+	
+	// End if no input in box (aka on page load)	
+	if (!input) {
+		/* Istanbul only feature - search sources	
+		data.typeaheadTemplates = {};
+	
+		var searchGroupTemplatesGR = new GlideRecord("sp_search_source");
+		searchGroupTemplatesGR.query();
+		while(searchGroupTemplatesGR.next()) {
+			if (searchGroupTemplatesGR.getElement("advanced_typeahead_config").getDisplayValue() == "true")
+				data.typeaheadTemplates["sp-typeahead-" + searchGroupTemplatesGR.getValue("id") + ".html"] = searchGroupTemplatesGR.getValue("typeahead_template");
+				// translateTemplate() isn't available outside global scope
+				// data.typeaheadTemplates["sp-typeahead-" + searchGroupTemplatesGR.getValue("id") + ".html"] = $sp.translateTemplate(searchGroupTemplatesGR.getValue("typeahead_template"));
+		}
+		*/
+		return;
+	}
+	
+	data.q = input.q;
+	getKnowledge();
+
+	function addSearchTable(sg) {
+		var table = sg.getValue('name');
+		var condition = sg.getValue('condition');
+		var gr = new GlideRecord(table);
+		if (condition)
+			gr.addEncodedQuery(condition);
+
+		gr.addQuery(textQuery, data.q);
+		gr.query();
+		var searchTableCount = 0;
+		while (gr.next() && searchTableCount < data.limit) {
+			var rec = {};
+			rec.type = "rec";
+			rec.table = table;
+			rec.sys_id = gr.getDisplayValue('sys_id');
+			rec.page = sg.getDisplayValue('sp_page');
+			if (!rec.page)
+				rec.page = "form";
+			rec.label = gr.getDisplayValue();
+			rec.score = parseInt(gr.ir_query_score.getDisplayValue());
+			data.results.push(rec);
+			searchTableCount++;
+		}
+	}
+
+	function getKnowledge() {
+		var knowledgeBase = new GlideRecord('kb_knowledge_base');
+		knowledgeBase.addQuery('sys_id',data.kb); // IT - public KB
+		knowledgeBase.addActiveQuery();
+		knowledgeBase.query();
+		while (knowledgeBase.next()) {
+			// Skip if user cannot access this knowledge base
+			if (!knowledgeBase.canRead()) continue;
+			
+			var kb = new GlideRecord('kb_knowledge');
+			kb.addQuery('workflow_state', 'published');
+			
+			/* getLocalDate() is not available outside global scope
+					We aren't currently using valid_to field anyways,
+					but this kind of code can be added if we decide to
+			*/
+			// kb.addQuery('valid_to', '>=', (new GlideDate()).getLocalDate().getValue());
+			kb.addQuery(textQuery, data.q);
+			kb.addQuery('kb_knowledge_base', knowledgeBase.getUniqueValue());
+			kb.query();
+			var kbCount = 0;
+			while (kb.next() && kbCount < data.limit) {
+				if (!$sp.canReadRecord(kb))
+					continue;
+
+				var article = {};
+				article.type = "kb";
+				$sp.getRecordDisplayValues(article, kb, 'sys_id,number,short_description,published,text');
+				if (!article.text)
+					article.text = "";
+				article.text = $sp.stripHTML(article.text);
+				article.text = article.text.substring(0,200);
+				article.score = parseInt(kb.ir_query_score.getDisplayValue());
+				article.label = article.short_description;
+				data.results.push(article);
+				kbCount++;
+			}
+		}
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 21:58:20</sys_created_on>
+        <sys_id>c3ec9b550f1497006717590be1050ea7</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>ucd_app_Knowledge Base search</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_c3ec9b550f1497006717590be1050ea7</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-15 00:12:54</sys_updated_on>
+        <template><![CDATA[<form ng-submit="c.submitSearch()">
+    <!--<form method="get" action="?">
+      <input type="hidden" name="id" value="ucd_search2"/>-->
+    <!--<input type="hidden" name="t" value="{{data.searchType}}"/>-->
+    <div class="input-group input-group-{{::c.options.size}} home-search">
+        <!-- uses ui.bootstrap.typeahead -->
+        <!--<input name="q" type="text" placeholder="{{::c.data.searchMsg}}" ng-model="c.selectedState"-->
+        <input name="query" type="text" placeholder="{{::c.data.searchMsg}}" ng-model="c.selectedState"
+               ng-model-options="{debounce: 250}" autocomplete="off"
+               uib-typeahead="item as item.label for item in c.getResults($viewValue)"
+               typeahead-focus-first="false"
+               typeahead-on-select="c.onSelect($item, $model, $label)"
+               typeahead-template-url="ucd-typeahead2.html" class="form-control input-typeahead"
+               aria-label="{{::c.options.title}}" tabindex="0"
+               required>
+        <span class="input-group-btn">
+            <button name="search" type="submit" class="btn btn-{{::c.options.color}}" aria-label="Submit {{::c.options.title}}">
+                <i ng-if="::c.options.glyph" class="fa fa-{{::c.options.glyph}}"></i>
+            </button>
+        </span>
+    </div>
+</form>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sc_cat_item_catalog">
+    <sc_cat_item_catalog action="INSERT_OR_UPDATE">
+        <sc_cat_item display_value="Add network switch to datacenter cabinet">508e02ec47410200e90d87e8dee49058</sc_cat_item>
+        <sc_catalog display_value="Service Catalog">e0d08b13c3330100c8b837659bba8fb4</sc_catalog>
+        <sys_class_name>sc_cat_item_catalog</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-23 21:16:51</sys_created_on>
+        <sys_id>5cf21c6fdbb23200178e7fcfbf9619ee</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Service Catalog.Add network switch to datacenter cabinet</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sc_cat_item_catalog_5cf21c6fdbb23200178e7fcfbf9619ee</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-05-23 21:16:51</sys_updated_on>
+    </sc_cat_item_catalog>
+</record_update>

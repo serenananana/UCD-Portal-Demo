@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	var c = this;/*
+	var deregister = $rootScope.$on("sp.update.breadcrumbs", function(e, list) {
+		c.breadcrumbs = list;
+	});
+	
+	$scope.$on('$destroy', function(){ 
+		deregister();
+	});
+	*/
+
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>i {
+margin-top: 12px;
+}
+
+.nav-pills &gt; li + li {
+    margin-left: 1px;
+}
+.nav-sm &gt; li &gt; a{padding:7px 8px !important;}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>app-sqanda-breadcrubs</id>
+        <internal>false</internal>
+        <link/>
+        <name>Applicant SQANDA Breadcrumbs</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {  /* populate the 'data' object */  /* e.g., data.table = $sp.getValue('table'); */
+/*
+var kbSysID = $sp.getParameter('sys_id');
+	
+if (kbSysID){
+	var newGR = new GlideRecord('kb_knowledge');
+	newGR.addQuery('sys_id', kbSysID);
+	newGR.query();
+	newGR.next();
+	data.category = newGR.kb_category.getDisplayValue();
+	data.articleName = newGR.short_description.toString();
+}
+
+var cat = new GlideRecord('sc_category');
+	cat.get(data.category);
+	data.title = cat.getValue('title');*/
+  data.pageID = $sp.getParameter('id');
+	/*data.catID = $sp.getParameter('ucd_category');
+	var category = new GlideRecord('sc_category');
+	category.get(data.catID);
+	data.cat = category.getValue('title');
+	*/
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-22 17:18:18</sys_created_on>
+        <sys_id>c3896bfb0f941f006717590be1050e8d</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>Applicant SQANDA Breadcrumbs</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_c3896bfb0f941f006717590be1050e8d</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-22 18:01:45</sys_updated_on>
+        <template><![CDATA[<ul class="nav nav-pills nav-sm" aria-label="${Navigation breadcrumbs}">
+    <li><a ng-href="?id={{portal.homepage_dv}}">${Home}</a></li>
+    <li ng-if="data.pageID == 'app_sqa_tagged_questions' || data.pageID == 'app_sqanda_new_question' || data.pageID == 'app_kb_social_qa_question2'" aria-hidden="true"><i class="fa fa-chevron-right"></i></li>
+    <li ng-if="data.pageID == 'app_sqa_tagged_questions' || data.pageID == 'app_sqanda_new_question' || data.pageID == 'app_kb_social_qa_question2'"><a href="?id=app_sqa_tagged_questions">Community</a></li>
+    <li ng-if="data.pageID == 'app_sqanda_new_question'" aria-hidden="true"><i class="fa fa-chevron-right"></i></li>
+    <li ng-if="data.pageID == 'app_sqanda_new_question'"><a href="javascript:void(0)">New Question</a></li>
+    <li ng-if="data.pageID == 'app_kb_social_qa_question2'" aria-hidden="true"><i class="fa fa-chevron-right"></i></li>
+    <li ng-if="data.pageID == 'app_kb_social_qa_question2'"><a href="javascript:void(0)">Question</a></li>
+</ul>]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope) {
+  /* widget controller */
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.panel-heading{&#13;
+background: #17375a;&#13;
+}&#13;
+.panel-body{&#13;
+ padding: 15px;&#13;
+}&#13;
+p {&#13;
+  margin-bottom:0;  &#13;
+}&#13;
+.panel {&#13;
+    clear: left;&#13;
+    margin-bottom: 0 !important;&#13;
+    background-color: #fff;&#13;
+  -moz-border-radius: 0px !important; &#13;
+-webkit-border-radius: 0px !important;&#13;
+border-radius: 0px !important;&#13;
+}&#13;
+.panel--boxed .panel__title {&#13;
+    font-size: 16px;&#13;
+    font-size: 1rem;&#13;
+    line-height: 1.625;&#13;
+    /*margin: .75em 0 .25em;*/&#13;
+    padding: 0;&#13;
+    color: #002855;&#13;
+    font-style: normal;&#13;
+    font-weight: 700;&#13;
+    font-size: 25px;&#13;
+    font-size: 1.5625rem;&#13;
+    line-height: 1.04;&#13;
+    color: #fff;&#13;
+    margin: 0;&#13;
+  	padding: 1em;&#13;
+    background: #002855;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,id</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-category-display</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Category Display</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	//data.widgets = [];
+	var category = new GlideRecord("sc_category");
+	category.addQuery("sys_id",$sp.getParameter('sys_id'));
+	category.query();
+	if(category.next()){
+		data.title = category.getValue('title');
+		data.description  = category.getValue('u_service_description');
+	}
+	//data.widgets.push($sp.getWidget('ucd-features', {}));
+	//data.widgets.push($sp.getWidget('ucd-sc-cat-page', {}));
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-13 05:49:19</sys_created_on>
+        <sys_id>c61afa27138107003527bd122244b030</sys_id>
+        <sys_mod_count>76</sys_mod_count>
+        <sys_name>ucd_Category Display</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_c61afa27138107003527bd122244b030</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-22 18:34:32</sys_updated_on>
+        <template><![CDATA[ <div class="panel--boxed">
+   <h2 class="panel__title">{{::data.title}}</h2>
+   </div>
+                <!--<div>
+                    <!--<h3 class="heading--weighted--weighted">{{::data.title}}</h3>
+                    <span class="pull-right">
+                     
+                    </span>
+                </div>-->
+     <div class="panel">
+                <div ng-show="data.description" class="panel-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" ng-bind-html="data.description" id="tab1"></div>
+                </div>
+                     <!--<div ng-repeat="widget in data.widgets">
+                             	<sp-widget widget=widget></sp-widget>
+                  </div>-->
+            </div>
+
+<!-- no styling -->
+<!--<div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{::data.title}}</h3>
+                    <span class="pull-right">
+                     
+                    </span>
+                </div>
+                <div ng-show="data.description" class="panel-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" ng-bind-html="data.description" id="tab1"></div>
+                </div>
+            </div>-->
+       ]]></template>
+    </sp_widget>
+</record_update>

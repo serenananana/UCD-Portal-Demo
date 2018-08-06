@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>ucd_kb_result_article_summary2</id>
+        <sp_widget/>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-15 06:07:02</sys_created_on>
+        <sys_id>32bc49ed0f1897006717590be1050e2a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ucd_kb_result_article_summary2</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_ng_template_32bc49ed0f1897006717590be1050e2a</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-15 06:07:02</sys_updated_on>
+        <template><![CDATA[<!--<div class="panel panel-{{::c.options.color}} knowledge-articles"
+     style="background-color:{{c.options.knowledge_bg_color}}">-->
+<div class="panel o-box">
+  <div class="panel-body kr-no-padding">
+    <div ng-repeat="article in c.kbData.results | filter:{meta : {source:'!pinned'}}"
+         class=" col-md-12 col-xs-12 col-sm-12 kr-border-bottom ">
+      <div class ="kb-article-summary">
+        <div class="hidden-sm hidden-xs">
+          <div class="kb-icon-pad" ng-if="article.meta.source == 'knowledge'">
+            
+            <!-- Remove book icon temporarily
+			<img ng-if="!article.meta.knowledgeBaseIcon" alt="" class="kb-icon" src="default_knowledge_base.svg">
+            <img ng-if="article.meta.knowledgeBaseIcon" alt="" class="kb-icon" ng-src="{{article.meta.knowledgeBaseIcon}}.iix">-->  
+          </div>
+          <div class="kb-icon-pad" ng-if="article.meta.source == 'social'">
+            <img ng-if="article.meta.accepted" alt="" data-original-title="Accepted" class="kb-icon" src="accepted-question.svg">
+            <img ng-if="!article.meta.accepted && article.meta.answerCount != '0'" alt="" data-original-title="Answered" class="kb-icon" src="answered-question.svg">
+            <img ng-if="!article.meta.accepted && article.meta.answerCount == '0'" alt="" data-original-title="Unanswered" class="kb-icon" src="unanswered-question.svg">
+          </div>
+        </div>
+        <div class="kb-info">
+          <div class="col-sm-12 col-xs-12">
+            <div class="visible-sm visible-xs">
+              <div class="kb-icon-pad" ng-if="article.meta.source == 'knowledge'">
+                <img ng-if="!article.meta.knowledgeBaseIcon" alt="" class="kb-icon" src="default_knowledge_base.svg">
+                <img ng-if="article.meta.knowledgeBaseIcon" alt="" class="kb-icon" ng-src="{{article.meta.knowledgeBaseIcon}}.iix">     
+              </div>
+              <div class="kb-icon-pad" ng-if="article.meta.source == 'social'">
+                <img ng-if="article.meta.accepted" alt="" data-original-title="Accepted" class="kb-icon" src="accepted-question.svg">
+                <img ng-if="!article.meta.accepted && article.meta.answerCount != '0'" alt="" data-original-title="Answered" class="kb-icon" src="answered-question.svg">
+                <img ng-if="!article.meta.accepted && article.meta.answerCount == '0'" alt="" data-original-title="Unanswered" class="kb-icon" src="unanswered-question.svg">
+              </div>
+              <div class="kb-type">
+                <span class="kb-type-description" ng-if="article.meta.source == 'knowledge'">${Article}</span>
+                <span class="kb-type-description" ng-if="article.meta.source == 'social'">${Question}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-xs-12">
+            <h4>
+              <a class="kb-title" ng-if="article.meta.source == 'knowledge'" target="_self" ng-href="{{(article.meta.direct === true && c.data.useDocumentViewer == true) ? '#art' : article.link}}" ng-click="(article.meta.direct === true && c.data.useDocumentViewer == true) ? c.openArticleAttachment(article.link, article.id) : ''">{{::article.title}}
+              </a>
+              <a class="kb-title" ng-if="article.meta.source == 'social'" target="_self" href="{{article.link}}">{{::article.title}}
+              </a>
+            </h4>
+            <div class="kb-detail">
+              <div class="kb-breadcrumb">
+                <span class="knowledge-base">{{article.meta.knowledgeBase}}</span>
+                <span ng-if="!c.options.hide_category && article.meta.parentCategories.length">
+                  <span class="knowledge-seperator"> {{c.options.knowledge_seperator || '&gt;'}}
+                  </span>
+                  <span
+                        ng-repeat="cat in article.meta.parentCategories | orderBy:'$index':c.options.category_reverse track by $index"
+                        class="category-list">
+                    <span ng-if="$index!=0" class="category-seperator">{{c.options.category_seperator
+                      || '&gt;'}}</span>
+                    <span class="category">{{cat}}</span>
+                  </span>
+                </span>
+                <span
+                      ng-show="c.options.show_relevancy && c.options.filters.order == 'relevancy,true' && c.options.filters.keyword"
+                      class="relevancy" style="float:right">${Relevancy} : {{article.meta.score}}
+                </span>
+              </div>
+              <div class="kb-description" ng-bind-html="article.snippet">
+              </div>
+              <div ng-if="article.meta.source == 'knowledge' && c.options.knowledge_fields.length">
+                <div class="kb-about">
+                  <span class="about-outer-span">
+                    <span ng-repeat="f in c.options.knowledge_fields">
+					  <span ng-if="article.meta[f].value || f == 'rating'">
+                        <span ng-switch="f" title="{{::article.meta[f].label}}"
+                              class="art-label">
+                          <span ng-switch-when="number">
+                            <span ng-if="!$first" class="dot" aria-hidden="true"> | </span>${Article: }{{article.meta[f].display_value}}
+                          </span>
+                           <!-- Remove rating
+                          <span ng-switch-when="rating">
+                            <span ng-if="!$first" class="dot" aria-hidden="true"> • </span>
+                            <span class="rating-stars" disabled="true" aria-hidden="true" ng-init="ratingVal = c.roundOff(article.meta.rating.value)">
+                              <uib-rating ng-model="ratingVal" max="5" readonly="true"/>
+                            </span>
+                          </span>-->
+                          <!-- Remove views
+							<span ng-switch-when="sys_view_count">
+                            <span ng-if="!$first" class="dot" aria-hidden="true"> • </span>
+                            <span ng-switch="article.meta[f].display_value">   
+                              <span ng-switch-when="1">
+                                {{article.meta[f].value}} ${View}
+                              </span>
+                              <span ng-switch-default="">{{article.meta[f].value}} ${Views}
+                              </span>
+                            </span>
+                          </span>-->
+                          <span ng-switch-when="workflow_state">                        
+                            <span ng-if="c.options.show_unpublished && article.meta[f].value != 'published'">
+                              <span ng-if="!$first" class="dot" aria-hidden="true"> | </span>{{article.meta[f].display_value}} ${State}
+                            </span>
+                            <span ng-if="!c.options.show_unpublished">
+                              <span ng-if="!$first" class="dot" aria-hidden="true"> | </span>
+                              <span class="secondary-label hidden-sm hidden-xs" ng-if="c.options.show_secondary_fields_label">{{::article.meta[f].label}} : </span> {{article.meta[f].display_value}}
+                            </span>
+                          </span>
+                          <span ng-switch-default="" ng-switch="article.meta[f].type">
+                            <span ng-if="!$first" class="dot" aria-hidden="true"> | </span>
+                            <span class="secondary-label hidden-sm hidden-xs" ng-if="c.options.show_secondary_fields_label">{{::article.meta[f].label}}
+                              : </span>
+                            <span ng-switch-when="glide_date">
+                              <sn-time-ago timestamp="::article.meta[f].value" />
+                            </span>
+                            <span ng-switch-when="glide_date_time">
+                              ${Modified: }<sn-time-ago timestamp="::article.meta[f].value" />
+                            </span>
+                            <span ng-switch-default="">{{article.meta[f].display_value}}
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="kb-attachment"
+                   ng-if="article.meta.source == 'knowledge' && c.options.attachment_type !='NO_ATTACHMENT' && article.meta.attachments">
+                <div class="attach-results" ng-repeat="attachment in article.meta.attachments">
+                  <div class="attach-icon">
+                    <a href="{{attachment.link}}" title="${Attached by} {{attachment.sys_created_by}} : {{attachment.sys_created_on}}"
+                       class="attach-link" target="_self">
+                      <span class="glyphicon glyphicon-paperclip">
+                      </span>
+                    </a>
+                  </div>
+                  <div class="attach-info">
+                    <div class="attach-head">
+                      <span class="attach-title">
+                        <a ng-href="{{c.data.useDocumentViewer == true ? '#att' : attachment.link+'&view=true'}}" ng-click="c.data.useDocumentViewer == true ? c.openArticleAttachment(attachment.link, attachment.id) : ''" target="_self">{{::attachment.file_name}}
+                        </a>
+                      </span>
+                      <span class="attach-download">
+                        <a href="{{attachment.link}}" title="${Attached by} {{attachment.sys_created_by}} : {{attachment.sys_created_on}}"
+                           class="attachment-link" target="_self">
+                          <span
+                                class="attach-download-icon glyphicon glyphicon-download-alt">
+                          </span>
+                        </a>
+                      </span>
+                    </div>
+                    <div class="attach-detail" ng-if="c.options.attachment_type !='LINK_ONLY'"
+                         ng-bind-html="attachment.terms">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div ng-if="article.meta.source == 'social' && c.options.social_fields.length">
+                <div class="kb-about">
+                  <span class="about-outer-span">
+                    <span ng-repeat="f in c.options.social_fields">
+                      <span ng-if="article.meta[f].value">
+                        <span ng-if="!$first" class="dot" aria-hidden="true"> • </span>
+                        <span  ng-switch="f" title="{{::article.meta[f].label}}"
+                              class="art-label">
+                          <span ng-switch-when="profile">
+                            <span class="hidden-xs hidden-sm" >${Asked By}</span> {{article.meta[f].display_value}}
+                          </span>
+                          <span ng-switch-when="views">
+                            <span ng-switch="article.meta[f].display_value">   
+                              <span ng-switch-when="1">
+                                {{article.meta[f].value}} ${View}
+                              </span>
+                              <span ng-switch-default="">{{article.meta[f].value}} ${Views}
+                              </span>
+                            </span>
+                          </span>
+                          <span ng-switch-when="votes">
+                            <span ng-switch="article.meta[f].display_value">   
+                              <span ng-switch-when="1">
+                                {{article.meta[f].value}} ${Vote}
+                              </span>
+                              <span ng-switch-default="">{{article.meta[f].value}} ${Votes}
+                              </span>
+                            </span>
+                          </span>
+                          <span ng-switch-when="answer_count">
+                            <span ng-switch="article.meta[f].display_value">   
+                              <span ng-switch-when="1">
+                                {{article.meta[f].value}} ${Answer}
+                              </span>
+                              <span ng-switch-default="">{{article.meta[f].value}} ${Answers}
+                              </span>
+                            </span>
+                          </span>
+                          <span ng-switch-when="sys_updated_on">
+                            <span class="hidden-xs hidden-sm" >${Last updated} </span><sn-time-ago timestamp="::article.meta[f].value" />
+                          </span>
+                          <span ng-switch-when="sys_created_on">
+                            ${Asked}  <sn-time-ago timestamp="::article.meta[f].value" />
+                          </span>
+                          <span ng-switch-default="" ng-switch="article.meta[f].type">
+                            <span class="secondary-label hidden-xs hidden-sm" ng-if="c.options.show_secondary_fields_label">{{::article.meta[f].label}}
+                              : </span>
+                            <span ng-switch-when="glide_date">
+                              <sn-time-ago timestamp="::article.meta[f].value" />
+                            </span>
+                            <span ng-switch-when="glide_date_time">
+                              <sn-time-ago timestamp="::article.meta[f].value" />
+                            </span>
+                            <span ng-switch-default="">{{article.meta[f].display_value}}
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_ng_template>
+</record_update>

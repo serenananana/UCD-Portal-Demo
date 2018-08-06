@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_embedded_help_content">
+    <sys_embedded_help_content action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>service-catalog</category>
+        <content><![CDATA[ <h1 class="title topictitle1">Service catalog cart layouts</h1>  <div class="body conbody">    <p class="p"><span class="ph">Service catalog enables catalog administrators to configure the          layout and functionality of the service catalog cart used in your organization to          place requests for          catalog items.</span></p>    <div class="p">You can perform the following:<ul class="ul" id="sc_layout-normal__d25211e121"><li class="li">Remove components. For example, hide prices throughout the cart if your catalog does            not use pricing.</li><li class="li">Change labels. For example, change the <span class="ph uicontrol">Order now</span> button label            to <span class="ph uicontrol">Request Item</span> in the shopping cart.</li><li class="li">Change the order of elements. For example, change the order of the columns on the            order status screen.</li><li class="li">Configure, hide, or create functionality. For example, add a <span class="ph uicontrol">Requested              For</span> reference field to the shopping cart.</li></ul></div>  </div> <div class="related-links"><div class="relinfo"><div class="reltitle">Related information<br /><div><a class="link" href="https://docs.servicenow.com/?context&#61;CSHelp:Maintain-Cart-Layout&amp;version&#61;jakarta" target="_blank">Maintain cart layout</a></div></div></div></div>]]></content>
+        <last_sync>2018-08-04 22:59:12</last_sync>
+        <modifier>normal</modifier>
+        <name>sc_layout_list-normal</name>
+        <page>sc_layout_list</page>
+        <product>1</product>
+        <qualifier/>
+        <role/>
+        <role_order>1000</role_order>
+        <snc_created>true</snc_created>
+        <sys_class_name>sys_embedded_help_content</sys_class_name>
+        <sys_created_by>system</sys_created_by>
+        <sys_created_on>2018-06-05 22:56:11</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>b4a217010f2213406717590be1050efb</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>sc_layout_list-normal</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sys_embedded_help_content_b4a217010f2213406717590be1050efb</sys_update_name>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2018-08-04 22:59:12</sys_updated_on>
+        <version>j</version>
+    </sys_embedded_help_content>
+    <sys_translated_text action="delete_multiple" query="documentkey=b4a217010f2213406717590be1050efb"/>
+</record_update>

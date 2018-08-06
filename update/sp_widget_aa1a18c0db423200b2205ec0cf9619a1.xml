@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>#related-articles {
+  margin-top: 20px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd_related_knowledge</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Related Knowledge</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Category to search with
+	data.serviceId = $sp.getParameter('sys_id');
+	// Articles displayed
+	data.articles = [];
+	
+	// Grab this category's title
+	var cat = new GlideRecord('sc_category');
+	cat.get(data.serviceId);
+	var title = cat.title.getDisplayValue();
+	
+	// Query published KB articles for articles' text or short description
+	// containing this category title
+	var articles = new GlideRecord('kb_knowledge');
+	articles.addQuery('workflow_state', 'published');
+	// Text or Short Description contains the title
+	articles.addEncodedQuery('textLIKE' + title +
+													 '^ORshort_descriptionLIKE' + title);
+	articles.setLimit(5);
+	articles.orderByDesc('sys_view_count');
+	articles.query();
+	while(articles.next()) {
+		if(!articles.canRead())
+			continue;
+		
+		var article = {};
+		article.short_description = articles.short_description.getDisplayValue();
+		article.sys_id = articles.getUniqueValue();
+		data.articles.push(article);
+		$sp.log(article.short_description);
+	}
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-04-05 18:02:18</sys_created_on>
+        <sys_id>aa1a18c0db423200b2205ec0cf9619a1</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>ucd_Related Knowledge</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_aa1a18c0db423200b2205ec0cf9619a1</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-04-05 20:38:03</sys_updated_on>
+        <template><![CDATA[<div id="related-articles">
+  <sp-panel ng-if="data.articles.length > 0">
+    <div ng-repeat="article in data.articles">
+      <a href="?id=ucd_kb_article&sys_id={{::article.sys_id}}">{{::article.short_description}}</a>
+    </div>
+  </sp-panel>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

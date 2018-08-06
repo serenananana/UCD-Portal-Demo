@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+  /* widget controller */
+  var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.1-main{
+margin-top: 7% !important;
+}
+.gi-2x{
+font-size: 2em;
+}
+.o-media, .focal-link, .media-link__wrapper {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-right: 15px;
+}
+
+.custom-cat-grid {
+  .o-media__body {
+    min-width: 70%;
+
+    h2 {
+      @include font-size(16px, 1.1);
+    }
+    p {
+      @include font-size(12px, 1.3);
+    }
+  }
+  .three-col-grid__item {
+    padding: $spacer 0;
+    margin: 0;
+    border-bottom: 1px solid $ucd-blue;
+
+    &amp;:nth-of-type(1) {
+      border-top: 1px solid $ucd-blue;
+    }
+
+    @include breakpoint($bp-narrow--up){
+      padding: 3%;
+      width: 33.33%;
+
+      &amp;:nth-of-type(1),
+      &amp;:nth-of-type(2),
+      &amp;:nth-of-type(3) {
+        border-top: 1px solid $ucd-blue;
+      }
+
+      &amp;:nth-of-type(3n-1),
+      &amp;:nth-of-type(3n-2) {
+        border-right: 1px solid $ucd-blue;
+      }
+    }
+
+    @include breakpoint($bp-small){
+      padding: 2%;
+      width: 50%;
+
+      &amp;:nth-of-type(1),
+      &amp;:nth-of-type(2) {
+        border-top: 1px solid $ucd-blue;
+      }
+
+      &amp;:nth-of-type(2n - 1) {
+        border-right: 1px solid $ucd-blue;
+      }
+    }
+  }
+}
+
+// 3 col floating layout
+$three-col-gutter: 3.5%;
+$two-col-gutter: 2%;
+
+.no-flexbox {
+  .three-col-grid {
+    &amp;__item {
+      margin-bottom: $spacer;
+
+      @include breakpoint($bp-narrow--up){
+        width: 31%;
+        margin-right: $three-col-gutter;
+        margin-bottom: $three-col-gutter;
+        float: left;
+      }
+
+      @include breakpoint($bp-small){
+        width: 49%;
+        margin-right: $two-col-gutter;
+        margin-bottom: $two-col-gutter;
+        float: left;
+      }
+
+      @include breakpoint($bp-narrow--up){
+        &amp;:nth-of-type(3n+0) {
+          margin-right: 0;
+        }
+        &amp;:nth-of-type(3n+1) {
+          clear: both;
+        }
+      }
+
+      @include breakpoint($bp-small){
+        &amp;:nth-of-type(2n+0) {
+          margin-right: 0;
+        }
+        &amp;:nth-of-type(2n+1) {
+          clear: both;
+        }
+      }
+
+    }
+  }
+}
+
+@include breakpoint($bp-small--up) {
+  .three-col-grid {
+    display: flex;
+    flex-wrap: wrap;
+
+    &amp;__item {
+      width: 33.3%;
+    }
+  }
+}
+
+.custom-cat-grid .o-media__body p {
+    font-size: 1.125rem;
+    line-height: 1.2;
+}
+
+a {
+  font-size: 1.4rem;
+}
+
+p {
+	line-height: 1.35em;
+}
+
+// internet explorer 11 
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    img {
+ 		height: 45.28px;
+ 		width: 45.28px;
+	}
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-services</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Request Catalog Services</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	/* populate the 'data' object */
+	/* e.g., data.table = $sp.getValue('table'); */
+	data.categories = [];
+	//data.categoryPageUrl = "ucd_view_service_sp"; // Category page url
+	data.categoryPageUrl = "ucd_view_service2"; // includes user criteria checking
+	data.catalog = $sp.getParameter('ucd_catalog');
+	if(!data.catalog)  		// default catalog 
+		data.catalog = '5ec4eed5134143003527bd122244b0af'; // Campus IT Services
+
+	data.category = $sp.getParameter('ucd_category_id');
+	if(!data.category)  // default category - IT Services
+		data.category = '93056219134143003527bd122244b024';
+
+	// get categories of selected catalog
+	var category = new GlideRecord("sc_category");
+	category.addQuery("parent",data.category);
+	category.addQuery("active",true);
+	category.orderBy('title');
+	category.query();
+
+	var continue_with_next = false;
+
+	while (category.next()) {
+		continue_with_next = false;
+
+		var rel = new GlideRecord('sc_category_user_criteria_mtom');
+		rel.addQuery('sc_category', category.sys_id);
+		rel.query();
+
+		if (rel.next()) {
+			if (rel.user_criteria.advanced == true) {
+				if (!rel.user_criteria.script.nil() && rel.user_criteria.script != '') {
+					try {
+						var evaluator = new GlideScopedEvaluator();  
+						var gr = new GlideRecord('sys_script');   
+						gr.addQuery('sys_policy','read'); 
+						gr.setLimit(1);   
+						gr.query();   
+						if (gr.next()) {   
+							gr.setValue('script', rel.user_criteria.script);   
+							if(evaluator.evaluateScript(gr, 'script')) {
+								continue_with_next = true;
+							}
+						}   
+					} catch (e) {console.log(e);} 
+				} else {
+					continue_with_next = true;
+				}
+			}
+		} else {
+			continue_with_next = true;
+		}
+		if(continue_with_next) {
+			if(hasItems(category.sys_id, category.title)) {
+				var a ={};
+				a.icon = category.icon.getDisplayValue();
+				a.id = category.getValue('sys_id');
+				a.title = category.getValue('title');
+				a.desc = category.getValue('description');
+				data.categories.push(a);
+			}
+		}
+
+	}
+
+	/**
+	* Checks if category has items in it
+	*/
+	function hasItems(category, name) { 
+		if(hasItem(category, name))
+			return true;
+		else { // check subcategories
+			var sub = new GlideRecord('sc_category');
+			sub.addQuery('parent', category);
+			sub.addActiveQuery();
+			sub.query();
+			while(sub.next()) {
+				if(hasItem(sub.getUniqueValue(), sub.title)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	/**
+	* Helper function for hasItems function
+	*/
+	function hasItem(category, name) {
+		var items = new GlideRecord('sc_cat_item');
+		items.addQuery("category", category);
+		items.addActiveQuery();
+		items.query();
+		if(items.next()) {
+			return true;
+		}
+		return false;
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-06 18:58:18</sys_created_on>
+        <sys_id>015ae5e9138543003527bd122244b0aa</sys_id>
+        <sys_mod_count>137</sys_mod_count>
+        <sys_name>ucd_Request Catalog Services</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_015ae5e9138543003527bd122244b0aa</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-07-26 19:11:20</sys_updated_on>
+        <template><![CDATA[<div class="l-main" role="main">
+      <div class="l-content">
+        <div class="panel o-box--large">
+                  <div class="o-media ">
+        		<div class="o-media__figure">
+                         <img src="RequestServices.png" width=40 height=40/>
+       						 </div>
+                    <div class="o-media__body">
+                    <section class="u-space-bottom">
+                      <h2>
+                      <span class="heading--weighted--weighted" style="color: #5d196a; font-size: 3rem">Request Services</span></h2>  
+                      </section>
+          						<p>Place an order for items or services</p>
+        				</div>
+              	</div>          
+          <div class="custom-cat-grid three-col-grid">
+              <div class="three-col-grid__item"  ng-repeat="category in c.data.categories">
+     						 <div class="o-media ">
+        						<div class="o-media__figure">
+     									 <a ng-href="?id={{c.data.categoryPageUrl}}&sys_id={{category.id}}&ucd_catalog={{data.catalog}}&parent={{data.category}}">
+                         <span ng-if = 'category.icon == ""'><i class = 'glyphicon glyphicon-star-empty gi-2x'>	</i></span>
+       					  <span ng-if = 'category.icon !=""'><img src="{{category.icon}}"/>	</span></a>
+       					
+                          </div>
+                    <div class="o-media__body">
+          						<h2><a ng-href="?id={{c.data.categoryPageUrl}}&sys_id={{category.id}}&ucd_catalog={{data.catalog}}&&parent={{data.category}}">{{category.title}}</a></h2>
+          						<p>{{ category.desc.length > 70 ? ((category.desc | limitTo:70) + "...") : category.desc }}</p>
+        						</div>
+              	</div>
+          	</div>    
+      </div>
+     <div ng-if="data.categories.length < 1">${The selected catalog has no categories with active catalog items}</div>
+    </div>
+
+]]></template>
+    </sp_widget>
+</record_update>

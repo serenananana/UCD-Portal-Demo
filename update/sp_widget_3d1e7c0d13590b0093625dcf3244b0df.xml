@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($timeout) {  
+  /* widget controller */  
+  var c = this;  
+	
+  /*$timeout(function() {  
+  jQuery('#tab3').each(function() {  
+  jQuery(this).html(jQuery(this).text());  
+  });  
+  }, 1500, false); */ 
+  
+}  ]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.feature-container{&#13;
+padding:0;&#13;
+    border-color: #fff !important;&#13;
+}&#13;
+.panel-heading{&#13;
+background: #17375a;&#13;
+}&#13;
+.panel-body{&#13;
+ padding:0; &#13;
+    border-color: #fff !important;&#13;
+}&#13;
+.o-box {&#13;
+  display: block;&#13;
+  padding: 16px;&#13;
+  border-color: #fff !important;&#13;
+}&#13;
+&#13;
+title{&#13;
+margin: 0 5px;&#13;
+  color:#003570;&#13;
+}&#13;
+.supported-widget{&#13;
+margin-bottom: 10%;&#13;
+}&#13;
+ul{&#13;
+margin : 0 10%;&#13;
+}&#13;
+aside.sidebar .single {&#13;
+&#13;
+padding: 30px 15px;&#13;
+background: #fff;&#13;
+border: 0px solid #f0f0f0; }&#13;
+aside.sidebar .single h3.side-title {&#13;
+margin: 0;&#13;
+margin-bottom: 10px;&#13;
+padding: 0;&#13;
+//font-size: 20px;&#13;
+color: #333;&#13;
+}&#13;
+aside.sidebar .single h3.side-title:after {&#13;
+content: '';&#13;
+width: 60px;&#13;
+height: 1px;&#13;
+background: #00b0ff;&#13;
+display: block;&#13;
+margin-top: 6px; }&#13;
+.single.contact-info {&#13;
+  &#13;
+background: none;&#13;
+border: none; }&#13;
+.single.contact-info li {&#13;
+ }&#13;
+.single.contact-info li .icon {&#13;
+display: block;&#13;
+float: left;&#13;
+margin-right: 10px;&#13;
+width: 50px;&#13;
+height: 50px;&#13;
+border-radius: 50%;&#13;
+border: 1px solid #f0f0f0;&#13;
+color: #00b0ff;&#13;
+text-align: center;&#13;
+line-height: 50px; }&#13;
+.single.contact-info li .info {&#13;
+overflow: hidden; }&#13;
+&#13;
+.panel {&#13;
+    clear: left;&#13;
+    margin-bottom: 0 !important;&#13;
+    background-color: #fff;&#13;
+  -moz-border-radius: 0px !important; &#13;
+-webkit-border-radius: 0px !important;&#13;
+ -webkit-box-shadow: none !important;&#13;
+	box-shadow: none !important;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,id</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-features</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Features Benefits</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	var category = new GlideRecord("sc_category");
+	category.get($sp.getParameter('sys_id'));
+	data.category = category.getValue('title');
+	data.title = 'Features/Benefits';
+	data.description  = category.getDisplayValue('u_features_benefits');
+
+	data.articles = [];
+	var textQuery = 'IR_AND_OR_QUERY';
+	var kb = new GlideRecord('kb_knowledge');
+	kb.addQuery('workflow_state', 'published');
+	kb.orderBy('sys_created_on');
+	kb.addQuery(textQuery,data.category);
+	kb.addActiveQuery();
+	kb.setLimit(5);
+	kb.query();
+	gs.info(kb.getRowCount());
+	while(kb.next()){
+		var n = {};
+		n.id = kb.getUniqueValue();
+		n.number = kb.getValue('number');
+		data.articles.push(n);
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-17 12:37:32</sys_created_on>
+        <sys_id>3d1e7c0d13590b0093625dcf3244b0df</sys_id>
+        <sys_mod_count>67</sys_mod_count>
+        <sys_name>ucd_Features Benefits</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_3d1e7c0d13590b0093625dcf3244b0df</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-22 21:53:37</sys_updated_on>
+        <template><![CDATA[<div ng-if="data.description" class= 'col-xs-12 feature-container'>
+  <div class="panel o-box">
+    <div class="panel__heading">
+      <h3 class="panel__title">{{::data.title}}</h3>
+      <span class="pull-right">
+
+      </span>
+    </div>
+    <div class="panel-body">
+      <div class="tab-content">
+        <div ng-bind-html="data.description"></div> 
+        <!--<div class="tab-pane active" id="tab3">{{data.description}}</div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--<div ng-if="data.description" class= 'col-xs-12 feature-container'>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{::data.title}}</h3>
+      <span class="pull-right">
+
+      </span>
+    </div>
+    <div class="panel-body">
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab3">{{data.description}}</div>
+      </div>
+    </div>
+  </div>
+</div>-->]]></template>
+    </sp_widget>
+</record_update>

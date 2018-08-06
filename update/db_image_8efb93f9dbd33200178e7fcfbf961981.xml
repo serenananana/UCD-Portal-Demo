@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>kb</category>
+        <format>png</format>
+        <height>220</height>
+        <image/>
+        <name>Software_Business_AppsB.png</name>
+        <size_bytes>3651</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-12 21:57:15</sys_created_on>
+        <sys_id>8efb93f9dbd33200178e7fcfbf961981</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Software_Business_AppsB.png</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>db_image_8efb93f9dbd33200178e7fcfbf961981</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-06-12 21:57:21</sys_updated_on>
+        <thumbnail/>
+        <width>220</width>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color>#ffffff</average_image_color>
+        <chunk_size_bytes/>
+        <compressed>true</compressed>
+        <content_type>image/png</content_type>
+        <file_name>image</file_name>
+        <image_height>220</image_height>
+        <image_width>220</image_width>
+        <size_bytes>3651</size_bytes>
+        <size_compressed>3674</size_compressed>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-12 21:57:21</sys_created_on>
+        <sys_id>200c1bf9dbd33200178e7fcfbf961959</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-06-12 21:57:21</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>8efb93f9dbd33200178e7fcfbf961981</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="200c1bf9dbd33200178e7fcfbf961959">200c1bf9dbd33200178e7fcfbf961959</sys_attachment>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-12 21:57:21</sys_created_on>
+        <sys_id>600c1bf9dbd33200178e7fcfbf961959</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>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</data>
+        <length>3736</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="200c1bf9dbd33200178e7fcfbf961959">200c1bf9dbd33200178e7fcfbf961959</sys_attachment>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-12 21:57:21</sys_created_on>
+        <sys_id>e00c1bf9dbd33200178e7fcfbf961959</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>vRfVk4vSgbycqNM6XknacQUYmrv3HyRdTk/6QdWkfTejwmnp5PSWSXYpFJQz/a7mzqqkTFxaAnjCqgnZjAqnT+Bkbg6KxpbJMDFWUlJaQkH5QdqBElslZcSsYtEhKAbXTMpmJeF0ykkEX2d/gcfIBPeU6Te1kXDRhDhroIDP/bZZG28cWNxomZHfYN+Bh8wnuRIgV+H0BCH9OfCx32btJjZW+nBd/bmacvCGIAB7IOuT1Gx+QGD7G+hRnvPsS3CcDVv9tkyF09I1FYMo4C5but/Wsf1B1kvKrvJSauPT7F9wTLbaMEvdOZ9wMeYVI5fgFvWsZMtcOB3ZNaQDRzivuzuZkWlJGSst5QK4dvgYZZ9DTlxKs1SCLyVld9IxRwd5sJyHbLkJp6VbRzrISbb5vD48yPObIx2USbbchUM6KJNsTggXk04uhWD0Emxw3gXZhFxGKXuhRy9biivGwaxsTVc2JnCpZWKjl9xpFdIiXZQzLsnmXMJ1pZ001BzHDSSUrZblGSReJlxX2knNfYljB4ZExgGmXJTNaeG0dDI5eUYxggmDsaqTre3qBjpbUnaVlzKCKSUmgynQiyuhaA3XN9IL4bR0FS0dl/dAd39t1vRydqUXLiaeLE50leMM1LPR7NksLhwtrXCUmOBTCVkI4WIlpjT4RY69UrGpU23dx433VriYeDWddhMci4Xnmkpxf22EI+1g8FSb92VgpPDCdaXdEn27YvXVZJ/6nGqFFS4mnqSdjGayhIO/rCmLS44jnJ0yU9KO8zH9Kx/rNpcbRzj7ZaYk3jTHstNs6dKxUeQvWXjh6N/5IVqR+mkIt1u8eZ14TCPkz7IuHztl+cKlEy4mnty4oU6pSaIhXPalpojHSdF2kcGQZllFQ7jnxatq8aTkZDrBHDK833RtqQOEc0c8mU6Iyk0GWJKXjVGatWkOhBs29URABln6I1dcr5BmCGdCvildbiLfHpJp0To0B8LZlK9WwrJzSwvWQjKEy6vsrMUeRUy/tZhg6+x1hHNRwClPE1CG79f1o1WES2IQrpwlqDwiGauOJKEkV1s/RKx1SkSEK7qIFS1jRYtY1f9dSZGOWzqhIqKUkn/rIFZ+/F+AAQAXyzQ4k1Z6FgAAAABJRU5ErkJggq4WHudDDgAA</data>
+        <length>1152</length>
+        <position>2</position>
+        <sys_attachment display_value="image" sys_id="200c1bf9dbd33200178e7fcfbf961959">200c1bf9dbd33200178e7fcfbf961959</sys_attachment>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-12 21:57:21</sys_created_on>
+        <sys_id>640c1bf9dbd33200178e7fcfbf961959</sys_id>
+    </sys_attachment_doc>
+</record_update>

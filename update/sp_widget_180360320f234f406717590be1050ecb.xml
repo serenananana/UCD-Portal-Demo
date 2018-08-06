@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	var c = this;
+	
+	// listener for category broadcast
+	$rootScope.$on('selectedCat', function(event, data) {
+		c.data.category = data.id;
+		c.server.update().then(function(){
+			$scope.selectedType($scope.data.types[0],0);					   
+		});
+	});
+	
+	// item is checked, clear other checkboxes
+	$scope.selectedType = function(type, index) {
+		for(var i=0; i<$scope.data.types.length; i++) {
+			if(index != i)
+				$scope.data.types[i].isChecked = "false";
+		}
+		// broadcast to other widgets
+		$rootScope.$broadcast('selectedContentType',type);
+	}
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.selection {
+  display: inline-block;
+  padding: 10px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-content-filter</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Filter by Content Type</name>
+        <option_schema/>
+        <public>true</public>
+        <roles>public</roles>
+        <script><![CDATA[(function() {
+	data.kbase = $sp.getParameter('kb');
+	if(!data.kbase)
+		data.kbase = '7c2d56f42bd89200e0b209d417da153e'; // IT-Public KB default
+	data.kcat = $sp.getParameter('kb_category');
+	data.types = [];
+	
+	// Add 'All' option
+	data.types.push({
+		name: "All",
+		id: "0",
+		isChecked: "true"
+	});
+	
+	// Use GlideAggregate to fetch the unique set of article types
+	var kbArts = new GlideAggregate('kb_knowledge');
+	kbArts.addQuery('kb_knowledge_base', data.kbase);
+	kbArts.groupBy('u_type_of_article');
+	kbArts.query();
+	while (kbArts.next()) {
+		if(kbArts.u_type_of_article.getDisplayValue()!='') {
+			if(input && input.category) { // selected category from widget
+				if(hasArts(input.category, kbArts.u_type_of_article)) {
+					data.types.push({
+						name: kbArts.u_type_of_article.getDisplayValue(),
+						id: kbArts.getValue('u_type_of_article'),
+						isChecked: "false"
+					});
+				}
+			} else { // current category from url
+				if(hasArts(data.kcat, kbArts.u_type_of_article)) {
+					data.types.push({
+						name: kbArts.u_type_of_article.getDisplayValue(),
+						id: kbArts.getValue('u_type_of_article'),
+						isChecked: "false"
+					});
+				}
+			}
+	  }
+	}
+	
+	// Remove All option if only one content type
+	if(data.types.length == 2) {
+		data.types.shift();
+		data.types[0].isChecked = "true";
+	}
+	
+	/**
+	* Checks if category has an article of type
+	*/ 
+	function hasArts(category, type) { 
+		if(hasArticle(category, type))
+			return true;
+		else { // check subcategories
+			var sub = new GlideRecord('kb_category');
+			sub.addQuery('parent_id', category);
+			sub.query();
+			while(sub.next()) {
+				if(hasArticle(sub.getUniqueValue(), type)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	function hasArticle(category,type) {
+		var arts = new GlideRecord('kb_knowledge');
+		arts.addQuery("kb_category", category);
+		arts.addQuery('workflow_state', 'published');
+		arts.addQuery('u_type_of_article', type);
+		arts.query();
+		if(arts.next()) {
+			return true;
+		}
+		return false;
+	}	
+})()
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2018-01-12 17:29:50</sys_created_on>
+        <sys_id>180360320f234f406717590be1050ecb</sys_id>
+        <sys_mod_count>72</sys_mod_count>
+        <sys_name>ucd_Filter by Content Type</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_180360320f234f406717590be1050ecb</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-02-14 22:48:13</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box">
+  <h2 class="panel__title">
+    Filter By Content Type
+  </h2>
+  <section>
+    <form action="">
+      <ul class="list--reset">
+        <li>
+          <label class="checkbox-label" ng-repeat='type in c.data.types' for="{{type.name}}'">
+        <input type="radio"
+              name="type-check"
+              value="true"
+              ng-model = "type.isChecked"
+              ng-change="selectedType(type,$index)"/> 
+      {{type.name}}
+      </label>
+        </li>
+      </ul>
+    </form>
+  </section>
+</div>]]></template>
+    </sp_widget>
+</record_update>

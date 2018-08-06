@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_container">
+    <sp_container action="INSERT_OR_UPDATE">
+        <background_color/>
+        <background_image/>
+        <background_style>default</background_style>
+        <bootstrap_alt>false</bootstrap_alt>
+        <class_name/>
+        <container_class_name/>
+        <name>View Services - Container 2</name>
+        <order>2</order>
+        <sp_page display_value="ucd_view_service2">4eed91e81327c3403527bd122244b052</sp_page>
+        <subheader>false</subheader>
+        <sys_class_name>sp_container</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2018-01-05 22:00:52</sys_created_on>
+        <sys_id>0eed91e81327c3403527bd122244b06e</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>View Services - Container 2</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_container_0eed91e81327c3403527bd122244b06e</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2018-01-05 22:01:13</sys_updated_on>
+        <title/>
+        <width>container</width>
+    </sp_container>
+</record_update>

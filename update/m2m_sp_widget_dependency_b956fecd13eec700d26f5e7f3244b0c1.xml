@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_widget_dependency">
+    <m2m_sp_widget_dependency action="INSERT_OR_UPDATE">
+        <sp_dependency display_value="bootstrap-treeview">f046320113220b00d26f5e7f3244b03a</sp_dependency>
+        <sp_widget display_value="UCD Nested SC Categories">f685e4f813e2c700d26f5e7f3244b01c</sp_widget>
+        <sys_class_name>m2m_sp_widget_dependency</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-11-19 00:41:24</sys_created_on>
+        <sys_id>b956fecd13eec700d26f5e7f3244b0c1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bootstrap-treeview.UCD Nested SC Categories</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>m2m_sp_widget_dependency_b956fecd13eec700d26f5e7f3244b0c1</sys_update_name>
+        <sys_updated_by>kloves-alxcrlsn</sys_updated_by>
+        <sys_updated_on>2017-11-19 00:41:24</sys_updated_on>
+    </m2m_sp_widget_dependency>
+</record_update>

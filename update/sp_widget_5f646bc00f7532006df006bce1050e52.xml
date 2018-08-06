@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $rootScope) {
+	setInnerText();	
+  $rootScope.$broadcast('sp.update.breadcrumbs', $scope.data.breadcrumbs);
+	function setInnerText() {
+		for (var i = 0; $scope.data.items.length > i; i++) {
+			var item = $scope.data.items[i];
+			if (item.text.indexOf(">") == -1) {
+				item.inner_text = item.text.trim();
+				return;
+			}
+
+			var t = $("<div>" + item.text + "</div>");
+			t = t.text();
+			item.inner_text = t.trim();
+		}
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>true</has_preview>
+        <id>ucd-kb-category-page</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Category Page</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function(){
+// populate the 'data' variable
+data.articlePageUrl = "ucd_kb_article"; // Scoped KB article page
+data.category = $sp.getParameter("kb_category"); // Grab category sys_id from URL
+var kb_cat = new GlideRecord("kb_category");
+data.categoryDisplay = gs.getMessage("Select a category");
+var api = new ScopedPortalAPI();
+data.items = [];
+	
+//check if user has access to the current category
+var currCat = new GlideRecord("kb_category");
+currCat.addQuery('sys_id', data.category);
+currCat.query();
+currCat.next();
+var permissions = currCat.parent_id.getRefRecord();
+while(permissions.parent_id){ // loops through parent subcategories until knowledge base level
+	permissions = permissions.parent_id.getRefRecord();
+}
+	
+if(permissions.canRead()){//if user has access to the knowledge base
+var subcats = new GlideRecord("kb_category");
+subcats.addQuery("parent_id", data.category);
+subcats.query();
+if (subcats.getRowCount() > 0) {
+	data.has_subs = true;
+	data.subcategories = [];
+	while (subcats.next()) {
+		data.subcategories.push({label: subcats.getDisplayValue("label"), value: subcats.getUniqueValue()});
+	}
+}
+else data.has_subs = false;
+data.categoryExists = false;
+if (kb_cat.get(data.category)) {
+  data.categoryExists = true;
+  data.categoryDisplay = kb_cat.getDisplayValue();
+  api.getKBCategoryArticles(data.category, data.items);
+}
+data.kb_knowledge_page = $sp.getDisplayValue("kb_knowledge_page") || "kb_view";
+data.breadcrumbs = [{label: data.categoryDisplay, url: '#'}];
+var rec = kb_cat.parent_id.getRefRecord();
+while (rec.getRecordClassName() == "kb_category") {
+  data.breadcrumbs.unshift({label: rec.getDisplayValue(), url: '?id=ucd_kb_category&kb_category=' + rec.getUniqueValue()});
+  rec = rec.parent_id.getRefRecord();
+}
+data.breadcrumbs.unshift({label: gs.getMessage("Knowledge Base"), url: '?id=ucd_kb_view2'});
+//data.breadcrumbs.unshift({label: gs.getMessage("Knowledge Base"), url: '?id=' + data.kb_knowledge_page});
+}
+// Check if there are subcategories for this category
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-24 22:30:35</sys_created_on>
+        <sys_id>5f646bc00f7532006df006bce1050e52</sys_id>
+        <sys_mod_count>57</sys_mod_count>
+        <sys_name>ucd_KB Category Page</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_5f646bc00f7532006df006bce1050e52</sys_update_name>
+        <sys_updated_by>tnohren</sys_updated_by>
+        <sys_updated_on>2017-06-09 21:14:37</sys_updated_on>
+        <template><![CDATA[<div>
+  <div ng-if="!data.has_subs">
+  	<div ng-if="data.categoryExists" class="panel panel-{{::options.color}} b">
+    	<div class="panel-heading">
+      	<h4 class="panel-title">${{{::data.categoryDisplay}} Articles}</h4>
+    	</div>
+
+    	<div class="panel-body">
+      	<div ng-if="data.items.length == 0">
+        	(${No articles})
+      	</div>
+      	<div ng-repeat="kb_article in data.items" class="sp-kb-topic-article m-b-lg">
+        	<h4>
+          	<a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a>
+        	</h4>
+        	<!--<div style="max-height: 3em; overflow: hidden; padding-top:4px;">{{::kb_article.inner_text}}</div>
+        	<div class="kb-about" style="padding-top:4px;">
+          	<span class="about-outer-span">
+            	<span class="author pad-right" ng-if="kb_article.author">
+              	<glyph sn-char="user" class="pad-right" />
+              	${Authored by {{::kb_article.author}}}
+            	</span>
+            	<span ng-if="kb_article.sys_view_count == 1" class="views pad-right">
+              	<span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+              	${{{::kb_article.sys_view_count}} View}
+            	</span>
+            	<span ng-if="kb_article.sys_view_count > 1" class="views pad-right">
+              	<span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+              	${{{::kb_article.sys_view_count}} Views}
+            	</span>
+            	<span class="published pad-right">
+              	<span class="pad-right">&#8226;</span> <glyph sn-char="calendar" class="pad-right" />
+              	<sn-day-ago date="kb_article.published"/>
+            	</span>
+            	<span ng-if="kb_article.rating">
+              	<span class="pad-right">&#8226;</span> <uib-rating ng-model="::kb_article.rating" max="5" readonly="true"/>
+            	</span>
+          	</span>
+        	</div> -->
+      	</div>
+    	</div>
+    </div>
+  </div>
+  <div ng-if="data.has_subs">
+    <div ng-if="data.categoryExists" class="panel panel-{{::options.color}} b">
+      <div class="panel-heading">
+        <h4 class="panel-title"> ${{{::data.categoryDisplay}} Subcategories} </h4>
+      </div>
+      <div class="panel-body">
+        <div ng-repeat="subcat in data.subcategories">
+          <h4><a ng-href="?id=ucd_kb_category&kb_category={{::subcat.value}}"> {{ subcat.label }} </a></h4>
+        </div>
+      </div>
+    </div>
+    <div ng-if="data.categoryExists" class="panel panel-{{::options.color}} b">
+    	<div class="panel-heading">
+        <h4 class="panel-title"> ${{{::data.categoryDisplay}} Articles} </h4>
+      </div>
+      <div class="panel-body">
+      	<div ng-if="data.items.length == 0">
+          (${No Articles})
+        </div>
+        <div ng-repeat="kb_article in data.items" class="sp-kb-topic-article m-b-lg">
+          <h4> <a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a></h4>
+        	<!--<div style="max-height: 3em; overflow: hidden; padding-top: 4px;">{{::kb_article.inner_text}}</div>
+          <div class="kb-about" style="padding-top:4px;">
+            <span class="about-outer-span">
+              <span class="author pad-right" ng-if="kb_article.author">
+                <glyph sn-char="user" class="pad-right" />
+                ${Authored by {{::kb_article.author}}}
+              </span>
+              <span ng-if="kb_article.sys_view_count == 1" class="views pad-right">
+                <span class="pad-right">&#8226;</span><glyph sn-char="eye-open" class="pad-right" />
+                ${{{::kb_article.sys_view_count}} View }
+              </span>
+              <span ng-if="kb_article.sys_view_count > 1" class="views pad-right">
+            		<span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+            		${{{::kb_article.sys_view_count}} Views}
+           		</span>
+           		<span class="published pad-right">
+             		<span class="pad-right">&#8226;</span> <glyph sn-char="calendar" class="pad-right" />
+             		<sn-day-ago date="kb_article.published"/>
+           		</span>
+           		<span ng-if="kb_article.rating">
+             		<span class="pad-right">&#8226;</span> <uib-rating ng-model="::kb_article.rating" max="5" readonly="true"/>
+           		</span>
+             </span>
+           </div>
+         </div> -->
+       </div>
+     </div>
+   </div>
+ </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

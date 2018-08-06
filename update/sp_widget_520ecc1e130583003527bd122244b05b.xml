@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	var c = this;
+		
+	// item is checked, clear other checkboxes
+	$scope.checkedKB = function(kb, index) {
+		for(var i=0; i<$scope.data.knowledgeBases.length; i++) {
+			if(index != i)
+				$scope.data.knowledgeBases[i].isChecked = "false";
+		}
+		// broadcast to other widgets
+		$rootScope.$broadcast('selectedKB',kb);
+	};
+	
+	// widget wants selected kb
+	$rootScope.$on('getKB', function(event, obj) {
+		if(obj.action == "search") {
+			for(var i = 0;i<c.data.knowledgeBases.length;i++) {
+				if(c.data.knowledgeBases[i].isChecked=="true") {
+					$rootScope.$broadcast('selectedKB', c.data.knowledgeBases[i]);
+				}
+			}
+		}
+	});
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.checkbox-label {
+ font-weight: initial; 
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-kb-filter</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Knowledge Base Filter</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Check what KBs logged in user has access to
+	data.isLoggedIn = gs.isLoggedIn();
+	data.isItil = gs.hasRole('itil');
+	data.user = gs.getUserID();
+	data.knowledgeBases = [];
+	data.publicKB = '7c2d56f42bd89200e0b209d417da153e';
+	
+	if(data.isLoggedIn) { // Get KBs user can view
+		var kb = new GlideRecord('kb_knowledge_base');
+		kb.addActiveQuery();
+		kb.query();
+		while(kb.next()) {
+			if(kb.canRead() && kb.title!="Social QA") {
+				if(kb.title!="IT - Public") {
+					data.hasInternalKB = true;
+				
+					if(hasArticles(kb.sys_id)) {
+						data.knowledgeBases.push({
+							name: kb.title.getDisplayValue(),
+							id: kb.getValue('sys_id'),
+							isChecked: "false"
+						});
+					}
+				}
+			}
+		}
+	}
+	
+	// sort kb categories
+	data.knowledgeBases.sort(function(a,b) {
+		if(a.name < b.name) return -1;
+		if(a.name > b.name) return 1;
+		return 0;
+	});
+	
+	// check for previous KB selection
+	data.kb = $sp.getParameter('kb');
+	if((data.kb != null) && (data.kb != data.publicKB)) {
+		// find KB in list of KBs and set isChecked to true
+		for(var i = 0; i < data.knowledgeBases.length; i++) {
+			if(data.knowledgeBases[i].id == data.kb) {
+				data.knowledgeBases[i].isChecked = "true";
+			}
+		}
+			data.knowledgeBases.unshift({
+				name: "IT - Public",
+				id: '7c2d56f42bd89200e0b209d417da153e',
+				isChecked: "false"
+			}); 
+	} else {
+	// move IT - public to front
+	data.knowledgeBases.unshift({
+		name: "IT - Public",
+		id: '7c2d56f42bd89200e0b209d417da153e',
+		isChecked: "true"
+	}); 
+	}
+	
+	/**
+	* Get categories from Knowledge Base and check if it has articles
+	*/ 
+	function hasArticles(kbId) {
+		var cats = new GlideRecord("kb_category");
+		cats.addQuery("parent_id", kbId);
+		cats.addActiveQuery();
+		cats.query();
+		while(cats.next()) {
+			if(hasArts(cats.getUniqueValue())) // has articles
+				return true;
+		}
+	}
+	
+	/**
+	* Checks if category has articles in it
+	*/
+	function hasArts(category) { 
+		if(hasArticle(category))
+			return true;
+		else { // check subcategories
+			var sub = new GlideRecord('kb_category');
+			sub.addQuery('parent_id', category);
+			sub.query();
+			while(sub.next()) {
+				if(hasArticle(sub.getUniqueValue())) {
+					return true;
+				}
+				return false;
+			}
+		}
+	}
+	
+	/**
+	* Helper function for hasArts function
+	*/
+	function hasArticle(category) {
+		var arts = new GlideRecord('kb_knowledge');
+		arts.addQuery("kb_category", category);
+		arts.addQuery('workflow_state', 'published');
+		arts.query();
+		if(arts.next()) {
+			return true;
+		}
+		return false;
+	}
+})()
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-09-08 20:04:17</sys_created_on>
+        <sys_id>520ecc1e130583003527bd122244b05b</sys_id>
+        <sys_mod_count>93</sys_mod_count>
+        <sys_name>ucd_Knowledge Base Filter</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_520ecc1e130583003527bd122244b05b</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-02-28 19:01:17</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box" ng-if="data.hasInternalKB">
+  <h2 class="panel__title">
+    Filter By Knowledge Base
+  </h2>
+  <section>
+    <form action="">
+      <ul class="list--reset">
+        <li>
+          <label class="checkbox-label" ng-repeat='kb in c.data.knowledgeBases' for="{{kb.name}}'">
+        <input type="radio"
+              name="kb-check"
+              value="true"
+              ng-model = "kb.isChecked"
+              ng-change="checkedKB(kb,$index)"/> 
+      {{kb.name}}
+      </label>
+        </li>
+      </ul>
+    </form>
+  </section>
+</div>]]></template>
+    </sp_widget>
+</record_update>

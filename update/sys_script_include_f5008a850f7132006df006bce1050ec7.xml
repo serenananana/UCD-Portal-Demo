@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_uocd2_ucd_portal.ScopedPortalAPI</api_name>
+        <client_callable>true</client_callable>
+        <description>Duplicating $sp functions for scoped applications.</description>
+        <name>ScopedPortalAPI</name>
+        <script><![CDATA[var ScopedPortalAPI = Class.create();
+ScopedPortalAPI.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	/**
+	 * Returns KB articles in the specified category and any of its subcategories.
+	 * @param id Sys_id of the specified category
+	 * @param array Passed in array to save articles in
+	 * @return Array of article objects w/ data members
+	 */
+	numKBArticles: function(cat){
+		var count = 0;
+		var kb_cat = new GlideRecord('kb_category');
+		kb_cat.get(cat);
+		
+		var children = new GlideRecord('kb_category');
+		children.addActiveQuery();
+		children.addQuery('parent_id', cat);
+		children.query();
+		while (children.next())
+			count+=this.numKBArticles(children.getUniqueValue());
+		
+		var articles = new GlideRecord('kb_knowledge');
+		articles.addActiveQuery();
+		articles.addQuery('kb_category.label', kb_cat.label);
+		articles.addQuery('kb_knowledge_base', '7c2d56f42bd89200e0b209d417da153e'); // IT - public KB only
+		articles.query();
+		while (articles._next()) {
+			if(articles.canRead()) 
+				count++;
+		}
+		return count;
+	},
+	
+	numKBArticlesFiltered: function(cat,filter){
+		var count = 0;
+		var kb_cat = new GlideRecord('kb_category');
+		kb_cat.get(cat);
+		
+		var children = new GlideRecord('kb_category');
+		children.addActiveQuery();
+		children.addQuery('parent_id', cat);
+		children.query();
+		while (children.next())
+			count+=this.numKBArticlesFiltered(children.getUniqueValue(), filter);
+		
+		var articles = new GlideRecord('kb_knowledge');
+		articles.addActiveQuery();
+		articles.addQuery('kb_category.label', kb_cat.label);
+		articles.addQuery('kb_knowledge_base', '7c2d56f42bd89200e0b209d417da153e'); // IT - public KB only
+		articles.addEncodedQuery(filter);
+		articles.query();
+		while (articles._next()) {
+			if(articles.canRead())
+				count++;
+		}
+		return count;
+	},
+	
+	getKBCategoryArticles: function(id, array) {
+		var kb_cat = new GlideRecord('kb_category');
+		kb_cat.get(id);
+		
+		// Grab any articles within this category
+		this._getKBArticles(kb_cat.getUniqueValue(), kb_cat.label, array);
+		
+		// Go down any subcategories within this category
+		var children = new GlideRecord('kb_category');
+		children.addActiveQuery();
+		children.addQuery('parent_id', kb_cat.getUniqueValue());
+		children.query();
+		while (children.next())
+			this.getKBCategoryArticles(children.getUniqueValue(), array);
+	},
+	
+	/**
+	* Apply filter to articles
+	* @param id Id of category
+	* @param filter articles
+	* @param knowledge base id
+	* @return Array of article objects w/ data members
+	*/
+	getKBCategoryArticlesFiltered: function(id, array, filter, kbId) {
+		var kb_cat = new GlideRecord('kb_category');
+		kb_cat.get(id);
+		
+		// Grab any articles within this category
+		this._getKBArticlesFiltered(kb_cat.getUniqueValue(), array, filter, kbId);
+		
+		// Go down any subcategories within this category
+		var children = new GlideRecord('kb_category');
+		children.addActiveQuery();
+		children.addQuery('parent_id', kb_cat.getUniqueValue());
+		children.query();
+		while (children.next()) {
+			this.getKBCategoryArticlesFiltered(children.getUniqueValue(), array, filter, kbId);
+		}
+	},
+	
+	/**
+	 * Helper method for getKBCategoryArticles(). Retrieves all articles within the specified category.
+	 * @param label Label of the specified category
+	 * @return Array of article objects w/ data members
+	 */
+	_getKBArticles: function(id, label, array) {
+		var articles = new GlideRecord('kb_knowledge');
+		articles.addActiveQuery();
+		articles.addQuery('kb_knowledge_base', '7c2d56f42bd89200e0b209d417da153e'); // IT - public KB only
+		articles.addQuery('kb_category', id);
+		articles.addQuery('kb_category.label', label);
+		articles.addQuery('workflow_state', 'published');
+		articles.query();
+		while (articles._next()) {
+			if(articles.canRead()) {
+			array.push({
+				short_description: articles.short_description.getDisplayValue(),
+				author: articles.author.getDisplayValue(),
+				rating: articles.rating.getDisplayValue(),
+				published: articles.published.getDisplayValue(),
+				sys_id: articles.sys_id.getDisplayValue(),
+				number: articles.number.getDisplayValue(),
+				text: articles.text.getDisplayValue(),
+				view_count: articles.sys_view_count.getDisplayValue()
+			});
+			}
+		}
+	},
+	
+	/**
+	 * Helper method for getKBCategoryArticlesFiltered(). Retrieves all articles within the specified category with applied filter
+	 * @param label Label of the specified category
+	 * @return Array of article objects w/ data members
+	 * @param filter Filter to apply on articles
+	 * @param kbId Knowledge Base id
+	 */
+	_getKBArticlesFiltered: function(id, array, filter, kbId) {
+	var articles = new GlideRecord('kb_knowledge');
+	articles.addActiveQuery();
+	articles.addQuery('kb_category', id);
+	articles.addQuery('kb_knowledge_base', kbId);
+	articles.addEncodedQuery(filter);
+	articles.addQuery('workflow_state', 'published');
+	articles.query();
+	while (articles._next()) {
+		if(articles.canRead()) {
+		array.push({
+			short_description: articles.short_description.getDisplayValue(),
+			author: articles.author.getDisplayValue(),
+			rating: articles.rating.getDisplayValue(),
+			published: articles.published.getDisplayValue(),
+			sys_id: articles.sys_id.getDisplayValue(),
+			number: articles.number.getDisplayValue(),
+			text: articles.text.getDisplayValue(),
+			view_count: articles.sys_view_count.getDisplayValue()
+		});
+		}
+	}
+	},
+	
+	/**
+	 * Retrieves the record sys_id from the specified table.
+	 * @param table Table to query for the record
+	 * @param sys_id Record to query for
+	 * @return GlideRecord returned from query()
+	 */
+	getRecord: function(table, sys_id) {
+		var gr = new GlideRecord(table);
+		if (gr.get(sys_id))
+			return gr;
+		return null;
+	},
+	
+	/**
+	 * Get catalog item results from IT Campus Services
+	 */
+	getCatalogItems: function(filter, catalog, array) {
+		var catItem = new GlideRecord('sc_cat_item');
+		catItem.addQuery('sc_catalogs', catalog);
+		catItem.addQuery('active', true);
+		catItem.addQuery('u_no_catalog', false);
+		catItem.addEncodedQuery(filter);
+		catItem.query();
+		while(catItem.next()) {
+			array.push({
+		        short_description: catItem.short_description.getDisplayValue(),
+				description: catItem.description.getDisplayValue(),
+				features: catItem.u_features_benefits.getDisplayValue(),
+				category: catItem.category.getDisplayValue(),
+				sys_id: catItem.sys_id.getDisplayValue(),
+				name: catItem.name.getDisplayValue()
+			});
+		}
+	},
+    type: 'ScopedPortalAPI'
+});
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-27 18:41:58</sys_created_on>
+        <sys_id>f5008a850f7132006df006bce1050ec7</sys_id>
+        <sys_mod_count>52</sys_mod_count>
+        <sys_name>ScopedPortalAPI</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sys_script_include_f5008a850f7132006df006bce1050ec7</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-26 18:57:34</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sys_embedded_help_content">
+    <sys_embedded_help_content action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>service-catalog</category>
+        <content><![CDATA[ <h1 class="title topictitle1">Service catalog order guides</h1>  <div class="body conbody">  <p class="p"><span class="ph">Order guide submits a single service catalog request that generates          several items.</span></p>  <p class="p">For example, a New Employee Hire order guide can contain several        items that new employees commonly need, such as business cards, computer, and cell phone.        After selecting this order guide, the customer can then provide information about the new        employee, including location and job title. The order guide then submits an order for        catalog items like business cards, based on the details provided.</p> </div> <div class="related-links"><div class="relinfo"><div class="reltitle">Related information<br /><div><a class="link" href="https://docs.servicenow.com/?context&#61;CSHelp:Order-Guides&amp;version&#61;jakarta" target="_blank">Order guides</a></div></div></div></div>]]></content>
+        <last_sync>2018-07-26 21:46:08</last_sync>
+        <modifier>normal</modifier>
+        <name>sc_cat_item_guide_list-normal</name>
+        <page>sc_cat_item_guide_list</page>
+        <product>1</product>
+        <qualifier/>
+        <role/>
+        <role_order>1000</role_order>
+        <snc_created>true</snc_created>
+        <sys_class_name>sys_embedded_help_content</sys_class_name>
+        <sys_created_by>system</sys_created_by>
+        <sys_created_on>2017-12-13 21:35:07</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>c17bb2810f4787006717590be1050ec4</sys_id>
+        <sys_mod_count>14</sys_mod_count>
+        <sys_name>sc_cat_item_guide_list-normal</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sys_embedded_help_content_c17bb2810f4787006717590be1050ec4</sys_update_name>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2018-07-26 21:46:08</sys_updated_on>
+        <version>j</version>
+    </sys_embedded_help_content>
+    <sys_translated_text action="delete_multiple" query="documentkey=c17bb2810f4787006717590be1050ec4"/>
+</record_update>

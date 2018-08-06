@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($filter, $location) {
+	var c = this;
+	c.options.glyph = c.options.glyph || 'search';
+	c.data.searchMsg = "Search the Service Hub";
+	c.options.title = c.options.title || c.data.searchMsg;
+
+	c.onSelect = function($item, $model, $label) {
+		if ($item.type == "kb") {
+			$location.search({id: 'ucd_kb_article', sys_id: $item.sys_id});
+		}
+		if ($item.type == "sc"){
+			//$location.search({id: 'sc_cat_item', sys_id: $item.sys_id});
+			$location.search({id: 'ucd_cat_item', sys_id: $item.sys_id});
+		}
+		/* SC not implemented yet
+		if ($item.type == "sc")
+			$location.search({id: 'sc_cat_item', sys_id: $item.sys_id});
+		if ($item.type == "sc_content") {
+			if ($item.content_type == "kb")
+				$location.search({id: 'kb_article', sys_id: $item.kb_article});
+			else if ($item.content_type == "external")
+				window.open($item.url, '_blank');
+			else
+				$location.search({id: 'sc_cat_item', sys_id: $item.sys_id});
+		}
+		if ($item.type == "sc_guide")
+			$location.search({id: 'sc_cat_item_guide', sys_id: $item.sys_id});
+		if ($item.type == "kb")
+			$location.search({id: 'kb_article', sys_id: $item.sys_id});
+		if ($item.type == "qa")
+			$location.search({id: 'kb_social_qa_question', question_id: $item.sys_id});
+		if ($item.type == "rec")
+			$location.search({id: $item.page, sys_id: $item.sys_id, table: $item.table}); */
+	};
+
+	c.getResults = function(query) {
+		return c.server.get({q: query}).then(function(response) {
+			var a = $filter('orderBy')(response.data.results, '-score');
+			return $filter('limitTo')(a, c.data.limit);
+		});
+	}
+	
+	c.submitSearch = function() {
+		if(c.selectedState)
+			$location.search({id: 'ucd_search2', query: c.selectedState});
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>ul.dropdown-menu {&#13;
+    min-width: 100%;&#13;
+    border-radius: 0px 0px 4px 4px;&#13;
+    margin:0px;&#13;
+}&#13;
+&#13;
+ul.dropdown-menu a.ta-item {&#13;
+	line-height: 20px;&#13;
+}&#13;
+&#13;
+ul.dropdown-menu i.ta-icon, i.ta-img {&#13;
+    width: 20px;&#13;
+    height: 20px;&#13;
+    background-size: contain;&#13;
+    display: inline-block;&#13;
+    background-repeat: no-repeat;&#13;
+    background-position: center center;&#13;
+    text-align: center;&#13;
+    line-height: 20px;&#13;
+    float:left;&#13;
+    margin-right: 8px;&#13;
+}&#13;
+&#13;
+input[name="q"] {&#13;
+color: black;&#13;
+}&#13;
+&#13;
+.home-search {&#13;
+	.form-control {&#13;
+    border: 1;&#13;
+    border-radius: 0;&#13;
+    display: block;&#13;
+    width: 100%;&#13;
+    height: 36px;&#13;
+    font-size: 14px;&#13;
+    box-shadow: none;&#13;
+  }&#13;
+  .input-group-btn {&#13;
+    background-color: #fff;&#13;
+  }&#13;
+  .btn {&#13;
+ 	width: auto;&#13;
+  	height: auto;&#13;
+    border-color: #002855 !important;&#13;
+    &amp;:hover {&#13;
+      border-radius: 1px;&#13;
+    }&#13;
+   }&#13;
+  .sp-tagline-color {&#13;
+	color: $sp-tagline-color;&#13;
+  }&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color,size,glyph,title</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-typeahead-search</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Typeahead Search</name>
+        <option_schema>[{"name":"title","label":"Title","type":"string"},{"name":"color","label":"Color","type":"string"},{"name":"glyph","label":"glyph","type":"string"},{"name":"size","label":"Size","type":"string"},{"hint":"Number of typeahead search results returned (default 15)","name":"limit","label":"Limit","type":"integer"}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.searchType = $sp.getParameter("t");
+	data.pname = $sp.getParameter("id");
+	data.results = [];
+	data.searchMsg = gs.getMessage("Search");
+	data.limit = options.limit || 10;
+	var textQuery = '123TEXTQUERY321';
+	
+	// End if no input in box (aka on page load)	
+	if (!input) {
+		/* Istanbul only feature - search sources	
+		data.typeaheadTemplates = {};
+	
+		var searchGroupTemplatesGR = new GlideRecord("sp_search_source");
+		searchGroupTemplatesGR.query();
+		while(searchGroupTemplatesGR.next()) {
+			if (searchGroupTemplatesGR.getElement("advanced_typeahead_config").getDisplayValue() == "true")
+				data.typeaheadTemplates["sp-typeahead-" + searchGroupTemplatesGR.getValue("id") + ".html"] = searchGroupTemplatesGR.getValue("typeahead_template");
+				// translateTemplate() isn't available outside global scope
+				// data.typeaheadTemplates["sp-typeahead-" + searchGroupTemplatesGR.getValue("id") + ".html"] = $sp.translateTemplate(searchGroupTemplatesGR.getValue("typeahead_template"));
+		}
+		*/
+		return;
+	}
+	
+	data.q = input.q;
+	
+	if(data.pname.indexOf("kb") > -1){
+		getKnowledge();
+	}else if(data.pname.indexOf("search") > -1) {
+		getKnowledge();
+		getCatalogItems();
+	}else{
+		getCatalogItems();
+	}
+	/* Turned off until catalog implemented
+	if (gs.isLoggedIn())
+		getCatalogItems();
+	*/
+
+	// add in additional search tables from sp_search_groups
+	/* Additional tables can be used via sp_search_groups,
+			but since this isn't currently being used, going
+			to turn off the query to help performance slightly
+	var portalGR = $sp.getPortalRecord();
+	var portalID = portalGR.getDisplayValue('sys_id');
+	var sg = new GlideRecord('sp_search_group');
+	sg.addQuery('sp_portal',portalID);
+	sg.addQuery('active',true);
+	sg.orderBy('order');
+	sg.query();
+	while (sg.next())
+		addSearchTable(sg);
+	*/
+
+	// typeahead search generates multiple "Your text query contained only
+	// common words..." msgs, we don't want them
+	// gs.flushMessages();
+
+	function addSearchTable(sg) {
+		var table = sg.getValue('name');
+		var condition = sg.getValue('condition');
+		var gr = new GlideRecord(table);
+		if (condition)
+			gr.addEncodedQuery(condition);
+
+		gr.addQuery(textQuery, data.q);
+		gr.query();
+		var searchTableCount = 0;
+		while (gr.next() && searchTableCount < data.limit) {
+			var rec = {};
+			rec.type = "rec";
+			rec.table = table;
+			rec.sys_id = gr.getDisplayValue('sys_id');
+			rec.page = sg.getDisplayValue('sp_page');
+			if (!rec.page)
+				rec.page = "form";
+			rec.label = gr.getDisplayValue();
+			rec.score = parseInt(gr.ir_query_score.getDisplayValue());
+			data.results.push(rec);
+			searchTableCount++;
+		}
+	}
+
+	function getKnowledge() {
+		var knowledgeBase = new GlideRecord('kb_knowledge_base');
+		knowledgeBase.addQuery('sys_id', '7c2d56f42bd89200e0b209d417da153e');
+		knowledgeBase.addActiveQuery();
+		knowledgeBase.orderByDesc('sys_view_count');
+		knowledgeBase.query();
+		while (knowledgeBase.next()) {
+			// Skip if user cannot access this knowledge base
+			if (!knowledgeBase.canRead()) continue;
+			
+			var kb = new GlideRecord('kb_knowledge');
+			kb.addQuery('workflow_state', 'published');
+			
+			/* getLocalDate() is not available outside global scope
+					We aren't currently using valid_to field anyways,
+					but this kind of code can be added if we decide to
+			*/
+			// kb.addQuery('valid_to', '>=', (new GlideDate()).getLocalDate().getValue());
+			kb.addQuery(textQuery, data.q);
+			kb.addQuery('kb_knowledge_base', knowledgeBase.getUniqueValue());
+			kb.query();
+			var kbCount = 0;
+			while (kb.next() && kbCount < 5) {
+				if (!$sp.canReadRecord(kb))
+					continue;
+
+				var article = {};
+				article.type = "kb";
+				$sp.getRecordDisplayValues(article, kb, 'sys_id,number,short_description,published,text');
+				if (!article.text)
+					article.text = "";
+				article.text = $sp.stripHTML(article.text);
+				article.text = article.text.substring(0,200);
+				article.score = parseInt(kb.ir_query_score.getDisplayValue());
+				article.label = article.short_description;
+				data.results.push(article);
+				kbCount++;
+			}
+		}
+	}
+
+	
+	function getCatalogItems() {
+		var sc = new GlideRecord('sc_cat_item');
+		sc.addQuery(textQuery, data.q);
+		sc.addQuery('active',true);
+		sc.addQuery('no_search', '!=', true);
+		sc.addQuery('visible_standalone', true);		sc.addEncodedQuery('type!=bundle^sys_class_name!=sc_cat_item_guide^type!=package^sys_class_name!=sc_cat_item_content');
+		sc.addQuery('sc_catalogs', 'IN',$sp.getValue('sc_catalog'));
+		sc.query();
+		var catCount = 0;
+		while (sc.next() && catCount < 5) {
+			// check if category is active
+			var isActive = isInActiveCategory(sc.category);
+			// check if user criteria is meet
+			var meetsCrit = meetsCriteria(sc);
+			if(isActive && meetsCrit) {
+				if (!$sp.canReadRecord(sc))
+						continue;
+
+				var item = {};
+				if (sc.getRecordClassName() == "sc_cat_item_guide")
+					item.type = "sc_guide";
+				else if (sc.getRecordClassName() == "sc_cat_item_content") {
+					var gr = new GlideRecord('sc_cat_item_content');
+					gr.get(sc.getUniqueValue());
+					$sp.getRecordValues(item, gr, 'url,content_type,kb_article');
+					item.type = "sc_content";
+				}
+				else
+					item.type = "sc";
+			
+				$sp.getRecordDisplayValues(item, sc, 'name,short_description,picture,price,sys_id');
+				item.score = parseInt(sc.ir_query_score.getDisplayValue());
+				item.label = item.name;
+				data.results.push(item);
+				catCount++;
+			}
+		}
+	}
+	
+	/**
+	* Checks if catalog item is within an active category
+	*/ 
+	function isInActiveCategory(category) {
+		// check if current category is active
+		if(category.active) {
+			while(category.parent != "") { // if parent(s), check if active
+				var gr = new GlideRecord('sc_category');
+				if(gr.get(category.parent)) { // retrieved parent
+					if(gr.active == true) {
+						category.parent = gr.parent;
+					} else return false;
+				}
+			}
+			if(category.parent == "") { // category is active
+				return true;
+			} else { // category is not active
+				return false;
+			}
+	  } else { // not active category
+		  return false;
+	  }
+	}
+	
+	/**
+	* Checks if catalog item meets user criteria
+	*/ 
+	function meetsCriteria(item) {
+		data.isLoggedIn = gs.isLoggedIn();
+		// get logged in user
+		data.user = gs.getUserID();
+		// get user's primary support group
+		var usr = new GlideRecord('sys_user');
+		if(usr.get(data.user))
+			data.primary_support_group = usr.u_primary_support_group;
+		var cat = new GlideRecord('sc_cat_item');
+		if(cat.get(item.sys_id)){
+			// check criteria for item
+			var criteria = new GlideRecord('sc_cat_item_user_criteria_mtom');
+			criteria.addQuery('sc_cat_item',item.sys_id);
+			criteria.query();
+			if(criteria.getRowCount() > 0) {
+				if(data.isLoggedIn) {
+					while(criteria.next()) { // get user criteria for item
+			// compare group to logged in user's primary support group to determine if able to access item
+						if(criteria.user_criteria.group != null) {
+							if(data.primary_support_group == criteria.user_criteria.group) { // can view item
+								return true;
+							} else
+								return false;
+						}
+					}
+				}
+			} else{ // show item with no user criteria
+				return true;
+			}
+		} else
+			return false;
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt12</sys_created_by>
+        <sys_created_on>2017-05-03 18:53:34</sys_created_on>
+        <sys_id>6252bc0ddb263200b2205ec0cf9619f2</sys_id>
+        <sys_mod_count>123</sys_mod_count>
+        <sys_name>ucd_Typeahead Search</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_6252bc0ddb263200b2205ec0cf9619f2</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-31 22:10:32</sys_updated_on>
+        <template><![CDATA[<form ng-submit="c.submitSearch()">
+<!--<form method="get" action="?">
+  <input type="hidden" name="id" value="ucd_search2"/>-->
+  <!--<input type="hidden" name="t" value="{{data.searchType}}"/>-->
+  <div class="input-group input-group-{{::c.options.size}} home-search">
+    <!-- uses ui.bootstrap.typeahead -->
+    <!--<input name="q" type="text" placeholder="{{::c.options.title}}" ng-model="c.selectedState"-->
+    <input name="query" type="text" placeholder="{{::c.options.title}}" ng-model="c.selectedState"
+           ng-model-options="{debounce: 250}" autocomplete="off"
+           uib-typeahead="item as item.label for item in c.getResults($viewValue)"
+           typeahead-focus-first="false"
+           typeahead-on-select="c.onSelect($item, $model, $label)"
+           typeahead-template-url="ucd-typeahead.html" class="form-control input-typeahead"
+           aria-label="{{::c.options.title}}" tabindex="0"
+           required>
+    <span class="input-group-btn">
+      <button name="search" type="submit" class="btn btn-{{::c.options.color}}" aria-label="Submit {{::c.options.title}}">
+    	<i ng-if="::c.options.glyph" class="fa fa-{{::c.options.glyph}}"></i>
+      </button>
+    </span>
+  </div>
+</form>
+
+<!--<div class="header__bar2-search">
+<form action="?" method="get" class="inline-form search-form">
+   <input type="hidden" name="id" value="ucd_search"/>
+   <input type="hidden" name="t" value="{{data.searchType}}"/>
+  	<div class="input-group input-group-{{::c.options.size}}">	
+      <input id="search-field" 
+               value=""
+               name="q" 
+               type="text" 
+               placeholder="Search the Service Hub" 
+               ng-model="c.selectedState"
+           	   ng-model-options="{debounce: 250}" 
+               autocomplete="off"
+               uib-typeahead="item as item.label for item in c.getResults($viewValue)"
+               typeahead-focus-first="false"
+               typeahead-on-select="c.onSelect($item, $model, $label)"
+               typeahead-template-url="ucd-typeahead.html" 
+               class="search-form__input form-control input-typeahead"
+               aria-label="{{::c.options.title}}" 
+               tabindex="0"
+               required>
+        <input type="image" 
+               class="search-form__submit" 
+               name="search" 
+               alt="Search">
+      </div>
+    </form>
+</div>-->
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_column">
+    <sp_column action="INSERT_OR_UPDATE">
+        <class_name>hidden-xs</class_name>
+        <order>3</order>
+        <size>3</size>
+        <size_lg>3</size_lg>
+        <size_sm>3</size_sm>
+        <size_xs/>
+        <sp_row display_value="1">820c89c2139897003527bd122244b08f</sp_row>
+        <sys_class_name>sp_column</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-16 19:20:44</sys_created_on>
+        <sys_id>c20c89c2139897003527bd122244b0a5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>3</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_column_c20c89c2139897003527bd122244b0a5</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-16 19:20:44</sys_updated_on>
+    </sp_column>
+</record_update>

@@ -1,0 +1,903 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function(spUtil, $scope, $window, $filter, $location, $uibModal) {
+//added $scope to grab from HTML Template and change it
+//added spUtil to embed widgets
+//added $window for the redirect
+//$filter and $location for searching
+  var c = this;
+	
+	c.searchSync = function(){
+		c.data.subj = c.selectedState;
+	}
+	
+	c.guestSearchSync = function(){
+		c.data.guest_subj = c.guestSelectedState;
+	}
+	
+	spUtil.get("ucd-typeahead-search").then(function(response) {
+		c.data.search = response;
+	});
+	
+	c.currUser = {
+		displayValue: c.data.currUserName,
+		value: c.data.currUser
+	}
+	
+	c.requested_for = {
+		displayValue: "",
+		value: ""
+	}
+	
+	c.data.choices = {
+		option01 : {name:"UC Davis Emeritus Professor", value:"Emeritus Professor"},
+		option02 : {name:"UC Davis Student Applicant", value:"Applicant"},
+		option03 : {name:"Guardian of a UC Davis Applicant or Student", value:"Guardian of a UC Davis Student"},
+		option04 : {name:"UC Davis Faculty", value:"Faculty"},
+		option05 : {name:"UC Davis Staff", value:"Staff"},
+		option06 : {name:"UC Davis Student", value:"Student"},
+		option07 : {name:"UC Davis Affiliate", value:"UC Davis Affiliate"},
+		option08 : {name:"Other", value:"Other"}
+	}
+	c.data.option = c.data.choices.option08;//set default
+	
+	// RIPPED FROM UCD TYPEAHEAD
+	// ************************************************************
+	c.options.glyph = c.options.glyph || 'search';
+	c.options.title = c.options.title || c.data.searchMsg;
+  
+	c.onSelect = function($item, $model, $label) {
+		if ($item.type == "kb") {
+			c.title = $item.short_description;
+			c.kb_text = $item.fulltext;
+			c.openModal();
+			//opens new tab
+			//$window.open('/servicehub?id=ucd_kb_article&sys_id=' + $item.sys_id);
+			//redirects current window
+			//$location.search({id: 'ucd_kb_article', sys_id: $item.sys_id});
+		}
+		//resets to the original search query
+		c.selectedState = c.data.subj;
+		c.guestSelectedState = c.data.guest_subj;
+		//sets article selected 
+		c.selectedArticle = c.title;
+		// sets the article helpful to blank
+		if(c.data.isLoggedIn) // logged in
+			c.helpful = '';
+		else 
+			c.guestHelpful = '';
+	};
+	
+	c.getResults = function(query, guest) {
+		return c.server.get({q: query}).then(function(response) {
+			var a = $filter('orderBy')(response.data.results, '-score');
+			  // reset auto selections
+				c.title = null;
+				c.guestHelpful = '';
+				c.helpful = '';
+			if(a=="" || null) { // no articles found
+				c.title = null;
+				
+				if(guest) c.guestHelpful = 'no'
+				else c.helpful = 'no';
+			} else { // there are articles
+				if(guest) {
+						c.guestHelpful = 'no'
+				}
+				else {
+						c.helpful = 'no';
+				}
+			}
+
+			return $filter('limitTo')(a, c.data.limit);
+		});
+	}
+	// ************************************************************
+	// RIPPED FROM UCD TYPEAHEAD
+	
+	/// MODAL WINDOW
+
+		c.openModal = function() {
+			c.modalInstance = $uibModal.open({
+				templateUrl: 'modalTemplate',
+				scope: $scope,
+				size: "lg"
+			});
+		}
+
+		c.closeModal = function() {
+			c.modalInstance.close();
+		}
+
+	
+	/// MODAL WINDOW
+	
+	c.uiAction = function(action) {//triggered by ng-click
+		//construct input variable to pass back to server script
+			if(c.data.isLoggedIn){				
+				c.data.email = $scope.user.email;
+				c.data.phone = $scope.user.phone;
+				c.data.requested_for = c.requested_for.value;
+				c.data.helpful = c.helpful;
+			}
+			else{
+				c.data.helpful = c.guestHelpful;
+			}
+			if(c.title != null || '')
+				c.data.selectedArticle = c.title;
+		
+		c.data.action = action; //pass to server script
+		
+		c.server.update().then(function() {//calls server script and redirects user
+			
+			//c.data.action = undefined;
+			// Article is helpful
+			$scope.data.description = "";
+			if(c.data.helpful == 'yes') {
+				if(c.data.isLoggedIn) {
+					$scope.user.email="";
+					$scope.user.phone = "";
+					$scope.data.subj = "";
+					c.requested_for = {
+						displayValue: "",
+						value: ""
+					};
+				}
+				else{ // reset values
+					$scope.data.guest.first_name = "";
+					$scope.data.guest.last_name = "";
+					$scope.data.guest_subj = "";
+					$scope.data.guest.phone = "";
+					$scope.data.guest.email = "";
+				}
+				$window.location.href = "/servicehub?id=ucd_feedback"
+			}
+			else if(c.data.isLoggedIn){ // reset values
+				$scope.user.email = "";
+				$scope.user.phone = "";
+				$scope.data.subj = "";
+
+				/*c.currUser = {//commented out since it shouldn't change
+					displayValue: "",
+					value: ""
+				};*/
+				
+				c.requested_for = {
+					displayValue: "",
+					value: ""
+				};
+				$window.location.href = "/servicehub?id=ucd_my_stuff";
+			}
+			else{ // reset values
+				$scope.data.guest.first_name = "";
+				$scope.data.guest.last_name = "";
+				$scope.data.guest_subj = "";
+				$scope.data.guest.phone = "";
+				$scope.data.guest.email = "";
+				$window.location.href = "/servicehub?id=ucd_guest_submits";
+			}
+		})
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>div{
+  //needed so spacing around widget isn't weird
+  margin-bottom:20px;
+}
+
+.input-typeahead{
+ margin-bottom;20px; 
+}
+
+input:invalid {
+  //box-shadow: 4px 4px 20px rgba(200, 0, 0, 0.85); //looks cool, but too much
+  border-color: red !important;
+}
+
+input:invalid:focus {//not sure if this works
+  border: 1px solid red;
+  outline: none;
+}
+
+textarea{//restrict resizing horizontally
+  resize: vertical;
+  overflow: auto;
+}
+
+textarea:invalid {
+  border-color: red !important;
+}
+
+select:invalid {
+  //doesn't work for some reason
+  border-color: red !important;
+}
+
+.pull-right {
+  display: inline-block; 
+  vertical-align: middle;
+}
+
+.warning {
+  color: #ff0000;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd-help-ticket</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Help Ticket</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	//data.typeAheadSearch = $sp.getWidget('typeahead-search', options.typeahead_search);
+	data.isLoggedIn = gs.isLoggedIn();
+	if(data.isLoggedIn){
+		data.currUser = gs.getUserID();
+		data.currUserName = gs.getUserDisplayName();
+	}
+	
+	// RIPPED FROM UCD TYPEAHEAD
+	data.searchType = $sp.getParameter("t");
+	data.results = [];
+	data.searchMsg = gs.getMessage("Search");
+	data.limit = options.limit || 10;
+	var textQuery = '123TEXTQUERY321';
+	
+	if(input && input.action != 'submit'){
+		data.q = input.q;
+		getKnowledge();		
+	}
+	function getKnowledge() {
+		var knowledgeBase = new GlideRecord('kb_knowledge_base');
+		knowledgeBase.addActiveQuery();
+		knowledgeBase.query();
+		while (knowledgeBase.next()) {
+			// Skip if user cannot access this knowledge base
+			if (!knowledgeBase.canRead()) continue;
+			
+			var kb = new GlideRecord('kb_knowledge');
+			kb.addQuery('workflow_state', 'published');
+			
+			/* getLocalDate() is not available outside global scope
+					We aren't currently using valid_to field anyways,
+					but this kind of code can be added if we decide to
+			*/
+			// kb.addQuery('valid_to', '>=', (new GlideDate()).getLocalDate().getValue());
+			kb.addQuery(textQuery, data.q);
+			kb.addQuery('kb_knowledge_base', knowledgeBase.getUniqueValue());
+			kb.query();
+			var kbCount = 0;
+			while (kb.next() && kbCount < data.limit) {
+				if (!$sp.canReadRecord(kb))
+					continue;
+
+				var article = {};
+				article.type = "kb";
+				$sp.getRecordDisplayValues(article, kb, 'sys_id,number,short_description,published,text');
+				if (!article.text)
+					article.text = "";
+				article.fulltext = article.text;
+				article.text = $sp.stripHTML(article.text);
+				article.text = article.text.substring(0,200);
+				article.score = parseInt(kb.ir_query_score.getDisplayValue());
+				article.label = article.short_description;
+				data.results.push(article);
+				kbCount++;
+			}
+		}
+	}
+	
+	
+	function addSearchTable(sg) {
+		var table = sg.getValue('name');
+		var condition = sg.getValue('condition');
+		var gr = new GlideRecord(table);
+		if (condition)
+			gr.addEncodedQuery(condition);
+
+		gr.addQuery(textQuery, data.q);
+		gr.query();
+		var searchTableCount = 0;
+		while (gr.next() && searchTableCount < data.limit) {
+			var rec = {};
+			rec.type = "rec";
+			rec.table = table;
+			rec.sys_id = gr.getDisplayValue('sys_id');
+			rec.page = sg.getDisplayValue('sp_page');
+			if (!rec.page)
+				rec.page = "form";
+			rec.label = gr.getDisplayValue();
+			rec.score = parseInt(gr.ir_query_score.getDisplayValue());
+			data.results.push(rec);
+			searchTableCount++;
+		}
+	}
+	// RIPPED FROM UCD TYPEAHEAD
+	
+	
+	if(input && input.action == 'submit'){//execute if received an input
+		var inc = new GlideRecord('incident');
+		inc.initialize();
+		
+		var req = new GlideRecord('sys_user');
+		req.addQuery('sys_id', input.requested_for);
+		req.query();
+		req.next();
+		
+		if(data.isLoggedIn){ // Logged in user submitting ticket
+			inc.caller_id = data.currUser;
+			inc.u_requested_for = req.getUniqueValue();
+			inc.contact_type = "service hub";
+			inc.assignment_group = "786178d950368500528ad44054e28fca";
+			
+			var usr = new GlideRecord('sys_user');
+			usr.addQuery('sys_id', data.currUser);
+			usr.query();
+			
+			if(usr.next()){
+				var psg = new GlideRecord('u_group_selection');
+				psg.addQuery('u_primary_support_group', usr.u_primary_support_group);
+				psg.query();
+				if(psg.next()){
+					inc.assignment_group = psg.u_assignment_group;
+				}
+			}
+			
+			inc.short_description = input.subj;
+			work_notes = 'Email: ' + input.email + '[code]<br/>[/code]Phone Number: ';
+			if(input.phone){
+				work_notes += input.phone;
+			}
+			if(input.selectedArticle) {
+				work_notes += '[code]<br/>[/code]Article selected: ' + input.selectedArticle;
+			}
+			inc.work_notes = work_notes;
+		}
+		else{ // Guest submitting ticket
+			inc.contact_type = 'service hub';
+			inc.caller_id = 'Guest';
+			inc.assignment_group = '786178d950368500528ad44054e28fca';
+			inc.u_guest_name = input.guest.first_name+' '+input.guest.last_name;
+			inc.short_description = input.guest_subj;
+			work_notes = 'Affiliation: ' + input.option.value + '[code]<br/>[/code]Phone Number: ';
+			if(input.guest.phone){
+				work_notes += input.guest.phone;
+			}
+			if(input.selectedArticle) {
+				work_notes += '[code]<br/>[/code]Article selected: ' + input.selectedArticle;
+			}
+			inc.work_notes = work_notes;
+			inc.u_emailed_from = input.guest.email;
+			inc.watch_list = input.guest.email;
+		}
+				
+		if(input.helpful == 'yes'){
+			inc.state = 7;
+			inc.close_code = 'Closed by KB';
+			inc.category = 'request';
+			inc.subcategory = 'how to';
+			inc.u_do_not_send_notification = '1';
+			inc.work_notes = 'Customer found solution via the KB search in the Service Hub.';
+			inc.comments = 'Thank you for using the Service Hub. We are happy that you were able to locate a solution to the problem you were experiencing.';
+		}
+		else if(input.helpful == 'yes2') {
+			inc.work_notes = 'Customer found selected article helpful but it did not completely solve their problem.'
+		}
+		
+		inc.comments = input.description;
+		inc.insert();
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>cglam</sys_created_by>
+        <sys_created_on>2017-05-11 20:25:50</sys_created_on>
+        <sys_id>bfb35a2b0f6a32006717590be1050e20</sys_id>
+        <sys_mod_count>198</sys_mod_count>
+        <sys_name>ucd_Help Ticket</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_bfb35a2b0f6a32006717590be1050e20</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-07-20 22:33:14</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box--large">
+            <div class="o-media ">
+        		<div class="o-media__figure">
+                         <img src="GetHelp.png" width="40" height="40"/>
+       						 </div>
+                    <div class="o-media__body">
+                   <section class="u-space-bottom">
+                      <h2><span class="heading--weighted--weighted" style="color: #00819b; font-size: 3rem;">Get Help</span></h2>
+                      </section>
+                      <h2>Complete this form for tech help</h2>
+                      <p><i>Submission of this help request will create a help ticket and be prioritized accordingly.<br>To check the status of an existing ticket, go to <a href="?id=ucd_my_stuff">My Stuff</a>.</i></p>
+                      <p class="warning"><i>Never enter confidential information such as passwords or social security numbers anywhere in a help ticket.</i></p>
+        	</div>
+              </div>
+    <!-- Removed create a ticket description
+    <h2 class="heading--weighted" ng-if="data.isLoggedIn">
+      <span class="heading--weighted--weighted">Create</span> 
+      a Ticket
+    </h2>
+      <h2 class="heading--weighted" ng-if="!data.isLoggedIn">
+      <span class="heading--weighted--weighted">Create</span> 
+      a Guest Support Ticket
+    </h2>
+    <p>Please fill out this form completely before submitting</p>
+     -->
+     <!-- GUEST FORM INFO-->
+  <form name="guestForm" ng-if="!data.isLoggedIn">
+    <div class="field-container">
+      <label for="text">First name <abbr title="Required"></abbr>*</label>
+      <input placeholder="First name" ng-required="!data.isLoggedIn" class="form-control" type="text" name="firstName" ng-model="data.guest.first_name">
+    </div>
+    <div class="field-container">
+      <label for="text">Last name <abbr title="Required"></abbr>*</label>
+      <input placeholder="Last name" ng-required="!data.isLoggedIn" class="form-control" type="text" name="lastName" ng-model="data.guest.last_name">
+    </div>
+    <div class="field-container">    
+      <label for="text">Email Address <abbr title="Required"></abbr>*</label>
+      <input type="email" placeholder="Email Address" class="form-control" name="guest.email" ng-model="data.guest.email" ng-required="!data.isLoggedIn">
+    </div>    
+    <div class="field-container" ng-if="">
+      <label for="text">Subject <abbr title="Required"></abbr>*</label>
+      <input type="text" class="form-control" name="data.guest_subj" size="80" ng-model="data.guest_subj" ng-required="!data.isLoggedIn" ng-model-options="{ updateOn: 'mousedown blur' }">
+    </div>
+    
+    <div class="field-container">
+      <label for="text">Subject <abbr title="Required"></abbr>*</label>
+      <!--<label style="font-weight:normal" for="subject">Clearly describe the problem so we may recommend a solution</label>-->
+
+      <!-- uses ui.bootstrap.typeahead -->
+      <input required
+             ng-change="c.guestSearchSync()"
+             name="q"
+             type="text"
+             id="subject"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.guestSelectedState"
+             ng-model-options="{debounce: 250}"
+             autocomplete="off"
+             uib-typeahead="item as item.label for item in c.getResults($viewValue, true)"
+             typeahead-focus-first="false"
+             typeahead-on-select="c.onSelect($item, $model, $label)"
+             typeahead-template-url="ucd-help-typeahead.html"
+             class="form-control input-typeahead"
+             aria-label="{{::c.options.title}}"
+             tabindex="0"
+             maxlength="80">
+      <span class="byline">80 character maximum</span>
+      </div>
+       <!--<div ng-if="c.guestSelectedState">
+        Was this article helpful?
+        <form action="">
+          <br>
+          <input type="radio" value="yes" ng-model="c.guestHelpful"> Yes<br>
+          <input type="radio" value="no" ng-model="c.guestHelpful"> No<br>
+        </form>
+      </div>-->
+    
+      <div ng-if="c.title">
+      <div class="field-container">
+        <label>Article selected</label>
+           <input 
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedArticle"
+             ng-readonly="true"
+             >
+      	</div>
+      </div>
+    	<div ng-if="c.title">
+      <label>
+   				 Was this article helpful?
+        </label>
+      <form action="">
+        <input type="radio" value="yes" ng-model="c.guestHelpful"> Yes, it answered my question(s).<br>
+        <input type="radio" value="yes2" ng-model="c.guestHelpful"> Yes, but I would still like to submit a support ticket.<br>
+        <input type="radio" value="no" ng-model="c.guestHelpful"> No<br>
+      </form>
+    </div>
+    
+    	<div>
+        <div ng-if="c.guestHelpful === 'no' || c.guestHelpful === 'yes2'">
+          <div class="field-container">
+            <label>Phone Number (Optional):</label>
+            <input type="text" class="form-control" name="guest.phone" ng-model="data.guest.phone">
+          </div>
+
+          <div class="field-container">
+            <label>Affiliation:</label>
+            <select ng-required="true" class="form-control"ng-model="data.option" ng-options="y.name for (x, y) in data.choices"></select>
+          </div>
+        </div>
+    	</div>
+    
+    
+  </form>
+ 
+  <!-- AUTHENTICATED USERS FORM -->
+  
+  <form name="userForm" ng-if="data.isLoggedIn">
+    <div class="field-container">
+    	<label for="text">Name <abbr title="Required"></abbr>*</label>
+      <sn-record-picker ng-required="data.isLoggedIn" field="c.currUser" table="'sys_user'" display-field="'name'" value-field="'sys_id'" search-fields="'name'" page-size="50" readonly></sn-record-picker>  
+    </div>
+
+    <div class="field-container">
+      <label>Requested on behalf of</label>
+      <sn-record-picker field="c.requested_for" table="'sys_user'" display-field="'name'" display-fields="'email'" value-field="'sys_id'" search-fields="'name, email'" page-size="50" ></sn-record-picker>  
+    </div>
+    
+    <div ng-if="">
+    <div class="field-container">
+    	<label for="text">Subject <abbr title="Required"></abbr>*</label>
+      <input  type="text" class="form-control" name="data.subj" ng-model="data.subj" ng-required="data.isLoggedIn" ng-model-options="{updateOn: 'mousedown blur'}">
+      </div>
+    </div>
+
+    <div class="field-container">
+		  <label for="text">Subject <abbr title="Required"></abbr>*</label>
+          <!--<label style="font-weight:normal" for="subject">Clearly describe the problem so we may recommend a solution</label>-->
+      <!-- uses ui.bootstrap.typeahead -->
+      <input required
+             ng-change="c.searchSync()"
+             name="q"
+             type="text"
+             id="subject"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedState"
+             ng-model-options="{debounce: 0}"
+             autocomplete="off"
+             uib-typeahead="item as item.label for item in c.getResults($viewValue, false)"
+             typeahead-focus-first="true"
+             typeahead-on-select="c.onSelect($item, $model, $label)"
+             typeahead-template-url="ucd-help-typeahead.html"
+             class="form-control input-typeahead"
+             aria-label="{{::c.options.title}}"
+             tabindex="0"
+             maxlength="80">
+       <span class="byline">80 character maximum</span>
+    </div>
+    
+    <div ng-if="c.title">
+    <div class="field-container">
+        <label>Article selected</label>
+           <input 
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedArticle"
+             ng-readonly="true"
+             >
+      </div>
+          </div>
+
+      <div ng-if="c.title">
+      <label>
+   				 Was this article helpful?
+        </label>
+      <form action="">
+        <input type="radio" value="yes" ng-model="c.helpful"> Yes, it answered my question(s).<br>
+        <input type="radio" value="yes2" ng-model="c.helpful"> Yes, but I would still like to submit a support ticket.<br>
+        <input type="radio" value="no" ng-model="c.helpful"> No<br>
+      </form>
+      </div>
+
+    <div ng-if="c.helpful==='no' || c.helpful==='yes2'">
+			<label for="text">Email Address<abbr title="Required"></abbr>*</label>
+      <div class="field-container">
+      	<input type="email" class="form-control" name="email" ng-model="user.email" ng-required="data.isLoggedIn">
+    	</div>
+      <label>Phone Number (Optional)</label>
+      <div class="field-container">
+        <input type="text" class="form-control" name="phone" ng-model="user.phone">
+      </div>
+    </div>
+  </form>
+    
+  <!-- Article is helpful -->
+  <div ng-if="c.helpful==='yes' || c.guestHelpful==='yes'">
+  	<p>Thank you for using our knowledge base.</p>
+  </div>
+   
+  <form name="submitSection" class="row col-md-12">
+    <!--
+    <span ng-show="submitSection.description.$error.required">This field is required</span>
+		-->
+    <div ng-if="c.helpful === 'no' || c.guestHelpful ==='no' || c.helpful === 'yes2' || c.guestHelpful==='yes2'">
+      <label for="text"
+>Please describe your issue below<abbr title="Required"></abbr>*</label>
+      <textarea class="form-control field-container" rows="5" name="description" ng-model="data.description" ng-model-options="{updateOn: 'mousedown blur'}" ng-required="true"
+                placeholder="Additional information will help support staff diagnose and solve the issue you're experiencing."></textarea>
+     </div>
+    <div>
+    <!-- Submit button logged in -->
+  	<input ng-if="data.isLoggedIn" ng-disabled=" !data.subj.length ||
+                                                 c.helpful != 'yes' &&
+                                                 (!data.description.length ||
+                                                 !user.email.length)"
+            ng-click="c.uiAction('submit')" class="form-submit btn--primary btn"
+            value="Submit"
+    				type="submit"
+ 		>
+    <!-- Submit button guest -->
+    <input ng-if="!data.isLoggedIn" ng-disabled="!data.guest.first_name.length ||
+                                                  !data.guest.last_name.length ||
+                                                  !data.guest.email.length ||
+                                                  !data.guest_subj.length ||
+                                                  c.guestHelpful != 'yes' &&
+                                                  !data.description.length"
+                                                  
+            ng-click="c.uiAction('submit')" class="form-submit btn--primary btn"
+           value="Submit"
+           type="submit"
+      >
+    </div>
+  </form>
+
+    
+  <script type="text/ng-template" id="modalTemplate">
+    <style>
+      td { border: solid windowtext 1.0pt; }
+    </style>
+    <div class="panel o-box">
+        <h2 class="panel__title">{{c.title}}<button class="btn btn-primary pull-right" ng-click="c.closeModal()">${Close}</button>
+</h2>
+      </div>
+      <div ng-bind-html="c.kb_text" class="panel-body wrapper-xl"></div>
+      <div class="panel-footer text-right">
+        <button class="btn btn-primary" ng-click="c.closeModal()">${Close}</button>
+      </div>
+    </div>
+  </script>
+    
+  <!-- Modal window popup 
+  <script type="text/ng-template" id="modalTemplate">
+    <style>
+      td { border: solid windowtext 1.0pt; }
+    </style>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">{{c.title}}</h4>
+        <div class="pull-right">
+        	<button class="btn btn-primary" ng-click="c.closeModal()">${Close}</button>
+        </div>
+      </div>
+      <div ng-bind-html="c.kb_text" class="panel-body wrapper-xl"></div>
+      <div class="panel-footer text-right">
+        <button class="btn btn-primary" ng-click="c.closeModal()">${Close}</button>
+      </div>
+    </div>
+  </script>
+-->
+  
+<!-- without styling 
+<div class="col-md-12" style="background:white;">
+  <!-- GUEST FORM INFO
+  <form name="guestForm" class="row col-md-6 form-group" ng-if="!data.isLoggedIn">
+    <h4>Start a guest support ticket</h4>
+    <div>Please fill out this form completely before submitting.</div>
+    <div>
+    	<label>First name:</label>
+      <input placeholder="First name" ng-required="!data.isLoggedIn" class="form-control" type="text" name="firstName" ng-model="data.guest.first_name">
+    </div>
+    <div>
+    	<label>Last name:</label>
+      <input placeholder="Last name" ng-required="!data.isLoggedIn" class="form-control" type="text" name="lastName" ng-model="data.guest.last_name">
+    </div>
+    <div>    
+    	<label>Email Address:</label>
+      <input type="email" class="form-control" name="guest.email" ng-model="data.guest.email" ng-required="!data.isLoggedIn">
+    </div>    
+    <div ng-if="">
+      <label>Subject:</label>
+      <input type="text" class="form-control" name="data.guest_subj" size="80" ng-model="data.guest_subj" ng-required="!data.isLoggedIn" ng-model-options="{ updateOn: 'mousedown blur' }">
+    </div>
+    
+    <div class="input-group col-md-12 col-sm-12 col-xs-12">
+      <label>Subject (Maximum of 80 characters):</label>
+      <!-- uses ui.bootstrap.typeahead
+      <input required
+             ng-change="c.guestSearchSync()"
+             name="q"
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.guestSelectedState"
+             ng-model-options="{debounce: 250}"
+             autocomplete="off"
+             uib-typeahead="item as item.label for item in c.getResults($viewValue, true)"
+             typeahead-focus-first="false"
+             typeahead-on-select="c.onSelect($item, $model, $label)"
+             typeahead-template-url="ucd-help-typeahead.html"
+             class="form-control input-typeahead"
+             aria-label="{{::c.options.title}}"
+             tabindex="0"
+             maxlength="80">
+      </div>
+       <!--<div ng-if="c.guestSelectedState">
+        Was this article helpful?
+        <form action="">
+          <br>
+          <input type="radio" value="yes" ng-model="c.guestHelpful"> Yes<br>
+          <input type="radio" value="no" ng-model="c.guestHelpful"> No<br>
+        </form>
+      </div>
+    
+        <div ng-if="c.title">
+      <div>
+        <label>Article selected:</label>
+           <input 
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedArticle"
+             ng-readonly="true"
+             >
+      </div>
+      <label>
+   				 Was this article helpful?
+        </label>
+      <form action="">
+        <input type="radio" value="yes" ng-model="c.guestHelpful"> Yes<br>
+        <input type="radio" value="no" ng-model="c.guestHelpful"> No<br>
+      </form>
+    </div>
+			
+    	<div class="input-group col-md-12 col-sm-12 col-xs-12">
+        <div ng-if="c.guestHelpful === 'no' ">
+          <div>
+            <label>Phone Number (Optional):</label>
+            <input type="text" class="form-control" name="guest.phone" ng-model="data.guest.phone">
+          </div>
+
+          <div>
+            <label>Affiliation:</label>
+            <select ng-required="true" class="form-control"ng-model="data.option" ng-options="y.name for (x, y) in data.choices"></select>
+          </div>
+        </div>
+    	</div>
+    
+    
+  </form>
+ 
+  <!-- AUTHENTICATED USERS FORM 
+  
+  <form name="userForm" class="row col-md-6 form-group" ng-if="data.isLoggedIn">
+    <h4>Create a ticket</h4>
+    <div>
+      Please fill out this form completely before submitting.
+    </div>
+   
+		<div>
+    	<label>Name:</label>
+      <sn-record-picker ng-required="data.isLoggedIn" field="c.currUser" table="'sys_user'" display-field="'name'" value-field="'sys_id'" search-fields="'name'" page-size="50" readonly></sn-record-picker>  
+    </div>
+
+    <div>
+      <label>Requested on behalf of:</label>
+      <sn-record-picker field="c.requested_for" table="'sys_user'" display-field="'name'" value-field="'sys_id'" search-fields="'name'" page-size="50" ></sn-record-picker>  
+    </div>
+    
+    <div ng-if="">
+      <div>
+        <label>Subject:</label>
+        <input  type="text" class="form-control" name="data.subj" ng-model="data.subj" ng-required="data.isLoggedIn" ng-model-options="{updateOn: 'mousedown blur'}">
+      </div>
+    </div>
+
+    <div class="input-group col-md-12 col-sm-12 col-xs-12">
+      <label>Subject (Maximum of 80 characters):</label>
+      <!-- uses ui.bootstrap.typeahead
+      <input required
+             ng-change="c.searchSync()"
+             name="q"
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedState"
+             ng-model-options="{debounce: 0}"
+             autocomplete="off"
+             uib-typeahead="item as item.label for item in c.getResults($viewValue, false)"
+             typeahead-focus-first="true"
+             typeahead-on-select="c.onSelect($item, $model, $label)"
+             typeahead-template-url="ucd-help-typeahead.html"
+             class="form-control input-typeahead"
+             aria-label="{{::c.options.title}}"
+             tabindex="0"
+             maxlength="80">
+    </div>
+    
+    <div ng-if="c.title">
+      <div>
+        <label>Article selected:</label>
+           <input 
+             type="text"
+             placeholder="{{::c.options.title}}"
+             ng-model="c.selectedArticle"
+             ng-readonly="true"
+             >
+      </div>
+      <label>
+   				 Was this article helpful?
+        </label>
+      <form action="">
+        <input type="radio" value="yes" ng-model="c.helpful"> Yes<br>
+        <input type="radio" value="no" ng-model="c.helpful"> No<br>
+      </form>
+    </div>
+
+    <div class="row col-md-12" ng-if="c.helpful==='no'">
+    	<label>Email Address:</label>
+    	<div>
+      	<input type="email" class="form-control" name="email" ng-model="user.email" ng-required="data.isLoggedIn">
+    	</div>
+      <label>Phone Number (Optional):</label>
+      <div>
+        <input type="text" class="form-control" name="phone" ng-model="user.phone">
+      </div>
+    </div>
+  </form>
+   
+  <form name="submitSection" class="row col-md-12">
+    <!--
+    <span ng-show="submitSection.description.$error.required">This field is required</span>
+		
+    <div ng-if="c.helpful === 'no' || c.guestHelpful ==='no'">
+      <label>Please describe your issue below:</label>
+      <textarea class="form-control" rows="5" name="description" ng-model="data.description" ng-model-options="{updateOn: 'mousedown blur'}" ng-required="true"
+                placeholder="The more information you can provide here, the easier time the support organization will have in diagnosing and resolving your incident."></textarea>
+    </div>
+  </form>
+  
+  <div class="row text-right col-md-12" >
+    
+  	<button ng-if="data.isLoggedIn" ng-disabled=" !data.subj.length ||
+                                                 c.helpful != 'yes' &&
+                                                 (!data.description.length ||
+                                                 !user.email.length)"
+            ng-click="c.uiAction('submit')" class="btn btn-primary">
+  		Submit
+ 		</button>
+    
+    <button ng-if="!data.isLoggedIn" ng-disabled="!data.guest.first_name.length ||
+                                                  !data.guest.last_name.length ||
+                                                  !data.guest.email.length ||
+                                                  !data.guest_subj.length ||
+                                                  c.guestHelpful != 'yes' &&
+                                                  !data.description.length"
+                                                  
+            ng-click="c.uiAction('submit')" class="btn btn-primary">
+  		Submit
+ 		</button>
+  </div>
+
+  <!-- Modal window popup
+  <script type="text/ng-template" id="modalTemplate">
+    <style>
+      td { border: solid windowtext 1.0pt; }
+    </style>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">{{c.title}}</h4>
+        <div class="text-right">
+        	<button class="btn btn-primary" ng-click="c.closeModal()">${Close}</button>
+        </div>
+      </div>
+      <div ng-bind-html="c.kb_text" class="panel-body wrapper-xl"></div>
+      <div class="panel-footer text-right">
+        <button class="btn btn-primary" ng-click="c.closeModal()">${Close}</button>
+      </div>
+    </div>
+  </script>
+</div>]]></template>
+    </sp_widget>
+</record_update>

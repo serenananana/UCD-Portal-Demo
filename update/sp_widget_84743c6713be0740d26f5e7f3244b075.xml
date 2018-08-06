@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, spUtil) {
+	var c = this;
+	
+  $scope.$on('record.updated', function(name, data) {
+    spUtil.update($scope);
+  })
+	
+	/**
+	 * Resolves the task when the user clicks the corresponding button.
+	 */
+	c.resolveTask = function() {
+		// Custom input object (server.update() passes data by default)
+		var input = {
+			resolveTask: true,
+			table: c.data.table,
+			sys_id: c.data.sys_id
+		}
+		
+		// Allows for custom input passing
+		c.server.get(input);
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Task Fields</name>
+        <option_schema>[&#13;
+   {&#13;
+      "name": "pickup_msg",&#13;
+      "label": "Pickup message",&#13;
+      "type": "string"&#13;
+   }&#13;
+]</option_schema>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function(){
+	var api = new x_uocd2_ucd_portal.ScopedPortalAPI();
+	var gr;
+	
+	data.resolveButton = "Resolve ";
+	// Input populated if record updates or Resolve Incident button clicked
+	if (input) {
+		gr = api.getRecord(input.table, input.sys_id);
+		data.canRead = gr.canRead();
+		if (!data.canRead) {
+			return;
+		}
+		
+		// Resolve task button clicked
+		if (input.resolveTask) {
+			if(input.table == 'incident') {
+				if(gr.state == 2) { // ticket is in work in progress
+					gr.comments = "The customer has resolved this incident.";
+					gr.update();
+					// need separate update on new glide record for state to prevent triggering of business rule
+					var gr2 = api.getRecord('incident', gr.sys_id);
+					gr2.state = 6;
+					gr2.update();
+				} else {
+				  // add comments that customer has resolved this incident
+					gr.comments = "The customer has resolved this incident.";
+					gr.state = 6;
+					gr.update();
+				}
+			} else if(input.table == 'sc_task') {
+				// add comments that user has resolved task
+				gr.comments = "The agent has resolved this task.";
+				gr.state = 3;
+				gr.update();
+			}
+		}
+	}
+	// Page loading - utilize $sp.getParameter()
+	else {
+		gr = api.getRecord($sp.getParameter('table'), $sp.getParameter('sys_id'));
+	}
+	if(input) {
+		if(input.table == 'incident') data.type = "Incident";
+		else if(input.table =='sc_task') data.type = "Task";
+	} else {
+		if(gr.getTableName() == 'incident') data.type = "Incident";
+		else if(gr.getTableName() == 'sc_task') data.type = "Task";
+	}
+	data.resolveButton += data.type;
+	
+	data.canRead = gr.canRead();
+	if (!data.canRead) {
+		return;
+	}
+
+	var agent = "";
+	var a = $sp.getField(gr, 'assigned_to');
+	if (a != null)
+		agent = a.display_value;
+
+	var fields = $sp.getFields(gr, 'number,state,priority,sys_created_on');
+	if (gr.getValue("sys_mod_count") > 0)
+		fields.push($sp.getField(gr, 'sys_updated_on'));
+
+	if (gr.getValue('price') > 0)
+		fields.push($sp.getField(gr, 'price'));
+
+	if (gr.getValue('recurring_price') > 0) {
+		var rp = $sp.getField(gr, 'recurring_price');
+		if (gr.isValidField("recurring_price"))
+			rp.display_value = rp.display_value + " " + gr.getDisplayValue("recurring_frequency");
+		fields.push(rp);
+	}
+
+	data.tableLabel = gr.getLabel();
+	data.fields = fields;
+	data.variables = $sp.getVariablesArray();
+	data.agent = agent;
+	data.agentPossible = gr.isValidField("assigned_to");
+	data.table = gr.getTableName();
+	data.sys_id = gr.getUniqueValue();
+})()
+
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-12-08 19:54:22</sys_created_on>
+        <sys_id>84743c6713be0740d26f5e7f3244b075</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>ucd_Task Fields</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_84743c6713be0740d26f5e7f3244b075</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-12-08 21:19:26</sys_updated_on>
+        <template><![CDATA[<div ng-if="data.canRead" class="panel b">
+  <div class="panel-heading bg-primary">
+    <div ng-init="spSearch.targetRequests()">
+      <sp-c-link target="form" table="data.table" id="data.sys_id"/>
+    </div>
+    <span ng-if="data.agent" >
+      ${Agent working on this {{data.tableLabel}}}:
+      <div>{{data.agent}}</div>
+    </span>
+    <span ng-if="!data.agent && data.agentPossible" >${Your request has been submitted}</span>
+    <span ng-if="!data.agentPossible">${{{data.tableLabel}} record details}</span>
+  </div>
+
+  <div class="panel-body">
+    <div ng-if="data.fields.length > 0">
+      <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-6 m-b break-word" ng-repeat="field in data.fields" 
+             ng-if="field.value && (field.type != 'decimal' || field.type == 'decimal' && field.value != 0)" >
+          <label class="m-n">{{field.label}}</label>
+          <span ng-switch="field.type">
+            <div ng-switch-when="glide_date_time" title="{{field.display_value}}">
+              <sn-time-ago timestamp="::field.value" />
+            </div>
+            <div ng-switch-default >{{field.display_value}}</div>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div ng-if="data.variables.length > 0" ng-init="variable_toggle=true">
+      <h4 ng-click="variable_toggle = !variable_toggle" style="cursor: pointer;">
+        <span style="font-size: 12px;" class="glyphicon" 
+              ng-class="{'glyphicon-chevron-down': !variable_toggle, 'glyphicon-chevron-up': variable_toggle}"></span>
+        ${Options}
+      </h4>
+      
+      <div ng-if="variable_toggle">
+        <hr>
+        <div class="m-b break-word" ng-repeat="variable in data.variables">
+          <label class="m-n">{{variable.label}}</label>
+          <div>{{variable.display_value}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hide 'Resolve Task' button if state is 'Resolved' or 'Closed' -->
+    <div ng-if="(data.type == 'Incident') && (c.data.fields[1]) &&
+                (c.data.fields[1].value != 6 && c.data.fields[1].value != 7)">
+      <button class="btn btn-primary pull-right" ng-click="c.resolveTask()">{{data.resolveButton}}</button>
+    </div>
+      <div ng-if="(data.type == 'Task') && (c.data.fields[1]) &&
+                (c.data.fields[1].value != 3 && c.data.fields[1].value != 4 && c.data.fields[1].value != 5)">
+      <button class="btn btn-primary pull-right" ng-click="c.resolveTask()">{{data.resolveButton}}</button>
+    </div>
+    
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

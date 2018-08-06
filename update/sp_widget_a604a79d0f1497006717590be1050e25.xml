@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-app-kb-also-in-category</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_app_KB also in Category</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[var gr = new GlideRecord("kb_knowledge");
+if($sp.getParameter('sys_id')) 
+	gr.get($sp.getParameter('sys_id'));
+else { // kb short url
+	var gr = new GlideRecord("kb_knowledge");
+	gr.addQuery('number',$sp.getParameter('sysparm_article'));
+	gr.query();
+	if(gr.next()) {}
+}
+/*
+var kbu = new KBKnowledgeSNC();
+data.isvalid = gr.isValidRecord() && kbu.canRead(gr) && !gr.kb_category.nil();
+*/
+data.isvalid = gr.isValidRecord() && !gr.kb_category.nil();
+data.category = gr.getDisplayValue('kb_category');
+data.category_id = gr.getValue('kb_category');
+data.alsoInMsg = gs.getMessage("Also in {0}", data.category);
+
+data.articles = [];
+if (data.isvalid) {
+	var z = new GlideRecord('kb_knowledge');
+	z.addQuery('kb_category', data.category_id);
+	z.addQuery('workflow_state', 'published');
+	// getLocalDate() doesn't work in Global scope
+	//z.addQuery('valid_to', '>=', (new GlideDate()).getLocalDate().getValue());
+	z.orderByDesc('sys_view_count');
+	z.query();
+	data.count = z.getRowCount();
+	var count = 0;
+	while (z.next() && count < 10) {
+	  if (z.sys_id == gr.sys_id)
+	    continue;
+      
+      if (!z.canRead())
+        continue;
+	  
+	  count++;
+	  var a = {};
+		$sp.getRecordValues(a, z, 'sys_id,short_description,sys_view_count')
+	  a.published = z.getDisplayValue('published');
+	  data.articles.push(a);
+	}
+}]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 22:29:26</sys_created_on>
+        <sys_id>a604a79d0f1497006717590be1050e25</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>ucd_app_KB also in Category</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_a604a79d0f1497006717590be1050e25</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-14 22:30:13</sys_updated_on>
+        <template><![CDATA[          <div class="panel o-box">
+            <h2 class="panel__title" ng-if="::data.isvalid"> {{data.alsoInMsg}}</h2>
+            <section>
+              <ul class="list--arrow list--flush">
+                <li ng-repeat="a in ::data.articles" class="m-b">
+    							<a href="?id=ucd_app_kb_article&sys_id={{::a.sys_id}}">{{::a.short_description}}</a>
+               	</li>
+              </ul>
+               <div ng-show="::(data.articles.length == 0)">
+     						 ${No other articles}
+   						 </div>
+            </section>
+          </div>
+
+
+<!--<sp-panel ng-if="::data.isvalid" title="{{data.alsoInMsg}}">
+	<div ng-repeat="a in ::data.articles" class="m-b" >
+      <a href="?id=ucd_kb_article&sys_id={{::a.sys_id}}">{{::a.short_description}}</a>
+      <div>			
+        <span ng-if="::a.sys_view_count == 1" class="views pad-right">
+          <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::a.sys_view_count}} View}
+        </span>
+        <span ng-if="::a.sys_view_count > 1" class="views pad-right">
+          <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::a.sys_view_count}} Views}
+        </span>
+      </div>
+    </div>
+    
+    <div ng-show="::(data.articles.length == 0)">
+      ${No other articles}
+    </div>
+    
+    <div ng-show="::(data.count > 5)">
+      <a href="?id=ucd_kb_category&kb_category={{::data.category_id}}">${View all {{::data.count}} articles}</a>
+    </div>
+</sp-panel>-->]]></template>
+    </sp_widget>
+</record_update>

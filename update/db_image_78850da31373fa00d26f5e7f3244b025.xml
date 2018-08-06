@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>servicehub-header-bg.svg</name>
+        <size_bytes>6497</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-12 18:01:15</sys_created_on>
+        <sys_id>78850da31373fa00d26f5e7f3244b025</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>servicehub-header-bg.svg</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>db_image_78850da31373fa00d26f5e7f3244b025</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-12 18:01:26</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>6497</size_bytes>
+        <size_compressed>2140</size_compressed>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-12 18:01:25</sys_created_on>
+        <sys_id>cdb5c1231373fa00d26f5e7f3244b0a0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-12 18:01:25</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>78850da31373fa00d26f5e7f3244b025</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="cdb5c1231373fa00d26f5e7f3244b0a0">cdb5c1231373fa00d26f5e7f3244b0a0</sys_attachment>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-12 18:01:25</sys_created_on>
+        <sys_id>01b5c1231373fa00d26f5e7f3244b0a1</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>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</data>
+        <length>2840</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="cdb5c1231373fa00d26f5e7f3244b0a0">cdb5c1231373fa00d26f5e7f3244b0a0</sys_attachment>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-12 18:01:25</sys_created_on>
+        <sys_id>81b5c1231373fa00d26f5e7f3244b0a1</sys_id>
+    </sys_attachment_doc>
+</record_update>

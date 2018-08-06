@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_instance">
+    <sp_instance action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>0</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">aad3d3e1dbea3200178e7fcfbf961965</sp_column>
+        <sp_widget display_value="ucd_My Stuff Approvals">fac29ba1dbea3200178e7fcfbf96190c</sp_widget>
+        <sys_class_name>sp_instance</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-05 19:56:39</sys_created_on>
+        <sys_id>46f31fe1dbea3200178e7fcfbf9619f9</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>My Approvals</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_instance_46f31fe1dbea3200178e7fcfbf9619f9</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-05-05 20:06:13</sys_updated_on>
+        <title>My Approvals</title>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"my_stuff":{
+		"value": "My Approvals",
+		"displayValue": "My Approvals"
+	}
+}]]></widget_parameters>
+    </sp_instance>
+    <sys_translated_text action="delete_multiple" query="documentkey=46f31fe1dbea3200178e7fcfbf9619f9"/>
+</record_update>

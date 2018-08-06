@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {  /* widget controller */  var c = this;}]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,color</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd_kb_top_rated</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Top Rated</name>
+        <option_schema>[{"name":"max_number","label":"Max number","type":"integer"},{"displayValue":"Knowledge Category","name":"kb_category","label":"KB category","type":"reference","value":"kb_category","ed":{"reference":"kb_category"}}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.kbArticlePage = "ucd_kb_article";
+	data.articles = [];
+	var z = $sp.getKBRecord();
+	z.addQuery("rating", ">", "0");
+	if (options.kb_category)
+		z.addQuery("kb_category", options.kb_category);
+	z.orderByDesc('rating');
+	z.setLimit(options.max_number || 5);
+	z.query();
+	while (z.next()) {
+		if (!z.canRead())
+			continue;
+
+		var a = {};
+		$sp.getRecordValues(a, z, 'short_description,sys_view_count,sys_id,published,rating');
+		a.published_display = z.getDisplayValue("published");
+		data.articles.push(a);
+	}
+})()
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-24 22:07:00</sys_created_on>
+        <sys_id>710f5b4c0f3532006df006bce1050e32</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>ucd_KB Top Rated</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_710f5b4c0f3532006df006bce1050e32</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-03-24 22:07:50</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-{{options.color}} b" ng-if="::(data.articles.length > 0)">
+  <div class="panel-heading"> <h4 class="panel-title" ng-bind="::options.title">
+    <fa ng-if="::options.glyph.length" name="::{{options.glyph}}" class="m-r-sm" /></h4>
+  </div>
+  <div class="panel-body">
+    <div ng-repeat="a in ::data.articles" style="margin-bottom: 1em;">
+      <a href="?id={{::data.kbArticlePage}}&sys_id={{::a.sys_id}}">{{::a.short_description}}</a>
+      <div>
+        <span>
+          <uib-rating ng-model="::a.rating" max="5" readonly="true"/>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $sce, $location, spUtil, $rootScope) {
+	var c = this;
+	
+	spUtil.setSearchPage($scope.data.t);
+
+	$scope.getBGImage = function(item) {
+		return {"background-image": "url('" + item.picture + "')"};
+	}
+
+	$scope.highlight = function(haystack, needle) {
+		if (!haystack)
+			return "";
+
+		if (!needle)
+			return $sce.trustAsHtml(haystack);
+
+		return $sce.trustAsHtml(haystack.replace(new RegExp(needle, "gi"), function(match) {
+			return '<mark class="highlight">' + match + '</mark>';
+		}));
+	}
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-catalog-item-results</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Catalog Item Results</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Populate the data object
+	data.query = decodeURI($sp.getParameter('query'));	// Text query
+	data.count = 30;	// catalog item limit
+	data.catalog = '5ec4eed5134143003527bd122244b0af'; // IT Campus Services catalog
+	
+	// Populate results array
+	data.results = [];
+	var api = new ScopedPortalAPI();
+
+	// Set up basic query for IT Campus Services
+	var query = "";
+	query += '^123TEXTQUERY321=' + data.query;
+	
+	// Use ScopedPortalAPI to fetch articles w/ a filter
+	api.getCatalogItems(query, data.catalog, data.results);
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2018-01-24 21:09:06</sys_created_on>
+        <sys_id>3d288fa60f370b006717590be1050e7b</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>ucd_Catalog Item Results</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_3d288fa60f370b006717590be1050e7b</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-24 23:01:16</sys_updated_on>
+        <template><![CDATA[<div class="l-content">
+  <div class="panel o-box--large">
+    <!-- No results section -->
+    <div ng-if="data.results.length==0">
+      <div class="heading--weighted">
+        <h4 class="panel-title">
+          ${No results}
+        </h4></div>
+      <div class="panel-body wrapper break-word">
+        <p>${Your search - <b>{{data.query}}</b> - did not match any documents}</p>
+        <p>${Suggestions}:</p>
+        <ul>
+          <li>${Make sure all words are spelled correctly}</li>
+          <li>${Try different, more general, or fewer keywords}</li>
+        </ul>
+      </div>
+    </div>
+    <!-- Search results title -->
+    <div ng-if="data.results.length>0" class="break-word">
+      <h2 class="heading--weighted">
+        <span class="heading--weighted--weighted">Search</span> 
+        Catalog item results for '{{data.query}}'</h2>
+    </div>
+    <!-- Search result items --> 
+    <div ng-repeat="item in data.results" class="teaser-search">
+        <a href="?id=ucd_cat_item&amp;sys_id={{item.sys_id}}">
+          <h3 ng-bind-html="highlight(item.name, data.query)"></h3>
+        </a>
+      <p ng-bind-html="highlight(item.short_description, data.query)"></p>
+        <ul class="list--pipe text--gray">
+          <li>${Category}: {{item.category}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>]]></template>
+    </sp_widget>
+</record_update>

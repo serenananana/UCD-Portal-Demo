@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_container">
+    <sp_container action="INSERT_OR_UPDATE">
+        <background_color>#ffffff</background_color>
+        <background_image/>
+        <background_style>default</background_style>
+        <bootstrap_alt>false</bootstrap_alt>
+        <class_name/>
+        <container_class_name>cust-container</container_class_name>
+        <name>View Service - Container 1</name>
+        <order>1</order>
+        <sp_page display_value="ucd_view_service_sp">52ea83930f81c7006717590be1050eba</sp_page>
+        <subheader>false</subheader>
+        <sys_class_name>sp_container</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-15 17:18:37</sys_created_on>
+        <sys_id>fb3b275413998300d26f5e7f3244b0cf</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>View Service - Container 1</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_container_fb3b275413998300d26f5e7f3244b0cf</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-12-18 21:01:42</sys_updated_on>
+        <title/>
+        <width>container</width>
+    </sp_container>
+</record_update>

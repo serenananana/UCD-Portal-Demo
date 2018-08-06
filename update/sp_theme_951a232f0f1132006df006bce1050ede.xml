@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_theme">
+    <sp_theme action="INSERT_OR_UPDATE">
+        <css_variables>$sp-logo-margin-x: 		15px !default;&#13;
+$sp-tagline-color:		$text-color !default;&#13;
+$navbar-inverse-bg: 	#3a3f51 !default;&#13;
+$navbar-inverse-link-color: #bdc0c4 !default;&#13;
+$navbar-inverse-link-hover-color: #ffffff !default;&#13;
+$body-bg: 				#f0f3f4 !default;&#13;
+</css_variables>
+        <footer display_value="ucd_Footer">5a25d377db2a3200178e7fcfbf96199e</footer>
+        <footer_fixed>false</footer_fixed>
+        <header display_value="ucd_Header">fe42fb230f5132006df006bce1050e95</header>
+        <name>ucd_Stock</name>
+        <navbar_fixed>true</navbar_fixed>
+        <sys_class_name>sp_theme</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-10 23:22:59</sys_created_on>
+        <sys_id>951a232f0f1132006df006bce1050ede</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>ucd_Stock</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_theme_951a232f0f1132006df006bce1050ede</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-12-11 22:13:49</sys_updated_on>
+    </sp_theme>
+</record_update>

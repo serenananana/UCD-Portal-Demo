@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="m2m_sp_ng_pro_sp_widget">
+    <m2m_sp_ng_pro_sp_widget action="INSERT_OR_UPDATE">
+        <sp_angular_provider display_value="spTagList">60d4ae77d730120023c84f80de6103b5</sp_angular_provider>
+        <sp_widget display_value="Applicant SQANDA Create Question">d6ced7af0f98db006717590be1050ea0</sp_widget>
+        <sys_class_name>m2m_sp_ng_pro_sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-21 21:52:48</sys_created_on>
+        <sys_id>deced7af0f98db006717590be1050ea4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>spTagList.Copy of SQANDA Create Question</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>m2m_sp_ng_pro_sp_widget_deced7af0f98db006717590be1050ea4</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-21 21:52:48</sys_updated_on>
+    </m2m_sp_ng_pro_sp_widget>
+</record_update>

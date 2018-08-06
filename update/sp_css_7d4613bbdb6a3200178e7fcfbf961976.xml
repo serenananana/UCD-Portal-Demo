@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_css">
+    <sp_css action="INSERT_OR_UPDATE">
+        <css>html, body {width: 100%;}&#13;
+body {min-width: 100%;}&#13;
+.header__bar2 {margin: 0 auto;}&#13;
+@media (min-width: 768px) {.header__bar2-search {width: auto;}}&#13;
+.search-form__submit {background-image: url('icon-search.svg');}&#13;
+.breadcrumbs {margin-bottom: 0;}&#13;
+.footer {position: relative;}&#13;
+.col-xs-5ths,&#13;
+.col-sm-5ths,&#13;
+.col-md-5ths,&#13;
+.col-lg-5ths {&#13;
+    position: relative;&#13;
+    min-height: 1px;&#13;
+    padding-right: 15px;&#13;
+    padding-left: 15px;&#13;
+}&#13;
+&#13;
+.col-xs-5ths {&#13;
+    width: 20%;&#13;
+    float: left;&#13;
+}&#13;
+&#13;
+@media (min-width: 768px) {&#13;
+    .col-sm-5ths {&#13;
+        width: 20%;&#13;
+        float: left;&#13;
+    }&#13;
+}&#13;
+&#13;
+@media (min-width: 992px) {&#13;
+    .col-md-5ths {&#13;
+        width: 20%;&#13;
+        float: left;&#13;
+    }&#13;
+}&#13;
+&#13;
+@media (min-width: 1200px) {&#13;
+    .col-lg-5ths {&#13;
+        width: 20%;&#13;
+        float: left;&#13;
+    }&#13;
+}</css>
+        <name>UCD Pattern Lab Compatibility</name>
+        <sys_class_name>sp_css</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-12 19:53:25</sys_created_on>
+        <sys_id>7d4613bbdb6a3200178e7fcfbf961976</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>UCD Pattern Lab Compatibility</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_css_7d4613bbdb6a3200178e7fcfbf961976</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-12-11 22:12:50</sys_updated_on>
+    </sp_css>
+</record_update>

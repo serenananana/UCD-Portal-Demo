@@ -1,0 +1,1027 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($http, $scope, $window, spUtil, $rootScope, $timeout, spAriaUtil) {
+	var c = this;
+	$rootScope.$broadcast([
+		{label: $scope.data.communityBreadcrumb, url: '?id=sqa_tagged_questions'},
+		{label: $scope.page.title, url: '#'}
+	])
+
+	// switch forms
+	var unregister = $scope.$on('$sp.list.click', onListClick);
+	$scope.$on("$destroy", function() {
+		unregister();
+	});
+
+	function onListClick(evt, arg) {
+		c.data.sys_id = arg.sys_id;
+		c.server.update();
+	}
+
+	c.optionalMessage = "";
+	c.recipientList = "";
+	c.link = $window.location.href.replace("&", "%26");
+
+	c.questionVotingDisabled = function() {
+		return (c.data.question.profile.sys_id == c.data.liveProfileID);
+	}
+
+	c.shareConnect = function($event) {
+		var recipientArr = [];
+		c.recipientList.split(",").forEach(function(id) {
+			recipientArr.push("sys_user." + id);
+		});
+
+		var payload = {
+			attachments: [],
+			has_attachments: false,
+			message: c.optionalMessage + "\n\n" + c.link,
+			recipients: recipientArr
+		}
+
+		$http.post("/api/now/connect/messages", payload).then(function(response) {
+			c.optionalMessage = "";
+			c.recipientList = "";
+			$scope.$broadcast("sp-recipient-list.clear");
+			if (response.status === 201) {
+				$('#shareModal').modal('hide');
+			} else {
+
+			}
+		});
+
+	}
+
+	c.isSubscribedStyle = function() {
+		return {color: (c.data.question.subscription !== "") ? '#fcc742' : '#cfcfcf'};
+	};
+
+	function addTimestamp(comment) {
+		comment.timestamp = new Date(comment.sys_created_on).getTime();
+		return comment;
+	}
+
+	for (var id in c.data.comments) {
+    c.data.comments[id].map(addTimestamp);
+	}
+
+	c.createAnswerDraft = "";
+
+	c.createAnswer = function() {
+		//if (c.data.userIsGuest) return;
+		
+		//see current page
+		cur = JSON.stringify(c.data, null, 4); // (Optional) beautiful indented output.
+		console.log(cur); // Displays output using window.alert()
+		
+		if (c.createAnswerDraft.length <= 0) return;
+		
+		//try this way of calilgn API
+		var request = new sn_ws.RESTMessageV2();
+request.setEndpoint('https://ucdavisietdev.service-now.com/api/now/table/kb_social_qa_answer?sysparm_limit=1');
+request.setHttpMethod('GET');
+
+//Eg. UserName="admin", Password="admin" for this code sample.
+var user = 'admin';
+var password = 'admin';
+
+request.setBasicAuth(user,password);
+request.setRequestHeader("Accept","application/json");
+
+var response = request.execute();
+alert.log(response.getBody());
+		return;
+	
+
+		$http.post("/api/now/table/kb_social_qa_answer", {
+			question: c.data.questionID,
+			answer: c.createAnswerDraft,
+			accepted: false,
+			sys_id: c.data._attachmentGUID
+		}).then(function(response) {
+			//see response
+			res = JSON.stringify(response, null, 4);
+			console.log(res);
+			
+			if (response.status === 201) {//created
+				var newAnswer = response.data.result;
+				newAnswer.accepted = (newAnswer.accepted === "true");
+				newAnswer.has_comment = (newAnswer.has_comment === "true");
+				newAnswer.addCommentState = false;
+				spAriaUtil.sendLiveMessage(c.data.answerSubmitted);
+
+				$http.get(newAnswer.profile.link).then(function(response) {
+					if (response.status == 200) {
+						newAnswer.profile = response.data.result;
+						$http.get(response.data.result.document.link).then(function(response) {
+							if (response.status == 200)
+								newAnswer.profile.document = response.data.result;
+						});
+					}
+				});
+
+				c.data.votes[newAnswer.sys_id] = [];
+				c.data.comments[newAnswer.sys_id] = [];
+				c.data.answers.push(newAnswer);
+				c.createAnswerDraft = "";
+
+				c.server.get({method:'generate_guid'}).then(function(response) {
+					c.data._attachmentGUID = response.data._attachmentGUID;
+				});
+			}
+			else{
+				alert("response is not 201");
+			}
+		});
+	};
+
+	c.toggleEdit = function($event, editObj, editFieldName) {
+		if (editObj.editState)
+			editObj.editState = false;
+		else {
+			editObj.draft = editObj[editFieldName];
+			editObj.editState = true;
+		}
+	};
+
+	c.edit = function(refObj, refField, table) {
+		var reqParameters = {};
+		reqParameters[refField] = refObj.draft;
+		$http.put("/api/now/table/" + table + "/" + refObj.sys_id, reqParameters)
+			.then(function(response) {
+				if (response.status === 200) {
+					refObj[refField] = response.data.result[refField];
+					refObj.editState = false;
+					spAriaUtil.sendLiveMessage($scope.data.editMsg);
+				}
+			});
+	};
+
+	c.postComment = function($event, referenceObj, referenceTable) {
+		//if (c.data.userIsGuest) return;
+
+		if (referenceObj.commentDraft.length <= 0) return;
+
+		$http.post("/api/now/table/kb_social_qa_comment", {
+			comment: referenceObj.commentDraft,
+			reference_id: referenceObj.sys_id,
+			reference_name: referenceTable
+		}).then(function(response) {
+			if (response.status === 201) {
+				var newComment = response.data.result;
+				newComment.timestamp = new Date(newComment.sys_created_on).getTime();
+				$http.get(newComment.profile.link).then(function(response) {
+					if (response.status === 200) {
+						newComment.profile = response.data.result;
+						$http.get(response.data.result.document.link).then(function(response) {
+							if (response.status == 200)
+								newComment.profile.document = response.data.result;
+						});
+					}
+				});
+				c.data.comments[referenceObj.sys_id].push(newComment);
+				referenceObj.addCommentState = false;
+				referenceObj.commentDraft = "";
+				spAriaUtil.sendLiveMessage($scope.data.commentPostedMsg);
+			}
+		});
+	};
+
+	c.cancelComment = function($event, referenceObj) {
+		referenceObj.addCommentState = false;
+		referenceObj.commentDraft = "";
+		spAriaUtil.sendLiveMessage($scope.data.cancelCommentMessage);
+	};
+
+	c.handleCommentSubmitEvent = function($event, referenceObj, referenceTable) {
+		if ($event.keyCode === 13) {
+			c.postComment($event, referenceObj, referenceTable);
+		}
+	};
+
+	c.getVoteCount = function(voteArray) {
+		var upvotes = voteArray.filter(function(vote) {return vote.type === "upvote";});
+		var downvotes = voteArray.filter(function(vote) {return vote.type === "downvote";});
+		return upvotes.length - downvotes.length;
+	};
+
+	c.showActiveArrow = function(id, isUpvote) {
+		var votes = $.grep(c.data.votes[id], function(vote) {return vote.profile === c.data.liveProfileID;});
+		if (votes.length <= 0) return false;
+		var vote = votes[0];
+		return isUpvote === (vote.type === "upvote");
+	};
+
+	c.goToUser = function(userID) {
+		window.location.href = "?id=user_profile&sys_id=" + userID;
+	};
+
+	c.vote = function($event, table, id, isUpvote) {
+		//if (c.data.userIsGuest)
+			//return;
+
+		if (table === "kb_social_qa_question" && c.questionVotingDisabled())
+			return;
+
+		if (c.data.votes[id].some(function(vote) {return vote.profile === c.data.liveProfileID;})) {
+			var vote = $.grep(c.data.votes[id], function(vote) {return vote.profile === c.data.liveProfileID;})[0];
+			$http({
+				method: "DELETE",
+				url: "/api/now/table/kb_social_qa_vote/" + vote.sys_id
+			}).then(function(response){
+				c.data.votes[id] = c.data.votes[id].filter(function(v) {return v.sys_id !== vote.sys_id;});
+			});
+		} else {
+			$http.post("/api/now/table/kb_social_qa_vote", {
+				reference_id: id,
+				reference_name: table,
+				up_vote: isUpvote
+			}).then(function(response) {
+				if (response.status === 201) {
+					var result = response.data.result;
+					result.profile = result.profile.value || "";
+					result.type = (result.up_vote === "true") ? "upvote" : "downvote";
+					c.data.votes[result.reference_id.value].push(result);
+				}
+			});
+		}
+	};
+
+	c.toggleAccept = function($event, answerID, acceptValue) {
+		if (c.data.userIsGuest) return;
+
+		$http.put("/api/now/table/kb_social_qa_answer/" + answerID, {
+			accepted: acceptValue
+		}).then(function(response) {
+			if (response.status === 200) {
+				for (var i = 0; i < c.data.answers.length; i++) {
+					if (c.data.answers[i].sys_id === answerID)
+						c.data.answers[i].accepted = (response.data.result.accepted === "true");
+					 else
+						c.data.answers[i].accepted = false;
+				}
+				if(response.data.result.accepted === "true")
+					spAriaUtil.sendLiveMessage($scope.data.acceptedMsg);
+				else
+					spAriaUtil.sendLiveMessage($scope.data.unAcceptedMsg);
+			}
+		});
+	};
+
+	c.toggleSubscribe = function($event) {
+		if (c.data.userIsGuest) return;
+
+		if (c.data.question.subscription) { //unsubscribe
+			$http({
+				method: "DELETE",
+				url: "/api/now/table/kb_social_qa_subscribe/" + c.data.question.subscription
+			}).then(function(response) {
+				if (response.status === 204) {
+					c.data.question.subscription = "";
+					spAriaUtil.sendLiveMessage($scope.data.unsubscribeMessage);
+				}
+			});
+		} else { //subscribe
+			$http.post("/api/now/table/kb_social_qa_subscribe", {
+				profile: c.data.liveProfileID,
+				question: c.data.questionID
+			}).then(function(response) {
+				if (response.status === 201) {
+					c.data.question.subscription = response.data.result.sys_id;
+					spAriaUtil.sendLiveMessage($scope.data.subscribeMessage);
+				}
+			});
+		}
+	};
+
+	c.toggleCommentState = function() {
+		c.data.question.addCommentState = !c.data.question.addCommentState;
+		if (c.data.question.addCommentState)
+			$scope.setQuestionCommentBoxFocus();
+	};
+
+	c.toggleAnswerCommentState = function(index) {
+		c.data.answers[index].addCommentState = !c.data.answers[index].addCommentState;
+		$scope.setAnswerCommentBoxFocus();
+	};
+
+	c.getEmailSubject = function() {
+		return c.data.question.question ? window.encodeURIComponent(c.data.question.question) : "";
+	};
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>$tag: darken(adjust-hue($primary, -5%), 10);
+
+.qa-text {
+  font-size: 15px;
+  line-height: 19px;
+}
+
+.vote-block {
+  	text-align: center;
+	position: relative;
+  	right: 10px;
+  	font-size: 20px;
+  	margin-bottom: 20px;
+
+  	.fa {
+      font-size: 20px;
+    }
+
+ 	.fa-sort-asc, .fa-sort-desc{
+      font-size: 38px;
+    }
+
+  i {
+    display: block;
+  }
+}
+.fa.fa-circle.btn-divider {
+  margin-right: 5px;
+  margin-left: 0;
+  vertical-align: inherit;
+  color: $text-muted;
+}
+
+.fa.fa-circle {
+  font-size: 5px;
+  color: $text-color;
+  vertical-align: middle;
+  margin: 0 3px;
+}
+
+.question {
+	h3 {
+      padding: 10px 0;
+    }
+}
+
+//wrappers for the voting arrow icons, they are not normalized sizes like the other icons
+.vote-up-button {
+	height: 19px;
+}
+
+.vote-down-button {
+	margin-top: -18px;
+}
+
+//align the vote count with the answer if the controls are hidden
+.hidden-voting-controls {
+  margin-top: -4px;
+}
+
+.vote {
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-transition: all 0.2s;
+}
+
+.option {
+  padding: 0;
+  padding-right: 5px;
+  color: $text-muted;
+}
+
+.create-answer {
+  width: 100%;
+}
+
+a.question-tag {
+    color: $tag;
+    background-color: lighten($tag, 50);
+    border: lighten($tag, 50);
+    display: inline-block;
+    margin: 4px 4px 0;
+    border-radius: 0;
+    text-align: center;
+    line-height: 1;
+    padding: .4em .5em;
+
+  &amp;:first-child {
+  	margin: 4px 4px 4px 0;
+  }
+
+  &amp;:hover {
+  	color: darken($tag, 10);
+    background-color: lighten($tag, 40);
+    border: lighten($tag, 40);
+  }
+}
+
+.vote-icon-size {
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .vote-icon-size {
+  	font-size: 2em;
+  }
+}
+
+.share-icon {
+  padding-right: 15px;
+}
+
+img {
+  max-width: 100%;
+  max-height: 480px;
+}
+
+.disabled {
+  color: darken($gray-light, 15%);
+  cursor: default;
+}
+
+.mobile-timeago {
+	line-height: 2;
+}
+
+.answer {
+  position: relative;
+}
+
+.answer.ng-enter {
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  top: 15px;
+  opacity: 0;
+}
+
+.answer.ng-enter-active {
+  top: 0;
+  opacity: 1
+}
+
+.comment {
+  position: relative;
+  z-index: 2;
+  background-color: inherit;
+  margin-top: 5px;
+  padding: 8px 0 4px !important;
+  border-top: 1px dashed rgba($gray-dark, 0.25);
+
+  a {
+  	white-space: nowrap;
+  }
+
+}
+
+.comment.ng-enter {
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  bottom: 15px;
+  opacity: 0;
+  z-index: 1;
+}
+
+.comment.ng-enter-active {
+  bottom: 0;
+  opacity: 1;
+}
+
+.input-item {
+  margin-bottom: 10px;
+}
+
+.comment-entry.ng-enter {
+  -webkit-transition: 0.15s;
+  transition: 0.15s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  opacity: 0;
+}
+
+.comment-entry.ng-enter-active {
+  opacity: 1;
+}
+
+.comment-entry.ng-leave {
+  -webkit-transition: 0.15s;
+  transition: 0.15s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  opacity: 1;
+}
+
+.comment-entry.ng-leave-active {
+  opacity: 0;
+}
+
+.unstyled-list {
+	list-style: none;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>app-sqanda-question</id>
+        <internal>false</internal>
+        <link><![CDATA[function(scope, elem, attr) {
+	scope.setQuestionCommentBoxFocus = function () {
+		setTimeout(function () {
+			elem.find("input.comment-question-textarea").attr('tabIndex', '-1').focus();
+		}, 0);
+	};
+	scope.setAnswerCommentBoxFocus = function () {
+		setTimeout(function () {
+			var inboxArray = elem.find("input.comment-answer-textarea");
+			inboxArray.attr('tabIndex', '-1').focus();
+		}, 0);
+	};
+}]]></link>
+        <name>Applicant SQANDA Question</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function () {
+	data.recipientsMsg = gs.getMessage("Recipients");
+	data.commentMsg = gs.getMessage("Add a comment");
+	data.optionalMsg = gs.getMessage("Optional Message");
+	data.communityBreadcrumb = gs.getMessage("Community");
+	data.subscribeMessage = gs.getMessage("You subscribed to this question");
+	data.unsubscribeMessage = gs.getMessage("You unsubscribed from this question");
+	data.answerSubmitted = gs.getMessage("Your answer has been posted");
+	data.commentPostedMsg = gs.getMessage("Your comment has been posted");
+	data.cancelCommentMessage = gs.getMessage("Your comment was canceled");
+	data.acceptedMsg = gs.getMessage("You accepted this answer");
+	data.unAcceptedMsg = gs.getMessage("You unaccepted this answer");
+	data.editMsg = gs.getMessage("You have editted successfully");
+	data.questionID = $sp.getParameter("question_id") || $sp.getParameter("sys_id");
+
+	if (input == null)
+		data._attachmentGUID = gs.generateGUID();
+
+	if (input && input.method == 'generate_guid') {
+		data._attachmentGUID = gs.generateGUID();
+		return;
+	}
+
+	if (input)
+		data.questionID = input.sys_id;
+
+	if (input && input.method === 'save') {
+		data.result = createAnswer(input);
+	}
+
+	if (!data.questionID){
+		var answerId = $sp.getParameter("answer_id");
+		if (answerId) {
+			var answer = new GlideRecord("kb_social_qa_answer");
+			answer.get(answerId);
+			data.questionID = answer.getValue('question');
+		} else
+			return;
+	}
+
+	data.sysUserID = gs.getUser().getID();
+	data.userIsGuest = (gs.getUserName() === "guest");
+	var liveProfileGR = new GlideRecord("live_profile");
+	liveProfileGR.addQuery("document", data.sysUserID);
+	liveProfileGR.query();
+	data.liveProfileID = (liveProfileGR.next()) ? liveProfileGR.getValue("sys_id") : "";
+
+	var questionGR = new GlideRecord("kb_social_qa_question");
+	if (questionGR.get(data.questionID)) {
+		incrementViewCounter(data.questionID)
+
+		//get question
+		data.question = new Question(questionGR);
+		data.answers = [];
+		data.comments = {};
+		data.votes = {};
+
+		//get question votes
+		var questionVotes = [];
+		var questionVoteGR = new GlideRecord("kb_social_qa_vote");
+		questionVoteGR.addActiveQuery();
+		questionVoteGR.addQuery("reference_name", "kb_social_qa_question");
+		questionVoteGR.addQuery("reference_id", data.questionID);
+		questionVoteGR.query();
+		while(questionVoteGR.next())
+			questionVotes.push(new Vote(questionVoteGR));
+
+		data.votes[data.questionID] = questionVotes;
+
+		//get comments on the question
+		var questionComments = [];
+		var commentGR = new GlideRecord("kb_social_qa_comment");
+		commentGR.addActiveQuery();
+		commentGR.addQuery("reference_name", "kb_social_qa_question");
+		commentGR.addQuery("reference_id", data.questionID);
+		commentGR.query();
+		while(commentGR.next())
+			questionComments.push(new Comment(commentGR));
+
+		data.comments[data.questionID] = questionComments;
+
+		//get answers
+		var answerGR = new GlideRecord("kb_social_qa_answer");
+		answerGR.addActiveQuery();
+		answerGR.orderByDesc("accepted");
+		answerGR.orderByDesc("votes");
+		answerGR.addQuery("question", data.questionID);
+		answerGR.query();
+
+		var answerIDs = [];
+		while (answerGR.next()) {
+			var answer = new Answer(answerGR);
+			data.answers.push(answer);
+			answerIDs.push(answer.sys_id);
+			data.comments[answer.sys_id] = [];
+			data.votes[answer.sys_id] = [];
+		}
+
+		//get comments on the answers
+		var answerCommentGR = new GlideRecord("kb_social_qa_comment");
+		answerCommentGR.addActiveQuery();
+		answerCommentGR.addQuery("reference_name", "kb_social_qa_answer");
+		answerCommentGR.addQuery("reference_id", "IN", answerIDs.toString());
+		answerCommentGR.query();
+		while(answerCommentGR.next()) {
+			var comment = new Comment(answerCommentGR);
+			data.comments[comment.reference_id].push(comment);
+		}
+
+		//get answer votes
+		var answerVoteGR = new GlideRecord("kb_social_qa_vote");
+		answerVoteGR.addActiveQuery();
+		answerVoteGR.addQuery("reference_name", "kb_social_qa_answer");
+		answerVoteGR.addQuery("reference_id", "IN", answerIDs.toString());
+		answerVoteGR.query();
+		while(answerVoteGR.next()) {
+			var vote = new Vote(answerVoteGR);
+			data.votes[vote.reference_id].push(vote);
+		}
+	}
+
+	function Question(gr) {
+		this.addCommentState = false;
+		this.sys_created_on = gr.getValue("sys_created_on");
+		this.question = gr.getValue("question");
+		this.question_details = gr.getValue("question_details");
+		this.sys_id = gr.getValue("sys_id");
+		this.views = gr.getValue("views");
+		this.tableName = gr.getTableName();
+		this.profile = new Profile(gr.getElement("profile").getRefRecord());
+
+		this.tags = [];
+		var labelEntryGR = new GlideRecord("sqanda_tag_entry");
+		labelEntryGR.addQuery('reference_id', this.sys_id);
+		labelEntryGR.query();
+		while(labelEntryGR.next())
+			this.tags.push(new Tag(labelEntryGR.getElement('tag').getRefRecord()))
+
+			this.subscription = "";
+		var subscriptionGR = new GlideRecord("kb_social_qa_subscribe");
+		subscriptionGR.addQuery("question", data.questionID);
+		subscriptionGR.addQuery("profile", data.liveProfileID);
+		subscriptionGR.query();
+		if (subscriptionGR.next())
+			this.subscription = subscriptionGR.getValue("sys_id");
+	}
+
+	function Profile(gr) {
+		this.name = gr.getValue("name");
+		this.sys_id = gr.getValue("sys_id");
+		this.document = {
+			sys_id: gr.getValue("document")
+		};
+	}
+
+	function Vote(gr) {
+		this.sys_id = gr.getValue("sys_id");
+		this.profile = gr.getValue("profile");
+		this.reference_id = gr.getValue("reference_id");
+		this.up_vote = gr.getValue("up_vote");
+		this.type = (gr.getValue("up_vote") === "1") ? "upvote" : "downvote";
+	}
+
+	function Answer(gr) {
+		this.sys_id = gr.getValue("sys_id");
+		this.votes = gr.getValue("votes");
+		this.profile = new Profile(gr.getElement("profile").getRefRecord());
+		this.accepted = (gr.getValue("accepted") === "1");
+		this.sys_created_on = gr.getValue("sys_created_on");
+		this.answer = gr.getValue("answer");
+		this.tableName = gr.getTableName();
+		this.addCommentState = false;
+	}
+
+	function Comment(gr) {
+		this.sys_id = gr.getValue("sys_id");
+		this.comment = gr.getValue("comment");
+		this.reference_id = gr.getValue("reference_id");
+		this.sys_created_on = gr.getValue("sys_created_on");
+		this.profile = new Profile(gr.getElement("profile").getRefRecord());
+	}
+
+	function Tag(gr) {
+		this.sys_id = gr.getUniqueValue();
+		this.name = gr.getValue('name');
+	}
+
+	function incrementViewCounter(questionID) {
+		//Increment the view counter
+		var viewGR = new GlideRecord("kb_social_qa_view");
+		viewGR.addActiveQuery();
+		viewGR.addQuery("question", questionID);
+		viewGR.addQuery("session_id", gs.getSessionID());
+		viewGR.query();
+
+		if (!viewGR.hasNext()) {
+			var newViewGR = new GlideRecord("kb_social_qa_view");
+			newViewGR.initialize();
+			newViewGR.setWorkflow(true);
+			newViewGR.setValue("question", questionID);
+			newViewGR.insert();
+		}
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-21 21:29:58</sys_created_on>
+        <sys_id>7b891f6b0f98db006717590be1050e7f</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name>Applicant SQANDA Question</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_7b891f6b0f98db006717590be1050e7f</sys_update_name>
+        <sys_updated_by>nexisn4</sys_updated_by>
+        <sys_updated_on>2018-02-22 00:03:13</sys_updated_on>
+        <template><![CDATA[<div>
+    <div ng-if="c.data.question">
+        <!-- BEGIN Question -->
+        <div class="panel panel-default question">
+            <div class="panel-heading">
+                <h3 class="m-n">{{c.data.question.question}}</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row m-b m-t m-r-none m-l-none">
+                    <div class="col-md-1 col-sm-2 hidden-xs vote-block">
+                        <div class="vote-up-button">
+                            <i class="vote fa fa-sort-asc" aria-label="${Vote up}"
+                               ng-click="c.vote($event, 'kb_social_qa_question', c.data.question.sys_id, true)"
+                               ng-class="{'active': c.showActiveArrow(c.data.question.sys_id, true), 'disabled': c.questionVotingDisabled()}"
+                               ng-disabled='c.questionVotingDisabled()'></i>
+                        </div>
+                        <div>{{c.getVoteCount(c.data.votes[c.data.question.sys_id])}}</div>
+                        <div class="vote-down-button">
+                            <i class="vote fa fa-sort-desc" aria-label="${Vote down}"
+                               ng-click="c.vote($event, 'kb_social_qa_question', c.data.question.sys_id, false)"
+                               ng-class="{'active': c.showActiveArrow(c.data.question.sys_id, false), 'disabled': c.questionVotingDisabled()}"
+                               ng-disabled='c.questionVotingDisabled()'></i>
+                        </div>
+                        <i ng-if="!data.userIsGuest" aria-label="{{c.data.question.subscription !== '' ? '${Unsubscribe}' : '${Subscribe}'}}"
+                           class="fa fa-star m-t-xs vote"
+                           ng-click="c.toggleSubscribe($event)"
+                           ng-style="c.isSubscribedStyle()"></i>
+                    </div>
+                    <div class="col-md-11 col-sm-10 col-xs-11">
+                        <div class="col-xs-2 visible-xs-inline-block vote-block">
+                            <div class="vote-up-button">
+                                <i class="vote fa fa-sort-asc" aria-label="${Vote up}"
+                                   ng-click="c.vote($event, 'kb_social_qa_question', c.data.question.sys_id, true)"
+                                   ng-class="{'active': c.showActiveArrow(c.data.question.sys_id, true), 'disabled': c.questionVotingDisabled()}"
+                                   ng-disabled='c.questionVotingDisabled()'></i>
+                            </div>
+                            <div>{{c.getVoteCount(c.data.votes[c.data.question.sys_id])}}</div>
+                            <div class="vote-down-button">
+                                <i class="vote fa fa-sort-desc" aria-label="${Vote down}"
+                                   ng-click="c.vote($event, 'kb_social_qa_question', c.data.question.sys_id, false)"
+                                   ng-class="{'active': c.showActiveArrow(c.data.question.sys_id, false), 'disabled': c.questionVotingDisabled()}"
+                                   ng-disabled='c.questionVotingDisabled()'></i>
+                            </div>
+                            <i ng-if="!data.userIsGuest" aria-label="{{c.data.question.subscription !== '' ? '${Unsubscribe}' : '${Subscribe}'}}"
+                               class="fa fa-star m-t-xs vote"
+                               ng-click="c.toggleSubscribe($event)"
+                               ng-style="c.isSubscribedStyle()"></i>
+                        </div>
+                        <div class="row m-b break-word">
+                            <div class="qa-text">
+                                <sp-html-content ng-if="!c.data.question.editState" model="c.data.question.question_details"></sp-html-content>
+                                <div ng-if="c.data.question.editState">
+                                    <sp-tinymce-editor ng-model="c.data.question.draft" ng-model-options="{}" class="create-answer" attachment-guid="c.data.question.sys_id" record-table-name="c.data.question.tableName"></sp-tinymce-editor>
+                                    <button name="save" type="submit" ng-click="c.edit(c.data.question, 'question_details', 'kb_social_qa_question')" class="btn btn-primary m-t pull-right">${Save}</button>
+                                    <button name="cancel" type="submit" ng-click="c.toggleEdit($event, c.data.question, 'question_details')" class="btn btn-default m-t m-r-sm pull-right">${Cancel}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visible-xs-inline-block" role="list">
+                            <a ng-repeat="tag in c.data.question.tags" ng-href="?id=sqa_tagged_questions&sys_id={{tag.sys_id}}" class="question-tag" role="listitem">{{tag.name}}</a>
+                        </div>
+                        <div class="row hidden-xs" role="list">
+                            <a ng-repeat="tag in c.data.question.tags" ng-href="?id=sqa_tagged_questions&sys_id={{tag.sys_id}}" class="question-tag" role="listitem">{{tag.name}}</a>
+                        </div>
+                        <div class="row m-b m-t">
+                            <div class="btn-group">
+                                <button ng-if="!data.userIsGuest" type="button" class="btn btn-link dropdown-toggle option" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    ${Share}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="javascript:void(0)" data-toggle="modal" data-target="#shareModal"><span class="fa fa-comments share-icon"></span>${Share via Connect}</a></li>
+                                    <li><a ng-href="mailto:?to=&body={{c.link}},&subject={{::c.getEmailSubject()}}"><span class="fa fa-envelope share-icon"></span>${Share via Email}</a></li>
+                                </ul>
+                            </div>
+                            <i class="fa fa-circle btn-divider" ng-if="!data.userIsGuest" aria-hidden="true"></i>
+                            <button class="btn btn-link option" ng-click="c.toggleCommentState()" ng-if="!data.userIsGuest">${Comment}</button>
+                            <i class="fa fa-circle btn-divider" ng-if="c.data.question.profile.sys_id === c.data.liveProfileID" aria-hidden="true"></i>
+                            <button class="btn btn-link option" ng-click="c.toggleEdit($event, c.data.question, 'question_details')" ng-if="c.data.question.profile.sys_id === c.data.liveProfileID">${Edit}</button>
+                            <div class="hidden-xs pull-right">
+                                <sn-time-ago timestamp="c.data.question.sys_created_on"></sn-time-ago>
+                                <i aria-hidden="true" class="fa fa-circle" aria-hidden="true"></i>
+                                ${Asked by} <a href="javascript:void(0)" ng-click="c.goToUser(c.data.question.profile.document.sys_id)">{{c.data.question.profile.name}}</a>
+                                <sn-avatar class="m-l-xs" primary="c.data.question.profile.document.sys_id"></sn-avatar>
+                            </div>
+                        </div>
+                        <div class="row visible-xs-block m-b mobile-timeago">
+                            <sn-avatar primary="c.data.question.profile.document.sys_id"></sn-avatar>
+                            <a href="javascript:void(0)" ng-click="c.goToUser(c.data.question.profile.document.sys_id)">{{c.data.question.profile.name}}</a>
+                            <sn-time-ago class="pull-right" timestamp="c.data.question.sys_created_on"></sn-time-ago>
+                        </div>
+                        <div ng-if="c.data.question.addCommentState" class="row m-r-none m-b comment-entry">
+                            <input ng-keydown="c.handleCommentSubmitEvent($event, c.data.question, 'kb_social_qa_question')" class="comment-question-textarea form-control" placeholder="{{c.data.commentMsg}}" ng-model="c.data.question.commentDraft" />
+                            <button name="comment" type="button" ng-click="c.postComment($event, c.data.question, 'kb_social_qa_question')" class="btn btn-primary m-l-sm pull-right m-t-sm">${Post comment}</button>
+                            <button name="cancel" type="button" ng-click="c.cancelComment($event, c.data.question)" class="btn btn-default pull-right m-t-sm">${Cancel}</button>
+                        </div>
+                        <ul class="unstyled-list">
+                            <li ng-repeat="comment in c.data.comments[data.question.sys_id] | orderBy:'timestamp'" class="row wrapper-sm comment break-word">
+                                <div ng-if="!comment.editState">
+                                    {{comment.comment}} -
+                                    <a href="javascript:void(0)" ng-click="c.goToUser(comment.profile.document.sys_id)">{{comment.profile.name}}</a>
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                    <sn-time-ago timestamp="comment.sys_created_on"></sn-time-ago>
+                                    <span ng-if="comment.profile.sys_id === c.data.liveProfileID"> <i class="fa fa-circle" aria-hidden="true"></i> <a href="javascript:void(0)" ng-click="c.toggleEdit($event, comment, 'comment')">${Edit}</a></span>
+                                </div>
+                                <div ng-if="comment.editState">
+                                    <input class="form-control" placeholder="{{c.data.commentMsg}}" ng-model="comment.draft" />
+                                    <button name="save" type="button" ng-click="c.edit(comment, 'comment', 'kb_social_qa_comment')" class="btn btn-primary m-l-sm pull-right m-t-sm">${Save}</button>
+                                    <button name="cancel" type="button" ng-click="c.toggleEdit($event, comment, 'comment')" class="btn btn-default pull-right m-t-sm">${Cancel}</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END Question -->
+        <!-- BEGIN Answers -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 ng-if="c.data.answers.length === 1" class="panel-title">{{c.data.answers.length}} ${Answer}</h4>
+                <h4 ng-if="c.data.answers.length !== 1" class="panel-title">{{c.data.answers.length}} ${Answers}</h4>
+            </div>
+            <ul class="unstyled-list panel-body">
+                <li ng-repeat="answer in c.data.answers" ng-class="{'light-border-bottom': !$last}" class="answer row m-r-none m-l-none m-t padder-b">
+                    <div class="col-md-1 col-sm-2 col-xs-2 vote-icon-size vote-block">
+                        <div class="vote-up-button" ng-show="answer.profile.sys_id !== c.data.liveProfileID">
+                            <i class="vote fa fa-sort-asc" aria-label="${Vote up}"
+                               ng-click="c.vote($event, 'kb_social_qa_answer', answer.sys_id, true)"
+                               ng-class="{'active': c.showActiveArrow(answer.sys_id, true), 'disabled': data.userIsGuest}"
+                               ng-disabled='data.userIsGuest'></i>
+                        </div>
+                        <div ng-class="{'hidden-voting-controls': answer.profile.sys_id === c.data.liveProfileID}">{{c.getVoteCount(c.data.votes[answer.sys_id])}}</div>
+                        <div class="vote-down-button" ng-show="answer.profile.sys_id !== c.data.liveProfileID">
+                            <i class="vote fa fa-sort-desc" aria-label="${Vote down}"
+                               ng-click="c.vote($event, 'kb_social_qa_answer', answer.sys_id, false)"
+                               ng-class="{'active': c.showActiveArrow(answer.sys_id, false), 'disabled': data.userIsGuest}"
+                               ng-disabled='data.userIsGuest'></i>
+                        </div>
+                        <i aria-label="${Accepted Answer Icon}" ng-show="answer.accepted" class="fa fa-check-circle text-success m-t-xs"></i>
+                    </div>
+                    <div class="col-md-11 col-sm-10 col-xs-10">
+                        <div class="row m-b break-word">
+                            <div class="qa-text">
+                                <sp-html-content ng-if="!answer.editState" model="answer.answer"></sp-html-content>
+                                <div ng-if="answer.editState">
+                                    <sp-tinymce-editor ng-model="answer.draft" ng-model-options="{}" class="create-answer" record-table-name="'kb_social_qa_answer'" attachment-guid="answer.sys_id"></sp-tinymce-editor>
+                                    <button name="save" type="submit" ng-click="c.edit(answer, 'answer', 'kb_social_qa_answer')" class="btn btn-primary m-t pull-right">${Save}</button>
+                                    <button name="cancel" type="submit" ng-click="c.toggleEdit($event, answer, 'answer')" class="btn btn-default m-t m-r-sm pull-right">${Cancel}</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row m-b m-t">
+                            <div>
+                                <button class="btn btn-link option" ng-click="c.toggleAnswerCommentState($index)">${Comment}</button>
+                                <i class="fa fa-circle btn-divider" ng-if="answer.profile.sys_id === c.data.liveProfileID" aria-hidden="true"></i>
+                                <button class="btn btn-link option" ng-click="c.toggleEdit($event, answer, 'answer')" ng-if="answer.profile.sys_id === c.data.liveProfileID">${Edit}</button>
+                                <i class="fa fa-circle btn-divider" ng-if="c.data.question.profile.sys_id === c.data.liveProfileID" aria-hidden="true"></i>
+                                <button class="btn btn-link option" ng-if="c.data.question.profile.sys_id === c.data.liveProfileID && !answer.accepted"
+                                        ng-click="c.toggleAccept($event, answer.sys_id, true)">
+                                    ${Accept}
+                                </button>
+                                <button class="btn btn-link option" ng-if="c.data.question.profile.sys_id === c.data.liveProfileID && answer.accepted"
+                                        ng-click="c.toggleAccept($event, answer.sys_id, false)">
+                                    ${Unaccept}
+                                </button>
+                                <div class="hidden-xs pull-right">
+                                    <sn-time-ago timestamp="answer.sys_created_on"></sn-time-ago>
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                    ${Answered by} <a href="javascript:void(0)" ng-click="c.goToUser(answer.profile.document.sys_id)">{{answer.profile.name}}</a>
+                                    <sn-avatar class="m-l-xs" primary="answer.profile.document.sys_id"></sn-avatar>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row visible-xs-block m-b">
+                            <sn-avatar primary="answer.profile.document.sys_id"></sn-avatar>
+                            <a href="javascript:void(0)" ng-click="c.goToUser(answer.profile.document.sys_id)">{{answer.profile.name}}</a>
+                            <sn-time-ago class="pull-right" timestamp="answer.sys_created_on"></sn-time-ago>
+                        </div>
+
+                        <div ng-if="answer.addCommentState" class="row m-b comment-entry">
+                            <input class="form-control comment-answer-textarea" ng-keydown="c.handleCommentSubmitEvent($event, answer, 'kb_social_qa_answer')" placeholder="{{c.data.commentMsg}}" ng-model="answer.commentDraft" />
+                            <button name="comment" type="button" ng-click="c.postComment($event, answer, 'kb_social_qa_answer')" class="btn btn-primary pull-right m-l-sm m-t-sm">${Post comment}</button>
+                            <button name="cancel" type="button" ng-click="c.cancelComment($event, answer)" class="btn btn-default pull-right m-t-sm">${Cancel}</button>
+                        </div>
+                        <ul class="unstyled-list">
+                            <li ng-repeat="comment in c.data.comments[answer.sys_id] | orderBy:'timestamp'" class="row wrapper-sm comment break-word">
+                                <div class="comment-content" ng-if="!comment.editState">
+                                    {{comment.comment}} -
+                                    <a href="javascript:void(0)" ng-click="c.goToUser(comment.profile.document.sys_id)">{{comment.profile.name}}</a>
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                    <sn-time-ago timestamp="comment.sys_created_on"></sn-time-ago>
+                                    <span ng-if="comment.profile.sys_id === c.data.liveProfileID"> <i class="fa fa-circle" aria-hidden="true"></i> <a href="javascript:void(0)" ng-click="c.toggleEdit($event, comment, 'comment')">${Edit}</a></span>
+                                </div>
+                                <div ng-if="comment.editState">
+                                    <input class="form-control" placeholder="{{c.data.commentMsg}}" ng-model="comment.draft" />
+                                    <button name="save" type="button" ng-click="c.edit(comment, 'comment', 'kb_social_qa_comment')" class="btn btn-primary m-l-sm pull-right m-t-sm">${Save}</button>
+                                    <button name="cancel" type="button" ng-click="c.toggleEdit($event, comment, 'comment')" class="btn btn-default pull-right m-t-sm">${Cancel}</button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- END Answers -->
+        <div class="panel panel-default light-border-bottom ">
+            <div class="panel-heading">
+                <h4 class="panel-title">${Your Answer}</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row m-t">
+                    <div class="col-xs-12">
+                        <sp-tinymce-editor ng-model="c.createAnswerDraft" ng-model-options="{}" class="create-answer" attachment-guid="c.data._attachmentGUID" record-table-name="'kb_social_qa_answer'"></sp-tinymce-editor>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button name="postAnswer" type="submit" ng-disabled="c.createAnswerDraft.length <= 0" ng-click="c.createAnswer()" class="btn btn-primary">${Post Your Answer}</button>
+            </div>
+        </div>
+        <div ng-if="!c.data.question && c.data.questionID">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4 class="panel-title">${Question not found}</h4></div>
+                        <div class="panel-body wrapper">
+                            <p>${This question does not exist}</p>
+                            <p>${Suggestions:}</p>
+                            <ul>
+                                <li>${To ask a new question,} <a href="?id=sqanda_new_question&table=kb_social_qa_question&sys_id=-1&spa=1">${click here}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="Share Question">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="shareModalLabel">${Share Question}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <sp-recipient-list class="input-item" recipients-msg="c.data.recipientsMsg" ng-model="c.recipientList"></sp-recipient-list>
+                        <input ng-model="c.optionalMessage" type="text" class="form-control input-item" placeholder="{{c.data.optionalMsg}}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">${Close}</button>
+                        <button type="button" ng-click="c.shareConnect($event)" class="btn btn-primary">${Send}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+]]></template>
+    </sp_widget>
+</record_update>

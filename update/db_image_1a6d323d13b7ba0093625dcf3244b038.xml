@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="db_image">
+    <db_image action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>Service Portal</category>
+        <format/>
+        <height/>
+        <image/>
+        <name>Internet_NetworkB.svg</name>
+        <size_bytes>697</size_bytes>
+        <sys_class_name>db_image</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-07 16:15:12</sys_created_on>
+        <sys_id>1a6d323d13b7ba0093625dcf3244b038</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Internet_NetworkB.svg</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>db_image_1a6d323d13b7ba0093625dcf3244b038</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-07 16:15:17</sys_updated_on>
+        <thumbnail/>
+        <width/>
+    </db_image>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>image</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>697</size_bytes>
+        <size_compressed>381</size_compressed>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-07 16:15:17</sys_created_on>
+        <sys_id>657d7e7913b7ba0093625dcf3244b056</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-07-07 16:15:17</sys_updated_on>
+        <table_name>ZZ_YYdb_image</table_name>
+        <table_sys_id>1a6d323d13b7ba0093625dcf3244b038</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="image" sys_id="657d7e7913b7ba0093625dcf3244b056">657d7e7913b7ba0093625dcf3244b056</sys_attachment>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-07 16:15:17</sys_created_on>
+        <sys_id>6d7d323d13b7ba0093625dcf3244b05d</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>ZZLbbsIwDIZfJepuUzfOuVAqsXtegLvSw4ZUKGo7Cpp49yUENgZq7Lr2b39R0mw4fpDTrt0Pi+hzHA+zJJmmCSYBXf+RcMZY4hQROW7r6b07LSJGGOH8alGeVXUz5Nkwnts6h+K72bbt7A0byS3OL7C5JZqmmfso7r/aelYf631XVfNLloTGLAljxu3ovpb9uOmKviKoSNkdzsRkSahk5bYv25qUbTG47RYRKd2GEJkLzregD+8kzw7F+HmXbiJSLaIVogauKSoDRhQpCEuvjlF0D4tRuPLyMX+tPHatd5yDVTG3wGUhwVJvXshin9dgJJUalL35UFIadBoDD/LfFqrAIjWgJRXGr0CUigLnT1I/2SPWO7SgZMzxGa+txysaVkimAowDK/08zVEV1QqEuPmAtggGQaavcO0B6xW60daCfoFzD3fHxPBqIY3cwdG8TEPu+CKlqWMF93fWxgCq5f+OO3Xtb9b/kfkPBKpA47kCAAA=</data>
+        <length>496</length>
+        <position>1</position>
+        <sys_attachment display_value="image" sys_id="657d7e7913b7ba0093625dcf3244b056">657d7e7913b7ba0093625dcf3244b056</sys_attachment>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-07-07 16:15:17</sys_created_on>
+        <sys_id>ed7d323d13b7ba0093625dcf3244b05d</sys_id>
+    </sys_attachment_doc>
+</record_update>

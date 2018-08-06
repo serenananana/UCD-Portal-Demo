@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	var c = this;
+	
+	$scope.selection=[{name: "All", id: 0}];
+	$scope.selectionName=["All"];
+	
+	$scope.checkedDept = function(dept) {
+	/*for(var i = 0 ; i < $scope.selection.length; i++) {
+			console.log("checked items before are with len" + $scope.selection.length + " " + $scope.selection[i].name);
+		}*/
+		
+		var index = $scope.selectionName.indexOf(dept.name);
+		var allIndex = $scope.selectionName.indexOf("All");
+		var len = $scope.selectionName.length;
+		var allObj = getByValue(c.data.departments,'name', "All");
+		// All is selected, keep selected
+		if(dept.name == "All") {
+				dept.isChecked = true;
+				if(allIndex == -1) { // Push All as checked item
+					$scope.selection.push({name:dept.name, id:dept.id});
+					$scope.selectionName.push(dept.name);
+				}
+				// Remove everything but All from selected
+				for(var j=0;j<c.data.departments.length;j++) {
+					if(c.data.departments[j].name != "All") {
+						c.data.departments[j].isChecked = false;
+					
+						var deptIndex = $scope.selectionName.indexOf(c.data.departments[j].name);
+						if(deptIndex > -1) { // if dept exists, remove it
+							$scope.selection.splice(deptIndex,1);
+							$scope.selectionName.splice(deptIndex,1);
+						}
+					}
+				}
+		}
+		// dept selected that is not All
+		else if(dept.name!="All") { 
+			// All exists as selected dept, remove it
+			if(allIndex > -1) {
+				allObj.isChecked = false;
+				$scope.selectionName.splice(allIndex,1);
+				$scope.selection.splice(index,1);
+			}
+			if(isOnlyDept(dept.name) && dept.isChecked == false) { // only dept selected 
+				allObj.isChecked = true;
+				if(allIndex == -1) { // Push All as checked item
+					$scope.selection.push({name:allObj.name, id:allObj.id});
+					$scope.selectionName.push(allObj.name);
+				}
+			}
+				// already selected, remove from selection
+			if(index > -1) {
+				$scope.selectionName.splice(index,1);
+				$scope.selection.splice(index, 1);
+			}
+			// newly selected
+			else{
+				$scope.selection.push({name:dept.name, id:dept.id});
+				$scope.selectionName.push(dept.name);
+			}
+		} 
+		
+		/*for(var i = 0 ; i < $scope.selection.length; i++) {
+			console.log("checked items after with len" + $scope.selection.length + " " + $scope.selection[i].name);
+		}*/
+		// broadcast to other widgets
+		$rootScope.$broadcast('selectedDept',$scope.selection);
+	}
+	
+	function isOnlyDept(name) {
+		var len = $scope.selectionName.length;
+		var nameIndex = $scope.selectionName.indexOf(name);
+		if(len==1 && nameIndex == 0) {
+					return true;
+		}
+		return false;
+	}
+
+	function getByValue(arr, prop, value) {
+	  for (var i=0; i<arr.length; i++) {
+		if (arr[i][prop] == value) return arr[i];
+	  }
+	}	
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-dept-filter</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Dept Filter</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.catParam = $sp.getParameter("kb_category");
+	data.kb = $sp.getValue("kb_knowledge_base");
+	
+	data.departments = [];
+	
+	// add All as an option
+	data.departments.push({name: "All",
+		 id: "0",
+		 isChecked: true});
+	
+	
+	// Use GlideAggregate to fetch the unique set of Authoring Departments
+	var arts = new GlideAggregate('kb_knowledge');
+	arts.addQuery('kb_knowledge_base', data.kb);
+	arts.groupBy('author');
+	arts.query();
+	while (arts.next()) {
+		if(arts.author.getDisplayValue()!='') {
+			data.departments.push({
+				name: arts.author.getDisplayValue(),
+				id: arts.getValue('author'),
+				isChecked: false
+			});
+		}
+	}
+	
+	/*// search IT - public KB for Authoring Departments
+	var arts = new GlideRecord('kb_knowledge');
+	arts.addQuery('kb_knowledge_base', '7c2d56f42bd89200e0b209d417da153e');
+	arts.query();
+	
+	while(arts.next()) {
+		if(arts.author.getDisplayValue()!='') {
+			if(!objExists(data.departments, 'name', arts.author.getDisplayValue())) {
+				var obj = {};
+				obj.name = arts.author.getDisplayValue();
+				obj.id = ""+arts.author;
+				obj.isChecked=false;
+				data.departments.push(obj);
+			}
+		}
+	}	
+	
+function objExists(arr,prop,value) {
+  for(var i=0;i<arr.length;i++){
+    if(arr[i][prop]===value) {
+	return true;
+	}
+  }
+  return false;
+}*/
+	
+	/*for(var i=0; i<data.departments.length; i++) {
+		console.log(data.departments[i].name + ":" + data.departments[i].id + ":" + data.departments[i].isChecked);
+	}*/
+})()
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-06 17:23:33</sys_created_on>
+        <sys_id>2a33ebbbdb033200178e7fcfbf9619b9</sys_id>
+        <sys_mod_count>55</sys_mod_count>
+        <sys_name>ucd_Dept Filter</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_2a33ebbbdb033200178e7fcfbf9619b9</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-06-14 18:40:43</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box">
+  <h2 class="panel__title">
+    Filter By Department:
+  </h2>
+  <section>
+    <form action="">
+      <ul class="list--reset">
+        <li>
+          <label ng-repeat='dept in c.data.departments' for="{{dept.name}}'">
+        <input type="checkbox"  
+              name="dept-check" 
+              ng-checked = "dept.isChecked"
+          		ng-model="dept.isChecked"
+              ng-change=checkedDept(dept) /> 
+      {{dept.name}}
+      </label>
+        </li>
+      </ul>
+    </form>
+  </section>
+</div>]]></template>
+    </sp_widget>
+</record_update>

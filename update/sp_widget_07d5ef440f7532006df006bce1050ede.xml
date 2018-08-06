@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, spUtil, $sce, $rootScope) {	
+	var c=this;
+	/* knowledge subscription init
+	$scope.data.isSubscribed = $scope.data.isArticleSubscribed;
+	$scope.data.toggleSubscribed = ($scope.data.isSubscribed ? true : false);
+	$scope.data.subscribeLabel = ($scope.data.isSubscribed ? $scope.data.messages.SUBSCRIBED : $scope.data.messages.SUBSCRIBE);
+	$rootScope.messages = $scope.data.messages;
+	// end knowledge subsscription init*/
+	$rootScope.$broadcast('sp.update.breadcrumbs', $scope.data.breadcrumbs);	
+	spUtil.setSearchPage('kb');
+	$scope.data.text = $sce.trustAsHtml($scope.data.text);
+	
+	/* knowledge subscription functions
+	c.handleSubscribeButtonFocus = function(){
+		if($scope.data.isSubscribed){
+			$scope.data.subscribeLabel = $rootScope.messages.UNSUBSCRIBE;
+			$scope.data.toggleSubscribed = !$scope.data.toggleSubscribed;
+		}
+
+	};
+	
+	c.handleSubscribeButtonBlur = function(){
+		if($scope.data.isSubscribed){
+			$scope.data.subscribeLabel = $rootScope.messages.SUBSCRIBED;
+			$scope.data.toggleSubscribed = !$scope.data.toggleSubscribed;
+		}
+	}
+	
+	c.handleSubscription = function(confirmation){
+		c.data.actionName = null;
+		if(!$scope.data.isSubscribed){
+			c.data.actionName = 'subscribe';
+			c.data.articleSysId = $scope.data.article_sys_id;
+			c.data.articleNum = $scope.data.number;
+		}
+		else
+		{
+			if($scope.data.isArticleSubscribed){
+				c.data.actionName = "unsubscribe";
+				c.data.articleSysId = $scope.data.article_sys_id;
+				c.data.articleNum = $scope.data.number;
+			}
+			else if(!confirmation){
+				//$("#unSubscribeModal").modal();
+				var unsubscribeMessage = "<p>" + c.data.messages.UNSUBSCRIBE_CONTENT + "</p><p><b>" + c.data.messages.UNSUBSCRIBE_CONFIRMATION + "</b></p>";
+				spModal.open(
+					{
+						title: c.data.messages.UNSUBSCRIBE, 
+						buttons : [{label : c.data.messages.NO, cancel : true}, {label: c.data.messages.YES, primary : true}], 
+						message : unsubscribeMessage
+					}).then(function(){
+					c.handleSubscription('Y');
+				}, function(){
+					c.closeUnsubscribeModal();
+				});
+					
+				return;
+			}
+			else if(confirmation === 'Y'){
+				c.data.actionName = "unsubscribe";
+				c.closeUnsubscribeModal();
+				c.data.articleSysId = $scope.data.article_sys_id;
+				c.data.kbSysId = $scope.data.kbSysId;
+				c.data.articleNum = $scope.data.number;
+				c.data.kbName = $scope.data.kbName;
+				c.data.unsubscribeKB = true;
+			}
+		}
+		c.server.get({action : c.data.actionName, kbSysId : c.data.kbSysId, kbName : c.data.kbName, articleSysId : c.data.articleSysId, articleNum : c.data.articleNum, unsubscribeKB : c.data.unsubscribeKB, isArticleSubscribed: c.data.isArticleSubscribed}).then(function(resp){
+			if(c.data.actionName == 'subscribe'){
+				$scope.data.isArticleSubscribed = true;				
+				$scope.data.isSubscribed = true;
+				$scope.data.subscribeLabel = $rootScope.messages.SUBSCRIBED;
+			}
+			else{
+				$scope.data.isArticleSubscribed = false;
+				$scope.data.isSubscribed = false;
+				$scope.data.isArticleSubscribedAtKB = false;
+				$scope.data.subscribeLabel = $rootScope.messages.SUBSCRIBE;
+			}
+			spUtil.addInfoMessage(resp.data.responseMessage);
+
+		});
+	};
+// end knowledge subscription functions*/
+	function getParameter(name, url) {
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>td {&#13;
+	padding: .5em;&#13;
+  	line-height: 1em;&#13;
+}&#13;
+&#13;
+section {&#13;
+	margin-bottom: 15px; &#13;
+}&#13;
+.kb-end-buttons{&#13;
+  float:right;&#13;
+}&#13;
+.kb-subscribe{&#13;
+  min-width : 100px;&#13;
+  margin-left : 5px;&#13;
+}&#13;
+.kb-sub-icon{&#13;
+  //color: $brand-primary;//#428bca;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd-kb-article-page</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Article Page</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[var t = data;
+data.kb_knowledge_page = $sp.getDisplayValue("kb_knowledge_page") || "kb_view";
+data.isLoggedIn = gs.isLoggedIn();
+data.loggedInUser = gs.getUserID();
+if(!data.isLoggedIn)
+	data.guest = true;
+
+// Get kb article 
+var articleGR = new GlideRecord("kb_knowledge");
+if($sp.getParameter('sys_id')) {
+	data.sys_id = $sp.getParameter('sys_id');
+	articleGR.get($sp.getParameter('sys_id'));
+} else { // kb short url
+	articleGR.addQuery('number', $sp.getParameter('sysparm_article'));
+	articleGR.query();
+	if(articleGR.next()) {
+		data.sys_id = articleGR.sys_id;
+	}
+}
+data.article_sys_id = data.sys_id;
+
+/* Knowledge subscription features
+data.subscribeLabel = gs.getMessage("Subscribe");
+// information messages
+data.messages = {};
+data.messages.SUBSCRIBE = gs.getMessage("Subscribe");
+data.messages.UNSUBSCRIBE = gs.getMessage("Unsubscribe");
+data.messages.SUBSCRIBED = gs.getMessage("Subscribed");
+// get article subscription status
+var kbViewModel = new global.KBViewModel();
+// check if logged in user is subscribed to article
+console.log("art is " + data.article_sys_id);
+var sub = new GlideRecord('sn_actsub_subobject_stream');
+sub.addQuery('sub_obj_type', '7d8f537453003200fa9bd7b08cc5872c');
+sub.addQuery('sub_obj_name', 'kb_knowledge');
+sub.addQuery('sub_obj_id', data.article_sys_id);
+sub.addQuery('subscriber_id.document', gs.getUserID());
+sub.query();
+if(sub.next()) {
+	data.isArticleSubscribed = true;
+} else 
+	data.isArticleSubscribed = false;
+// end knowledge subscription features
+*/
+
+var recordIsValid = articleGR.isValidRecord();
+var canReadArticle = articleGR.canRead();
+t.isvalid = recordIsValid && canReadArticle;
+
+if (canReadArticle) {
+  var art = new GlideRecord("kb_use");
+  if (art.isValid()) {
+    art.article = articleGR.getUniqueValue();
+    art.user = gs.getUserID();
+    art.viewed = true;
+    art.insert(); // kb_use records are aggregated to update sys_view_count nightly
+  }
+	
+	// Increment this article's view count
+	articleGR.sys_view_count += 1;
+	articleGR.autoSysFields(false);
+
+  t.category = articleGR.getValue('kb_category');
+  //t.sys_id = $sp.getParameter('sys_id');
+  t.showAttachments = false;
+  if (articleGR.display_attachments) {
+    t.showAttachments = true;
+	
+	// get attachments
+	var attachments = [];  
+	var attachdata = new GlideRecord("sys_attachment");  
+	attachdata.addQuery('table_name', 'kb_knowledge');  
+	attachdata.addQuery('table_sys_id', data.sys_id);  
+	attachdata.query();  
+	while (attachdata.next()) { 
+		var attach = {};  
+		attach.file_name = attachdata.file_name.getDisplayValue();  
+		attach.sys_id = attachdata.getValue('sys_id');  
+		attachments.push(attach);  
+	}	  
+	data.attachments = attachments; 
+  }
+	
+  t.categoryDisplay = articleGR.getDisplayValue('kb_category');
+  t.short_description = articleGR.getValue('short_description');
+  t.text = articleGR.getValue('text');
+  t.sys_view_count = articleGR.getDisplayValue('sys_view_count');
+  t.author = articleGR.getDisplayValue('author');
+  t.publishedUtc = articleGR.getValue('published');
+  t.number = articleGR.getValue('number');
+  t.rating = articleGR.getValue('rating');
+  // add Knowledge Base
+  t.knowledge_base = articleGR.getDisplayValue('kb_knowledge_base');
+  /* add Knowledge Base Subscription variables
+  t.kbName = articleGR.getDisplayValue('kb_knowledge_base');
+  t.kbSysId = articleGR.getValue('kb_knowledge_base');
+  t.articleNum = articleGR.getValue('number');
+  end Knowledge Base Subscription variables*/
+  // add modified date
+  t.modifiedUtc = articleGR.getValue('sys_updated_on');
+  // add article share url
+  var subStr = ""+t.number;
+  subStr = subStr.substring(5);
+  t.share_url = "http://kb.ucdavis.edu/?id=" + subStr;
+	t.emailBody = "mailto:?subject=A UC Davis Knowledge Base article has been shared with you.&body=Hello,%0D%0A%0D%0A Please use this link to visit the shared knowledge article: " + t.share_url + "%0D%0A%0D%0A Thank you,%0D%0A The UC Davis Service Desk";
+  t.direct = false;
+	if (articleGR.direct)
+		t.direct = true;
+
+  t.breadcrumbs = [{label: t.short_description, url: '#'}];
+  if (!articleGR.kb_category.nil()) { 
+    var rec = articleGR.kb_category.getRefRecord();
+    while (rec.getRecordClassName() == "kb_category") {
+      t.breadcrumbs.unshift({label: rec.getDisplayValue(), url: '?id=ucd_kb_category&kb_category=' + rec.getUniqueValue()});
+      rec = rec.parent_id.getRefRecord();
+    }
+  }
+  t.breadcrumbs.unshift({label: gs.getMessage("Knowledge Base"), url: '?id=ucd_kb_view2'});
+	
+	// Save the view count update
+	articleGR.update();
+}
+	
+/* Knowledge subscription handling
+if(input) {
+	if(input.action === 'subscribe'){
+		var subResult = subscribeObject('Article', input.articleSysId, gs.getUserID());		
+		if(subResult){
+			data.responseMessage = gs.getMessage("You are now subscribed to {0}. You will be notified of any new comments or activity according to your notification settings.", input.articleNum);
+		}
+	}
+	if(input.action === 'unsubscribe'){
+		var subResult = false;
+		if(input.unsubscribeKB){
+			subResult = unsubscribeObject('KB', input.articleSysId, input.kbSysId);
+			if(subResult === 'Article'){
+				data.responseMessage = gs.getMessage("Your subscriptions to {0} Knowledge Base and {1} have been removed.", [input.kbName, input.articleNum]);
+			}
+			else{
+				data.responseMessage = gs.getMessage("Your subscription to {0} Knowledge Base has been removed.", input.kbName);
+			}
+		}
+		else{
+			subResult = unsubscribeObject('Article', input.articleSysId, null);
+			if(subResult){
+				data.responseMessage = gs.getMessage("Your subscription to {0} has been removed.", input.articleNum);
+			}	
+		}
+	}
+}
+	function subscribeObject(type, sysId, userId){
+		var kAjax = new global.KnowledgeAjax();
+		return kAjax.subscribeKbArticle(sysId, "7d8f537453003200fa9bd7b08cc5872c");
+	}
+
+	function unsubscribeObject(type, articleSysId, kbSysId){
+		var kAjax = new global.KnowledgeAjax();
+		if(type === 'Article'){
+			return kAjax.unsubscribeKbArticle(articleSysId);	
+		}
+		else{
+			return kAjax.unsubscribeKB(articleSysId, kbSysId);
+		}
+	}
+// End knowledge subscription handling */]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-24 22:36:50</sys_created_on>
+        <sys_id>07d5ef440f7532006df006bce1050ede</sys_id>
+        <sys_mod_count>293</sys_mod_count>
+        <sys_name>ucd_KB Article Page</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_07d5ef440f7532006df006bce1050ede</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-07-13 00:09:00</sys_updated_on>
+        <template><![CDATA[<div class="l-content">
+	<div ng-if="data.isvalid" class="panel panel--boxed o-box--large">
+  	<h2 class="panel__title">{{::data.short_description}}</h2>
+    	<section> 
+        <strong>Number: </strong>{{::data.number}}
+        <span class="pad-right"></span> <glyph ng-if="data.share_url" sn-char="share-alt"/><strong><a href="{{data.emailBody}}">Share URL:</a></strong> {{::data.share_url}} 
+      </section>
+        <!-- article details stacked
+      	<!--<strong>Number </strong>{{::data.number}}
+        <div> <glyph sn-char="calendar"/><strong>Published:</strong> <sn-day-ago date="data.publishedUtc"/></div>
+        <div> <glyph sn-char="calendar"/><strong>Modified:</strong> <sn-day-ago date="data.modifiedUtc"/></div>
+        <div> <glyph sn-char="share-alt"/><strong>Share URL:</strong> {{::data.share_url}}</div>
+       </section>-->
+       <div ng-if="!data.direct" 
+            class="kb_article" 
+            ng-bind-html="::data.text" style="overflow-x:auto;">
+       </div>
+			 <h4 ng-if="data.direct">
+     			${View or download the attachments below}
+    	 </h4>
+    	<div ng-if="::data.showAttachments || data.direct" class="b-t m-t">
+      	<!--<sp-attachment-manager table="'kb_knowledge'" sys-id="t.sys_id" omit-edit="true"></sp-attachment-manager>-->
+        <div ng-show="data.attachments.length > 0">
+          <label style="display: inline">Attachments</label>
+        <div ng-repeat="list in data.attachments" style="margin-bottom: 1em;">
+					<span class="fa fa-paperclip" style="margin-right:4px"></span>      		
+          <a ng-href="/sys_attachment.do?sys_id={{list.sys_id}}">{{list.file_name}}</a>  
+    		</div>  
+      </div>
+    </div>
+    <section>
+      <span class="pad-right"> <glyph ng-if="data.modifiedUtc" sn-char="calendar"/><strong> Modified: </strong> <sn-day-ago date="data.modifiedUtc"/></span>
+      <span><glyph ng-if="data.publishedUtc" sn-char="calendar"/><strong> Published: </strong> <sn-day-ago date="data.publishedUtc"/></span>
+      <glyph ng-if="data.knowledge_base" sn-char="book"/><strong> Knowledge Base: </strong>{{data.knowledge_base}}  
+   	</section>
+       <!-- Start Knowledge Subscription 
+   <div class="dropdown kb-end-buttons" ng-if="!data.guest">
+    <span class="hidden-sm hidden-xs">
+              <a ng-mouseover="c.handleSubscribeButtonFocus()" 
+                 ng-mouseleave="c.handleSubscribeButtonBlur()"
+        		 ng-focus="c.handleSubscribeButtonFocus()"
+                 ng-blur="c.handleSubscribeButtonBlur()"
+                 role="button"
+                 class="btn btn-default kb-subscribe" ng-click="c.handleSubscription()" href="javascript:void(5)">
+                <span class="kb-sub-icon" aria-label="{{data.subscribeLabel}}">
+                  {{data.subscribeLabel}}
+                </span>
+              </a>
+            </span>
+   </div>
+  <!-- End Knowledge Subscription -->
+      </div>
+  </div>
+   <div ng-if="!data.isvalid" class="panel panel--boxed o-box--large">
+  	${Article not found. You may not have the required permissions to view the article}
+		</div>
+
+<!-- Before UCD styling
+<div ng-if="data.isvalid" class="panel panel-{{options.color}} b">
+
+  <div class="panel-heading">
+    <h4 class="panel-title">{{::data.short_description}}<span class="pull-right">{{::data.number}}</span></h4>
+  </div>
+
+  <div class="panel-body m-b-lg wrapper-lg">
+
+    <div class="row m-b-lg b-b">
+        <!-- Hide Author
+		<span class="author pad-right" ng-if="data.author">
+          <glyph sn-char="user" class="pad-right" />
+          ${Authored By: {{::data.author}}}
+        </span>
+		---
+      <!-- Hide view count
+        <span ng-if="data.sys_view_count == 1" class="views pad-right">
+          <span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::data.sys_view_count}} View}
+        </span>
+		<span ng-if="data.sys_view_count > 1" class="views pad-right">
+          <span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::data.sys_view_count}} Views}
+        </span>
+		---
+        <span class="published pad-right">
+          <span class="pad-right"></span> <glyph sn-char="calendar" class="pad-right" />
+          ${Published:} <sn-day-ago date="data.publishedUtc"/>
+        </span>
+       <span class="published pad-right">
+          <span class="pad-right"></span> <glyph sn-char="calendar" class="pad-right" />
+          ${Modified:} <sn-day-ago date="data.modifiedUtc"/>
+        </span>
+       <span class="pad-right" ng-if="data.share_url">
+        <glyph sn-char="share-alt" class="pad-right" />
+        ${Share URL: {{::data.share_url}}}
+      </span>
+        <!-- Hide rating
+		<span ng-if="data.rating > 0 && !data.direct" title="{{::data.rating}} rating">
+          <span class="pad-right">&#8226;</span> <uib-rating ng-model="::data.rating" max="5" readonly="true"/>
+        </span>
+		---
+    </div>
+
+    <div ng-if="!data.direct" class="kb_article" ng-bind-html="::data.text" style="overflow-x:auto;"></div>
+
+    <h4 ng-if="data.direct">
+      ${View or download the attachments below}
+    </h4>
+    <div ng-if="::data.showAttachments || data.direct" class="b-t m-t">
+      <sp-attachment-manager table="'kb_knowledge'" sys-id="data.sys_id" omit-edit="true"></sp-attachment-manager>
+    </div>
+
+  </div>
+</div>
+
+<div ng-if="!data.isvalid">
+  ${Article not found}
+</div>
+-->
+
+<!-- without styling
+<div ng-if="data.isvalid" class="panel panel-{{options.color}} b">
+
+  <div class="panel-heading">
+    <h4 class="panel-title">{{::data.short_description}}<span class="pull-right">{{::data.number}}</span></h4>
+  </div>
+
+  <div class="panel-body m-b-lg wrapper-lg">
+
+    <div class="row m-b-lg b-b">
+        <!-- Hide Author
+		<span class="author pad-right" ng-if="data.author">
+          <glyph sn-char="user" class="pad-right" />
+          ${Authored By: {{::data.author}}}
+        </span>
+		
+      <!-- Hide view count
+        <span ng-if="data.sys_view_count == 1" class="views pad-right">
+          <span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::data.sys_view_count}} View}
+        </span>
+		<span ng-if="data.sys_view_count > 1" class="views pad-right">
+          <span class="pad-right">&#8226;</span> <glyph sn-char="eye-open" class="pad-right" />
+          ${{{::data.sys_view_count}} Views}
+        </span>
+	
+        <span class="published pad-right">
+          <span class="pad-right"></span> <glyph sn-char="calendar" class="pad-right" />
+          ${Published:} <sn-day-ago date="data.publishedUtc"/>
+        </span>
+       <span class="published pad-right">
+          <span class="pad-right"></span> <glyph sn-char="calendar" class="pad-right" />
+          ${Modified:} <sn-day-ago date="data.modifiedUtc"/>
+        </span>
+       <span class="pad-right" ng-if="data.share_url">
+        <glyph sn-char="share-alt" class="pad-right" />
+        ${Share URL: {{::data.share_url}}}
+      </span>
+        <!-- Hide rating
+		<span ng-if="data.rating > 0 && !data.direct" title="{{::data.rating}} rating">
+          <span class="pad-right">&#8226;</span> <uib-rating ng-model="::data.rating" max="5" readonly="true"/>
+        </span>
+		
+    </div>
+
+    <div ng-if="!data.direct" class="kb_article" ng-bind-html="::data.text" style="overflow-x:auto;"></div>
+
+    <h4 ng-if="data.direct">
+      ${View or download the attachments below}
+    </h4>
+    <div ng-if="::data.showAttachments || data.direct" class="b-t m-t">
+      <sp-attachment-manager table="'kb_knowledge'" sys-id="data.sys_id" omit-edit="true"></sp-attachment-manager>
+    </div>
+
+  </div>
+</div>
+
+<div ng-if="!data.isvalid">
+  ${Article not found}
+</div>-->]]></template>
+    </sp_widget>
+</record_update>

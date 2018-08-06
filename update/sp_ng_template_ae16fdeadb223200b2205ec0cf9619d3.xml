@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>ucd-typeahead.html</id>
+        <sp_widget display_value="ucd_Typeahead Search">6252bc0ddb263200b2205ec0cf9619f2</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>josephdt12</sys_created_by>
+        <sys_created_on>2017-05-08 15:40:45</sys_created_on>
+        <sys_id>ae16fdeadb223200b2205ec0cf9619d3</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>ucd-typeahead.html</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_ng_template_ae16fdeadb223200b2205ec0cf9619d3</sys_update_name>
+        <sys_updated_by>josephdt12</sys_updated_by>
+        <sys_updated_on>2017-05-08 18:29:56</sys_updated_on>
+        <template><![CDATA[<a class="ta-item" ng-href="{{match.model.content_type == 'external' ? match.model.url : ''}}" target="{{match.model.url ? '_blank' : ''}}">
+  <i class="ta-img" ng-if="match.model.type=='sc'" style="background-image:url('{{match.model.picture}}')"></i>
+  <i class="ta-img" ng-if="match.model.type=='sc_guide'" style="background-image:url('{{match.model.picture}}')"></i>
+  <i class="ta-icon fa fa-file-text-o" ng-if="match.model.type=='sc_content' && match.model.content_type == 'kb'"></i>
+  <strong ng-if="match.model.type=='sc_content' && match.model.content_type == 'external'">➚</strong>
+  <i class='ta-icon fa fa-file-text-o' ng-if="match.model.type=='kb'"></i>
+  <i class='ta-icon fa fa-comments-o' ng-if="match.model.type=='qa'"></i>
+  <i class='ta-icon' ng-if="match.model.type=='rec'"></i>
+  <span ng-bind-html="match.model.label | uibTypeaheadHighlight:query"></span>
+</a>]]></template>
+    </sp_ng_template>
+</record_update>

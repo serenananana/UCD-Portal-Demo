@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+  /* widget controller */
+  var c = this;
+	
+ 	c.closeAnnouncements = function() {
+		c.data.showAnnouncement = false;
+		c.data.action = "close_announcement";
+		c.server.update();		
+	};
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.announcement {&#13;
+  background-color: white; &#13;
+  margin: 10px;&#13;
+  padding-left: 10px;&#13;
+  padding-bottom: 10px;&#13;
+  padding-top: 10px;&#13;
+}&#13;
+&#13;
+.h2-space {&#13;
+  margin: 10px;&#13;
+  padding-left: 10px;&#13;
+  padding-top: 10px;&#13;
+}&#13;
+&#13;
+.close-button {&#13;
+  opacity: inherit;&#13;
+  color: #4d6988;&#13;
+  padding-top:2px;&#13;
+  padding-bottom:2px;&#13;
+  padding-left:2px;&#13;
+  padding-right:2px;&#13;
+  font-size:1em;&#13;
+  font-weight:100;&#13;
+  &amp;:hover {&#13;
+    border-color:2px solid #4d6988;&#13;
+  }&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-announcement</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Announcement</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+  data.isLoggedIn = gs.getSession().isLoggedIn();
+	
+  data.showAnnouncement = true;
+
+
+	// get KB article based on logged in user or not
+	var gr = new GlideRecord('kb_knowledge');
+	if(!data.isLoggedIn) { // not logged in
+		gr.get('22d6d32b0f7083006717590be1050e8b'); }
+	else // logged in
+		gr.get('bb29136b0f7083006717590be1050e23');
+	
+	// check if kb article is active
+	if(gr.active == false)
+		data.showAnnouncement = false;
+	else {
+	// handle closed announcement
+	 if(input && input.action) {
+	  if(input.action == "close_announcement") {
+			data.showAnnouncement = false;
+		    // find announcement record and update has viewed to true
+		   var a = new GlideRecord('u_service_portal_announcement');
+			a.addQuery('u_user', gs.getUserID());
+		    a.addQuery('u_announcement_id', gr.sys_updated_on.getDisplayValue());
+		    a.query();
+		    if(a.next()) {
+				if(a.u_user.getDisplayValue()!="Guest") {
+					a.u_has_viewed = true;
+					a.update();
+				}
+			}
+	  }
+	 }
+	
+	if(gr) {
+		data.body = gr.u_information.getDisplayValue();
+		
+		var announce = new GlideRecord('u_service_portal_announcement');
+		announce.addQuery('u_user',gs.getUserID());
+		announce.addQuery('u_announcement_id', gr.sys_updated_on.getDisplayValue());
+		announce.query();
+		if(announce.next()) { // announcement record exists for user already 
+			if(announce.u_has_viewed)// user has seen announcement
+				data.showAnnouncement = false;
+		} else { // create announcement record for user
+			data.showAnnouncement = true;
+			// insert announcement id into u_service_portal_announcement table to keep track of viewed or not
+			announce.initialize();
+			announce.u_user = gs.getUserID();
+			announce.u_announcement_id = gr.sys_updated_on.getDisplayValue();
+			announce.u_has_viewed=false;
+			announce.insert();
+		}
+	}
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-08-31 21:19:34</sys_created_on>
+        <sys_id>90a1d7670f7083006717590be1050eb2</sys_id>
+        <sys_mod_count>98</sys_mod_count>
+        <sys_name>ucd_Announcement</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_90a1d7670f7083006717590be1050eb2</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-09-05 20:48:40</sys_updated_on>
+        <template><![CDATA[<div ng-if="data.showAnnouncement"  class="container-fluid col-xs-12 col-sm-12 col-md-12 cta">
+     <div class="announcement col-xs-12 col-sm-12 col-md-12" style="float: left">
+       <a><i class="fa fa-close pull-right" ng-click="c.closeAnnouncements()"></i></a>
+  		<p ng-bind-html="data.body"></p>
+          </div>
+
+<!--<div class="announcement">
+  <h2 class="h2-space"><b>Announcement</b></h2>
+  <p class="p-space" ng-bind-html="data.body"></p>
+</div>-->]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+	var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>/* Hide carousel circle indicators */
+.carousel-inner {
+   margin-bottom:50px;
+}
+.carousel-indicators {
+  bottom: -50px;
+}
+
+/* Remove gradient for the carousel */
+.carousel-control.left, .carousel-control.right {
+  background: none !important;
+  filter: progid: none !important;
+  outline: 0;
+ }
+
+/* Make arrows gray */
+.text-grey {
+  color: grey;
+}
+
+#carousel {
+  margin-bottom: 50px;
+}</css>
+        <data_table>sp_instance_carousel</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>interval</field_list>
+        <has_preview>false</has_preview>
+        <id>ucd_carousel</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_Carousel</name>
+        <option_schema>[{"displayValue":"Category","hint":"Service Category associated with this carousel","name":"category","label":"Category","type":"reference","value":"sc_category","ed":{"reference":"sc_category"}},{"displayValue":"Service Page","name":"service_page","label":"Service Page","type":"reference","value":"u_service_page","ed":{"reference":"u_service_page"}}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.slides = [];
+
+	var slides = new GlideRecord('sp_carousel_slide');
+	slides.addActiveQuery();
+	slides.addQuery('u_service_page', options.service_page);
+	slides.orderBy('order');
+	slides.query();
+	while (slides.next()) {
+		// Grab image record, push its name into data.slides array
+		var slide = {}
+		slide.background = slides.background.getDisplayValue();
+		data.slides.push(slide);
+	}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt12</sys_created_by>
+        <sys_created_on>2017-03-30 16:45:03</sys_created_on>
+        <sys_id>d8eec18adbb9320034e9788dbf961980</sys_id>
+        <sys_mod_count>95</sys_mod_count>
+        <sys_name>ucd_Carousel</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_d8eec18adbb9320034e9788dbf961980</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-04-05 15:36:45</sys_updated_on>
+        <template><![CDATA[<!-- Grabbed from BootStrap's website as the ServiceNow carousel is rather limited -->
+<div ng-if="data.slides.length > 0">
+  <div id="carousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#carousel" data-slide-to="0" class="active"></li>
+      <li data-target="#carousel" data-slide-to="1"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox" style="margin: auto;">
+        <div ng-repeat="slide in ::data.slides" class="item" ng-class="{active:!$index}">
+          <img src="{{slide.background}}" alt="..." style="margin: auto;">
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <a class="left carousel-control" data-target="#carousel" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left text-grey" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" data-target="#carousel" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right text-grey" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

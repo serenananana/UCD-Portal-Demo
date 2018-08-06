@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($scope, $rootScope, $window, $anchorScroll, $location) {
+	var c = this;
+
+	c.viewAll = false;
+
+	// These only are called on page load
+	setInnerText();	
+	$rootScope.$broadcast('sp.update.breadcrumbs', c.data.breadcrumbs);
+
+	function setInnerText() {
+		for (var i = 0; $scope.data.items.length > i; i++) {
+			var item = $scope.data.items[i];
+			if (item.text.indexOf(">") == -1) {
+				item.inner_text = item.text.trim();
+				return;
+			}
+
+			var t = $("<div>" + item.text + "</div>");
+			t = t.text();
+			item.inner_text = t.trim();
+		}
+	}
+	// listener for dept filter event
+	$rootScope.$on('selectedDept', function(event, data) {
+		c.data.selectedDepts = data;
+
+		c.data.queryStr = "";
+		// check for All
+		if(data.length==1) {
+			if(data[0].name=="All")
+				c.data.queryStr="All";
+			// not all
+			else {
+				c.data.queryStr="author="+data[0].id;
+			} 
+		} else { // get all departments and add to query
+			for(var i=0;i<data.length;i++) {
+				if(i==data.length-1)
+					c.data.queryStr+="author="+data[i].id;
+				else
+					c.data.queryStr+="author="+data[i].id+"^OR";
+			}
+		}
+			// get category parameter
+		c.data.category = getParameter('kb_category');
+		c.server.update();
+	});
+		
+	// listener for radio content type selection
+	$rootScope.$on('selectedContentType', function(event,data) {
+		if(data.name!="All")
+			c.data.queryStr="u_type_of_article="+data.id;
+		else
+			c.data.queryStr="All";
+		// get category parameter
+		c.data.category = getParameter('kb_category');
+		c.server.update();
+	});
+	
+	// listener for internal KB broadcast
+	$rootScope.$on('selectedKB', function(event, data) {
+		c.data.kbId = data.id;
+		c.server.update();
+	});
+
+	// listener for category broadcast and scroll
+	$rootScope.$on('selectedCat', function(event, data) {
+		c.data.catQueryStr = "";
+		c.data.catQueryStr = data.id;
+		c.data.catDisplay = data.name;
+		c.data.catParent = data.parent;
+		
+		c.server.get({action:"isSubcategory",sys_id:data.id}).then(function(r) {   
+			c.data.hasSubcat = r.data.hasSubcat;
+			if(!c.data.hasSubcat) {
+				var old = $location.hash();
+				// scroll to top
+				$location.hash('art-list');
+				$anchorScroll();
+				$location.hash(old);
+			}
+        });
+	});
+	
+	/* listener for category broadcast
+	$rootScope.$on('selectedCat', function(event, data) {
+		c.data.catQueryStr = "";
+		c.data.catQueryStr = data.id;
+		c.data.catDisplay = data.name;
+		c.data.catParent = data.parent;
+		
+		c.server.update().then(function() {	
+			var old = $location.hash();
+			// scroll to top
+			$location.hash('art-list');
+			$anchorScroll();
+			$location.hash(old);
+		});
+	});*/
+	
+	function getParameter(name, url) {
+		if (!url) 
+			url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		// match ? or &, name, = to get parameter in url
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+				results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}  
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css/>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>true</has_preview>
+        <id>ucd-kb-category-page-filtered</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Category Page Filtered</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function(){
+	// populate the 'data' variable
+	data.articlePageUrl = "ucd_kb_article"; // Scoped KB article page
+	data.kb = '7c2d56f42bd89200e0b209d417da153e'; // IT - Public
+	
+	var parentId = '';
+	
+	var gr = new GlideRecord('kb_category');
+	
+	if($sp.getParameter('kb')) {
+		data.kb=$sp.getParameter('kb');
+	}
+	
+	if(input && input.catQueryStr) {
+		data.category = input.catQueryStr;
+		
+		// get parent of category
+		parentId = getParent(gr, data.category);
+		if(parentId!=null) {
+			data.kb = parentId; 
+		}
+		// modify breadcrumbs for category selection
+		modifyBreadcrumbs(data.category);
+	}
+	else if(input && input.category) {
+		data.category = input.category;
+		
+		// get parent of category
+		parentId = getParent(gr, data.category);
+		if(parentId!=null) {
+			data.kb = parentId; 
+		}
+		
+		// modify breadcrumbs for category selection
+		modifyBreadcrumbs(data.category);
+	}
+	else { // take category from url
+		data.category = $sp.getParameter("kb_category"); // Grab category sys_id from URL
+
+		parentId = getParent(gr, data.category);
+		if(parentId!=null) {
+			data.kb = parentId;
+		}
+		// modify breadcrumbs
+		modifyBreadcrumbs(data.category);
+	}
+	var kb_cat = new GlideRecord("kb_category");
+	if (kb_cat.get(data.category)) {
+		data.categoryExists = true;
+		data.categoryDisplay = kb_cat.getDisplayValue();	
+		data.categoryIcon = kb_cat.getDisplayValue('x_uocd2_ucd_portal_u_icon'); 
+		data.categoryDescription = kb_cat.getDisplayValue('x_uocd2_ucd_portal_u_description'); 
+		if(kb_cat.parent_id == data.kb) { // parent check
+			if(kb_cat.x_uocd2_ucd_portal_u_icon) {
+				data.parentCatIcon = kb_cat.getDisplayValue('x_uocd2_ucd_portal_u_icon');
+			}
+			data.isParentCatDisplay = true;
+			data.isSubcatDisplay = false;
+			data.isSubcatcatDisplay = false;
+		} else if(kb_cat.parent_id.parent_id == data.kb) { // Subcategory check
+			data.categoryDisplay = kb_cat.parent_id.label.getDisplayValue();
+			data.subCategoryDisplay = kb_cat.getDisplayValue();
+			data.isSubcatDisplay = true;
+			data.isParentCatDisplay = false;
+			if(kb_cat.parent_id.x_uocd2_ucd_portal_u_icon) {
+				data.parentCatIcon = kb_cat.parent_id.x_uocd2_ucd_portal_u_icon.getDisplayValue();
+			}
+			data.isSubcatcatDisplay =false;
+		} else if(kb_cat.parent_id.parent_id!= data.kb && kb_cat.parent_id!=data.kb){ // subsubcategory check
+			data.isSubcatcatDisplay = true;
+			data.isSubcatDisplay = false;
+			if(kb_cat.parent_id.parent_id.x_uocd2_ucd_portal_u_icon) {
+				data.parentCatIcon = kb_cat.parent_id.parent_id.x_uocd2_ucd_portal_u_icon.getDisplayValue();
+			}
+			data.categoryDisplay = kb_cat.parent_id.parent_id.label.getDisplayValue();
+			data.subcatcatDisplay = kb_cat.parent_id.label + ": " + kb_cat.label;
+		} else {
+			data.isSubcatDisplay = false;
+			data.isSubcatcatDisplay = false;
+		}
+	}
+	
+	// check if selected category has subcategories with articles in them
+	if(input && input.action == "isSubcategory") {
+		data.hasSubcat = false;
+		var subcat = new GlideRecord('kb_category');
+		subcat.addQuery('parent_id',input.sys_id);
+		subcat.addQuery('active',true);
+		subcat.query();
+		while(subcat.next()) { // check if subcategory has article
+			var art = new GlideRecord('kb_knowledge');
+			art.addQuery('kb_category',subcat.sys_id);
+			art.addQuery('workflow_state','published');
+			art.query();
+			if(art.next()) {
+				data.hasSubcat = true;
+				break;
+			}
+		}
+	}
+	
+	var api = new ScopedPortalAPI();
+	
+	data.items = [];
+
+	// check if user has access to the current category
+	var currCat = new GlideRecord("kb_category");
+	currCat.addQuery('sys_id', data.category);
+	currCat.query();
+	currCat.next();
+
+	var subcats = new GlideRecord("kb_category");
+	subcats.addQuery("parent_id", data.category);
+	subcats.query();
+	if (subcats.getRowCount() > 0) {
+		data.has_subs = true;
+		data.subcategories = [];
+		while (subcats.next()) {
+			data.subcategories.push({label: subcats.getDisplayValue("label"), 
+															 value: subcats.getUniqueValue()});
+		}
+	}
+	else data.has_subs = false;
+	data.categoryExists = false;
+
+	if(input && input.queryStr) { 
+		data.kbQuery = input.queryStr;
+
+		if(data.kbQuery!="All") { // apply filter
+			api.getKBCategoryArticlesFiltered(data.category, data.items, data.kbQuery+'^ORDERBYDESCsys_view_count',data.kb.toString());
+			// check for special release notes type
+			if(data.kbQuery.contains("release_note") || data.category=="4698f7b24fc86e0048874b5e0210c786") {
+				// sort articles by view count
+				data.items.sort(function(a,b) {
+				if (a.short_description < b.short_description) return 1;
+				if (a.short_description > b.short_description) return -1;
+				return 0;
+				});
+			}
+		} else // get all articles in category
+		api.getKBCategoryArticlesFiltered(data.category, data.items, data.kbQuery+'ORDERBYDESCsys_view_count', data.kb.toString());
+			//api.getKBCategoryArticles(data.category,data.items);
+	} else { // no filter set
+		api.getKBCategoryArticlesFiltered(data.category, data.items, 'ORDERBYDESCsys_view_count',data.kb.toString());
+	}
+	
+	// sort articles by view count
+	/*data.items.sort(function(a,b) {
+		if (a.view_count < b.view_count) return -1;
+		if (a.view_count > b.view_count) return 1;
+		return 0;
+	});*/
+	
+	// check for a category to display
+	if(input && input.catDisplay) {
+		data.categoryDisplay = input.catDisplay;
+	}
+
+	data.kb_knowledge_page = $sp.getDisplayValue("kb_knowledge_page") || "kb_view";
+	
+	/**
+	* @param categoryRecord
+	* @param input
+	* Returns parent KB
+	*/
+	function getParent(categoryRecord, input) {
+		
+		categoryRecord.get('sys_id', input);
+
+		if(categoryRecord) {
+			var parent = categoryRecord.getValue('parent_id');
+			var parentLabel = '';
+			parentLabel = categoryRecord.parent_id.getDisplayValue();
+			while (parent && parent != null) { // is subcategory
+				var parentCat = new GlideRecord('kb_category');
+				if(parentCat.get(parent)) {				
+					var label = parentCat.getDisplayValue('label');
+					var id = parentCat.getUniqueValue();
+
+					parent = parentCat.getValue('parent_id');
+					parentLabel = label;
+				} else { // is parent already
+						return parent;
+				}
+			}
+			return parent;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	* Changes breadcrumbs depending on what category you are in
+	*/ 
+	function modifyBreadcrumbs(category) {
+		data.breadcrumbs = [];
+		
+		// Get current category record
+		var kbCat = new GlideRecord('kb_category');
+		kbCat.get(category);
+
+		// Add the current category to the breadcrumbs
+		data.breadcrumbs = [{
+			label: kbCat.getDisplayValue('label'),
+			url: '?id=ucd_kb_category&kb_category=' + kbCat.getUniqueValue()+ "&kb=" + data.kb + "#articles"
+		}];
+
+		// Continue adding parent categories until reaching the Knowledge Base
+		var parent = kbCat.getValue('parent_id');
+		while (parent && parent != data.kb) {
+			var parentCat = new GlideRecord('kb_category');
+			parentCat.get(parent);
+			
+			var label = parentCat.getDisplayValue('label');
+			var id = parentCat.getUniqueValue();
+
+			data.breadcrumbs.unshift({
+				label: label,
+				url: '?id=ucd_kb_category&kb_category=' + id + "&kb=" + data.kb + "#articles"
+			});
+			parent = parentCat.getValue('parent_id');
+		}
+
+		// Store selected KB
+		var kbHomepage = '?id=ucd_kb_view2&kb='+data.kb;
+		
+		// Add Knowledge Base last
+		data.breadcrumbs.unshift({label: "Knowledge Base", url: kbHomepage});
+	}
+})();
+
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-06-06 17:34:08</sys_created_on>
+        <sys_id>1236e733db433200178e7fcfbf96197c</sys_id>
+        <sys_mod_count>409</sys_mod_count>
+        <sys_name>ucd_KB Category Page Filtered</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_1236e733db433200178e7fcfbf96197c</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-02-15 17:24:50</sys_updated_on>
+        <template><![CDATA[        <div class="panel o-box--large" id="art-list">
+          <h2 class="heading--weighted"><img class="heading-icon" ng-if="data.parentCatIcon" ng-src="{{::data.parentCatIcon}}" alt=""><span class="heading--weighted--weighted">{{::data.categoryDisplay}}</span> Articles</h2>
+          <p ng-if="data.isParentCatDisplay">{{data.categoryDescription}}<p>
+          <p ng-if="data.isSubcatDisplay">{{data.subCategoryDisplay}}<p>
+          <p ng-if="data.isSubcatcatDisplay">{{data.subcatcatDisplay}}<p>
+          <section class="u-space-bottom">
+            <div ng-if="data.items.length == 0">
+        		(${No articles})
+      			</div>
+            <ul id="articles_list" class="list--arrow list--flush" ng-repeat="kb_article in data.items | limitTo: !viewAll ? 50 : data.items.length">
+              <li> 	<a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a> </li>
+            </ul>
+          </section>
+          <button ng-show="!viewAll && data.items.length > 50" ng-click="viewAll = !viewAll" class="btn btn-primary">View All</button>  
+  			</div>
+<!--
+<div>
+  <div ng-if="!data.has_subs">
+  	<div ng-if="data.categoryExists" class="panel panel-{{::options.color}} b">
+    	<div class="panel-heading">
+      	<h4 class="panel-title">${{{data.categoryDisplay}} Articles}</h4>
+    	</div> 
+			<!-- Main Parent category display
+    	<div class="panel-body">
+      	<div ng-if="data.items.length == 0">
+        	(${No articles})
+      	</div>
+      	<div ng-repeat="kb_article in data.items | limitTo: !viewAll ? 30 : data.items.length" class="sp-kb-topic-article m-b-lg">
+        	<h4>
+          	<a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a>
+        	</h4>
+      	</div>
+    	</div>
+      <div class="panel-footer">
+          <button ng-show="!viewAll && data.items.length > 30" ng-click="viewAll = !viewAll" class="btn btn-primary">View All</button>  
+  		</div>
+    </div>
+  </div>
+    <div ng-if="data.has_subs" class="panel panel-{{::options.color}} b">
+    	<div class="panel-heading">
+        <h4 class="panel-title"> ${{{data.categoryDisplay}} Articles} </h4>
+      </div>
+      <div class="panel-body">
+      	<div ng-if="data.items.length == 0">
+          (${No Articles})
+        </div>
+        <div ng-repeat="kb_article in data.items | limitTo: !viewAll ? 30 : data.items.length" class="sp-kb-topic-article m-b-lg">
+          <h4> <a ng-href="?id={{::data.articlePageUrl}}&sys_id={{::kb_article.sys_id}}">{{::kb_article.short_description}}</a></h4>
+       </div>
+     	</div>
+      	<div class="panel-footer">
+          <button ng-show="!viewAll && data.items.length > 30" ng-click="viewAll = !viewAll" class="btn btn-primary">View All</button>  
+  		</div>
+   </div>
+ </div>
+-->]]></template>
+    </sp_widget>
+</record_update>

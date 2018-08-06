@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_ng_template">
+    <sp_ng_template action="INSERT_OR_UPDATE">
+        <id>ucdAppMenuTemplate</id>
+        <sp_widget display_value="ucd_app_Header Menu">a67b76990f9097006717590be1050e35</sp_widget>
+        <sys_class_name>sp_ng_template</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 19:40:56</sys_created_on>
+        <sys_id>126dfe9d0f9097006717590be1050e31</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>ucdAppMenuTemplate</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_ng_template_126dfe9d0f9097006717590be1050e31</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-14 19:40:56</sys_updated_on>
+        <template><![CDATA[<a ng-if="item.items.length == 0 && !item.scriptedItems" ng-href="{{item.href}}" target="{{item.url_target}}">{{ item.label }}</a>
+<a ng-if="item.items.length > 0" href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ item.label }} <span class="caret"></span></a>
+<ul ng-if="item.items.length > 0" class="dropdown-menu" role="menu">
+    <li ng-repeat="item in item.items" ng-include="'ucdMenuTemplate'" />
+</ul>
+<a ng-if="item.scriptedItems.count > 0" href="javascript:void(0)" data-toggle="dropdown" title="{{item.hint}}">
+    <span ng-bind-html="item.label"></span>
+    <span ng-if="!item.scriptedItems.omitBadge" class="label label-as-badge label-primary sp-navbar-badge-count">{{item.scriptedItems.count}}</span>
+</a>
+<ucd-dropdown-tree ng-if="item.scriptedItems.count > 0" items="item.scriptedItems.items" />]]></template>
+    </sp_ng_template>
+</record_update>

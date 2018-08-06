@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_portal">
+    <sp_portal action="INSERT_OR_UPDATE">
+        <css_variables>$brand-primary: #428bca;
+$body-bg: #f0f3f4;
+$state-success-text: #5cb85c;
+$sp-homepage-bg: #fff;
+$sp-navbar-divider-color: #455464;
+$text-color: #717171;
+$sp-logo-margin-y: .5rem;
+$navbar-inverse-link-hover-color: #485563;
+$panel-bg: #fff;
+$brand-success: #5cb85c;
+$navbar-inverse-bg: #3a3f51;
+$brand-warning: #f0ad4e;
+$brand-danger: #d9534f;
+$sp-tagline-color: #ffffff;
+$navbar-inverse-link-color: #ffffff;
+$brand-info: #5bc0de;
+$link-color: #428bca;
+$sp-logo-margin-x: 15px;
+$btn-default-bg: #fff;
+$text-muted: #979797;
+</css_variables>
+        <default>false</default>
+        <homepage display_value="ucd_app_kb_view">d3a79e910f1097006717590be1050ebb</homepage>
+        <icon/>
+        <kb_knowledge_base display_value="">e866fd85dbd49b840abf9c94db9619bf</kb_knowledge_base>
+        <kb_knowledge_page display_value="ucd_app_kb_view">d3a79e910f1097006717590be1050ebb</kb_knowledge_page>
+        <login_page/>
+        <logo/>
+        <notfound_page display_value="ucd_404">9cca6321130f3a003527bd122244b063</notfound_page>
+        <quick_start_config><![CDATA[[{
+	"tagline": {
+		"table" : "sp_instance",
+		"sys_id" : "34fe3d96cb20020000f8d856634c9cf4",
+		"field" : "title"
+	},
+	"hero_background": {
+		"table" : "sp_container",
+		"sys_id" : "be98a8d2cb20020000f8d856634c9c63",
+		"field" : "background_image"
+	}
+}]]]></quick_start_config>
+        <sc_catalog/>
+        <sc_catalog_page display_value="ucd_services">7069a1e9138543003527bd122244b03f</sc_catalog_page>
+        <sc_category_page/>
+        <sp_chat_queue/>
+        <sp_rectangle_menu display_value="ucd_Header Applicant Menu">daacce910fdc57006717590be1050eee</sp_rectangle_menu>
+        <sqanda_knowledge_base display_value="">e866fd85dbd49b840abf9c94db9619bf</sqanda_knowledge_base>
+        <sys_class_name>sp_portal</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 00:33:31</sys_created_on>
+        <sys_id>6ad632810f9457006717590be1050e63</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>Applicants</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_portal_6ad632810f9457006717590be1050e63</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-22 01:13:14</sys_updated_on>
+        <theme display_value="ucd_app_Stock">c36fcf1d0fd097006717590be1050e0f</theme>
+        <title>Applicants</title>
+        <url_suffix>applicants</url_suffix>
+    </sp_portal>
+    <sys_translated_text action="delete_multiple" query="documentkey=6ad632810f9457006717590be1050e63"/>
+    <sys_attachment action="INSERT_OR_UPDATE">
+        <average_image_color/>
+        <chunk_size_bytes/>
+        <compressed>true</compressed>
+        <content_type>image/svg+xml</content_type>
+        <file_name>logo</file_name>
+        <image_height/>
+        <image_width/>
+        <size_bytes>2844</size_bytes>
+        <size_compressed>1450</size_compressed>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 19:49:36</sys_created_on>
+        <sys_id>d97f3e510fd097006717590be1050e4a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-14 19:49:36</sys_updated_on>
+        <table_name>ZZ_YYsp_portal</table_name>
+        <table_sys_id>6ad632810f9457006717590be1050e63</table_sys_id>
+    </sys_attachment>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>H4sIAAAAAAAAAA==</data>
+        <length>16</length>
+        <position>0</position>
+        <sys_attachment display_value="logo" sys_id="d97f3e510fd097006717590be1050e4a">d97f3e510fd097006717590be1050e4a</sys_attachment>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 19:49:36</sys_created_on>
+        <sys_id>1d7f3e510fd097006717590be1050e4a</sys_id>
+    </sys_attachment_doc>
+    <sys_attachment_doc action="INSERT_OR_UPDATE">
+        <data>hVbbbttGEH12gPzDln0qQK72fjHsBo2SBgGcNkBTF30qHJmRhLCSIMmX5Ot7zlB21SBo9EANd2fncubMcM+e3f89qNt+u1uuV+eN1aZR/Wq2vl6u5ufNzf5DV5pnPz59cvZd16lX/arfXu3X21P10/X6fa9eD8PNbi9LyiZtdGjVb5ev1Mv7zXq7V2+Hm3n3eqW0LF6OTk4VFI16frMcrpX5QamuE/svfp2++/PtS7W7nau3vz+/eD1VTTeZ/OGnk8mLdy/EhNV2Mnn5S6OaxX6/OZ1M7u7u9J3X6+188mp7tVksZ7sJFCdUxKEJjFmrr/fXDX3Q9FGqtlHL6/Pm4upTv/0LL0BitTv/imlnjKGpg8rp/bBcffyaoq21TmQXqueN2dw36tP4//TJibpbXu8X8GxkY9Ev54s9XpO2MXPldtnfPV/zoDIKWmrcYkWu3g999/5q9nG+Xd+sEPWqv1NfqiG6093matafN5ttv+u3t73kPcfj5GxztV+oD8thOG++/1l+jYKhN7HokmIbdMn54vhlZrQ1tjU6JdtakaMOJh7Li85pW+N/zn1Wb6LR0efWRl1NhvOTRdTFpAEM8aWzuoayCNqGgJUYfTuuiM5FsrqEBLfB+EUHshSEdWzvczP534R80q4EMeBgM7kwi4g4t6atoF5unXY5H+Ssaw4zg8hjtZ3XtmAputplnUIc5QFR1JI6gxP1Uux+ZlLqTUCsprTgWIhhYbTPacbwPXx57UxGrib7g+y1qWlmCFmu2HF06GvE0/kwygt48aFejia/maoDcCxRKQVQupqQXAwRpTNZSmcECMd1Ex1TsCxmiWXKwxFltLmFmF0gCDbyBQ9dvWWSM5yxNnS0HvFMkQVMIhdjIedaqZQKlyKWHBDihklMKqZRhhJekDNj8B2KHViKaOpBJshOXI7gAVcdi0MNTCLdkpQLMiAOzBrxOkN7ITD2ivzg2jN77yvW60jfyCAFiJJTR2Dr6EbbRKLZLLWNVKg8Z8lxVwrTCjkQr5DH5FomlwQHihlZYResYQ1iF8azNmdwxlY7yiOOSYcCH10B1glYJCiNctY+ehAjgUAVmRjvOtDT4ThgB/OgVu3UVSTAKAGEZxr06tErxzT4BmOs17kECcsOrIsA5aObyR8fJokLkas9lncoCN5dZjkcOWF8OlTMMBbHiExyBNV4rthKL042orX0kqvEjUHwINvgH+VawyCdJr1pLEwn6RfAR46YALjQUpQe+ImABd3y8I861GQvnS4ezc2SS50juy5YyVjmEHr+4rFVamQaJHoM0oUSWmWY3o01ZCZZUgRDjVDK24RArWe2xoUHJAQDw3pr66LUyV2gvuhEGQkMu3I9SG8V0THirIRKnRAHWixtAdT5gDK62DmxwGZ1nLgYGqM8w5MO8ZYcp02J4SAHjWrL+AKVbMpTO+oiH8wqvAThREDUxwT5BpdKZhdYGk8DZgLZbx3nUCGgzqN47GnIuSB0j0nD1uU8jJnewwOs1gnpHD8FSejmkvS/4whFI/07hlLls1o2YcEgYUWzrAihreGUcxYIuwOxfKlAowbHwZXdQQ6k6Ajr2IwcOslhGGVPosUQRhnhZZYH+16GRJBRmQtL6ROdsk9gIyThd2IE0TO0ahm/K5zxXoaP9/mBtqF4GYbCxBEyJ98FouCt44CKRC8Im4pwLEWC6GQ9xziwhHK0umktIJhD7Jx2uBmwg9AUlDBIkn0crqkSEZYpyseO2bpRnlYEE5Eaus7XtlQOB355k3XtccUP5Nj2sz0vOwUVyHW87/DT3XzJmMPtB9eGao9uP3BqwgPR1sOn+Xr15cnNerna42aWQebixw+7Kvw7fOUVdhgyrwdRpUrYH98wTutBDTu5Pp7BNcDzGpBjVicSwdlkLk/c9fD/D0DCoyQcCwAA</data>
+        <length>1920</length>
+        <position>1</position>
+        <sys_attachment display_value="logo" sys_id="d97f3e510fd097006717590be1050e4a">d97f3e510fd097006717590be1050e4a</sys_attachment>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 19:49:36</sys_created_on>
+        <sys_id>9d7f3e510fd097006717590be1050e4a</sys_id>
+    </sys_attachment_doc>
+</record_update>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_ui_list parent="sp_column" relationship="" sys_domain="global" table="sp_instance" version="2" view="">
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>sp_instance</name>
+            <parent>sp_column</parent>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>aztan</sys_created_by>
+            <sys_created_on>2018-01-05 22:04:02</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>dff277a1139857003527bd122244b013</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>sp_instance</sys_name>
+            <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+            <sys_update_name>sys_ui_list_sp_instance_sp_column_null</sys_update_name>
+            <sys_updated_by>aztan</sys_updated_by>
+            <sys_updated_on>2018-01-05 22:04:02</sys_updated_on>
+            <sys_user display_value="">c14a25576f0b7000091f52a03f3ee430</sys_user>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

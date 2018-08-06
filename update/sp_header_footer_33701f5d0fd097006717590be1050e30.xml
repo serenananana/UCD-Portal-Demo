@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_header_footer">
+    <sp_header_footer action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function ($rootScope, $scope, snRecordWatcher, spUtil, $location, $uibModal, cabrillo, $timeout, $window) {
+	c = this;
+	
+	$scope.userID = $scope.user.sys_id;
+	if (cabrillo.isNative())
+		$scope.isViewNative = true;
+
+	$scope.openPopUp = function() {
+		var url = "$chat_support.do?queueID=" + $scope.data.connect_support_queue_id;
+		var popup = window.open (url, "popup", "width=900, height=600"); 
+	};
+
+	$scope.openLogin = function () {
+		$window.location = "/login_with_sso.do?glide_sso_id=" + c.data.default_idp + "&id=ucd_app_kb_view";
+	};
+
+	$rootScope.$on('sp.avatar_changed', function() {
+		$scope.userID = "";
+		$timeout(function(){
+			$scope.userID = $scope.user.sys_id;
+		});
+	});
+
+	$scope.isHomepage = function() {
+		if (!$scope.page.id)
+			return true;
+
+		if ($scope.page.id == $scope.portal.homepage_dv)
+			return true;
+
+		return false;
+	};
+
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.header__bar {&#13;
+  height: 60px;&#13;
+  background: #002855 url(servicehub-header-bg.svg) center top/cover no-repeat;&#13;
+}&#13;
+&#13;
+.navbar {&#13;
+  box-shadow: none; &#13;
+  border: 0;&#13;
+  background: transparent;&#13;
+}&#13;
+&#13;
+.navbar-container {&#13;
+  -webkit-box-shadow: 0 2px 1px 0 rgba(0,40,85,.15);&#13;
+  box-shadow: 0 2px 1px 0 rgba(0,40,85,.15);&#13;
+  /* Following www.ucdavis.edu CSS */&#13;
+  background-image: url(global-header-bg.svg);&#13;
+  background-position-x: center;&#13;
+  background-position-y: top;&#13;
+  background-size: cover;&#13;
+  background-repeat-x: no-repeat;&#13;
+  background-repeat-y: no-repeat;&#13;
+  background-attachment: initial;&#13;
+  background-origin: initial;&#13;
+  background-clip: initial;&#13;
+  background-color: initial;&#13;
+}&#13;
+&#13;
+.navbar-fade {&#13;
+  opacity: 0.4;&#13;
+}&#13;
+&#13;
+.navbar-inverse .navbar-toggle {&#13;
+  border-color: rgba(255, 255, 255, 0.25);&#13;
+}&#13;
+&#13;
+.nav &gt; li &gt; a {&#13;
+  max-height: 50px;&#13;
+  padding: 19px 6px;&#13;
+  text-decoration: none;&#13;
+  &#13;
+  &amp;:hover {&#13;
+    color: #fff;&#13;
+    text-decoration: underline;&#13;
+  }&#13;
+}&#13;
+&#13;
+.navbar-brand {&#13;
+  /* Default settings */&#13;
+  height: 50px;&#13;
+  padding: 0;&#13;
+}&#13;
+&#13;
+.navbar-brand img, .navbar-brand span {&#13;
+  margin-right: $sp-logo-margin-x;&#13;
+  margin-top: .3em;&#13;
+  margin-bottom: $sp-logo-margin-y;&#13;
+  display: block;&#13;
+  max-height: $sp-logo-max-height;&#13;
+  max-width: $sp-logo-max-width;&#13;
+  position: relative;&#13;
+  top: 43%;&#13;
+  -webkit-transform: translateY(-50%);&#13;
+  -ms-transform: translateY(-50%);&#13;
+  transform: translateY(-50%);&#13;
+  zoom: 150%;&#13;
+}&#13;
+.breadcrumb-container {&#13;
+  background-color: $panel-bg;&#13;
+}&#13;
+&#13;
+/* for mobile app */&#13;
+.navbar-inverse.is-native {&#13;
+  background-color: #405060;&#13;
+}&#13;
+&#13;
+nav{&#13;
+  margin-bottom: 0px;&#13;
+  border-radius: 0px; &#13;
+}&#13;
+&#13;
+.navbar-collapse{&#13;
+  padding: 0px;&#13;
+}&#13;
+&#13;
+.navbar-nav {&#13;
+  margin: 0px;&#13;
+}&#13;
+&#13;
+.navbar-avatar {&#13;
+  float: right;&#13;
+  margin-top: -.75em;&#13;
+  margin-left: 1em; &#13;
+}&#13;
+&#13;
+/* admin-eduque 11/21/17 added a new style to handle the mobile navbar menu display */&#13;
+.navbar-avatar-inline {&#13;
+  float: right;&#13;
+  margin-top: -3em;&#13;
+  margin-left: 1em; &#13;
+  margin-right: 3em;&#13;
+}&#13;
+&#13;
+@media (max-width: 1200px) {&#13;
+  .navbar-avatar {&#13;
+  	margin-left: 0;&#13;
+    margin-right: 0;&#13;
+  }&#13;
+}&#13;
+&#13;
+.avatar-container {&#13;
+  width: 2rem;&#13;
+  &#13;
+  .avatar.soloAvatar {&#13;
+  	width: 40px;&#13;
+  	height: 40px;&#13;
+  }&#13;
+}&#13;
+&#13;
+.label-as-badge {&#13;
+  float: right;&#13;
+  margin-left: .5em;&#13;
+  margin-top: .25em;&#13;
+}&#13;
+&#13;
+@media (min-width: 768px) {&#13;
+  .navbar-header {&#13;
+    width: 160px;&#13;
+  }&#13;
+}&#13;
+&#13;
+@media (max-width: 768px) {&#13;
+  .navbar-container {&#13;
+    &#13;
+    .container {&#13;
+      padding: 0;&#13;
+    }&#13;
+  &#13;
+    .nav &gt; li {&#13;
+    border-bottom: 1px solid #000;&#13;
+    &#13;
+      &gt; a {&#13;
+        background-color: #fff;&#13;
+        color: #000;&#13;
+        line-height: 1;&#13;
+        padding: 19px 21px;&#13;
+&#13;
+        &amp;:hover {&#13;
+          background-color: #daaa00;&#13;
+          text-decoration: none;&#13;
+        }&#13;
+      }&#13;
+    }&#13;
+    &#13;
+    .navbar-brand {&#13;
+      padding-left: 5px;&#13;
+    }&#13;
+    &#13;
+    .navbar-avatar {&#13;
+      margin-top: -1em;&#13;
+    }&#13;
+  }&#13;
+}&#13;
+&#13;
+&#13;
+@media screen and (min-width: 768px) {&#13;
+  .navbar-header {&#13;
+    width: 160px;&#13;
+  }&#13;
+ /*.navbar-brand img {&#13;
+    margin-right: $sp-logo-margin-x;&#13;
+  	margin-top:3.4em;&#13;
+ 	margin-bottom: $sp-logo-margin-y;&#13;
+  	display: block;&#13;
+  	max-height: $sp-logo-max-height;&#13;
+  	max-width: $sp-logo-max-width;&#13;
+  	position: relative;&#13;
+  	top: 43%;&#13;
+  	-webkit-transform: translateY(-50%);&#13;
+  	-ms-transform: translateY(-50%);&#13;
+  	transform: translateY(-50%);&#13;
+  	zoom: 0%;&#13;
+  }&#13;
+  .navbar {&#13;
+    margin-top:-3.2em; &#13;
+  }*/&#13;
+  .nav &gt; li &gt; a {&#13;
+  	margin-top: 0.2em;&#13;
+  }&#13;
+}&#13;
+&#13;
+@media screen and (min-width: 992px) {&#13;
+	 .navbar-header {&#13;
+    width: 160px;&#13;
+  }&#13;
+  .navbar-brand img {&#13;
+    margin-right: $sp-logo-margin-x;&#13;
+  	margin-top: .3em;&#13;
+ 	margin-bottom: $sp-logo-margin-y;&#13;
+  	display: block;&#13;
+  	max-height: $sp-logo-max-height;&#13;
+  	max-width: $sp-logo-max-width;&#13;
+  	position: relative;&#13;
+  	top: 43%;&#13;
+  	-webkit-transform: translateY(-50%);&#13;
+  	-ms-transform: translateY(-50%);&#13;
+  	transform: translateY(-50%);&#13;
+  	zoom: 150%;&#13;
+  }&#13;
+  .navbar {&#13;
+    margin-top:0; &#13;
+  }&#13;
+  .nav &gt; li &gt; a {&#13;
+  max-height: 50px;&#13;
+  padding: 19px 6px;&#13;
+  text-decoration: none;&#13;
+  margin-top: 0;&#13;
+  &#13;
+  &amp;:hover {&#13;
+    color: #fff;&#13;
+    text-decoration: underline;&#13;
+  }&#13;
+}&#13;
+}&#13;
+&#13;
+@media screen and (min-width: 1200px) {&#13;
+ .navbar-header {&#13;
+    width: 160px;&#13;
+  }&#13;
+  .navbar-brand img {&#13;
+  	margin-right: $sp-logo-margin-x;&#13;
+  	margin-top: .3em;&#13;
+  	margin-bottom: $sp-logo-margin-y;&#13;
+  	display: block;&#13;
+  	max-height: $sp-logo-max-height;&#13;
+  	max-width: $sp-logo-max-width;&#13;
+  	position: relative;&#13;
+  	top: 43%;&#13;
+  	-webkit-transform: translateY(-50%);&#13;
+  	-ms-transform: translateY(-50%);&#13;
+  	transform: translateY(-50%);&#13;
+  	zoom: 150%;&#13;
+  }&#13;
+  .navbar {&#13;
+    margin-top:0; &#13;
+  }&#13;
+  .nav &gt; li &gt; a {&#13;
+  	max-height: 50px;&#13;
+  	padding: 19px 6px;&#13;
+  	text-decoration: none;&#13;
+    margin-top: 0;&#13;
+  &#13;
+  &amp;:hover {&#13;
+    color: #fff;&#13;
+    text-decoration: underline;&#13;
+  }&#13;
+	}&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-app-header</id>
+        <internal>false</internal>
+        <link><![CDATA[function(scope, element) {
+    $(element).on('click.nav', '.navbar-collapse.in', function (e) {
+        var target = $(e.target);
+        if (target.is('a')) {
+            // collapse mobile nav if clicked an anchor
+            $(this).removeClass('in').addClass('collapse');
+            return;
+        }
+
+        // if neither target nor parent is an anchor, do nothing
+        if (!target.parent().is('a'))
+            return;
+
+        // collapse mobile nav if target is part of a submenu
+        if (target.parents("ul.dropdown-menu").length > 0)
+            $(this).removeClass('in').addClass('collapse');
+    });
+}]]></link>
+        <name>ucd_app_Header</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[// Defines the support queue ID that will be linked to by the Live Chat link in header
+data.connect_support_queue_id = $sp.getValue('sp_chat_queue');
+// Add logout from CAS
+data.logoutURL = "/logout.do";
+
+data.login_page = $sp.getValue('login_page');
+var menu = $sp.getValue("sp_rectangle_menu");
+data.menu = $sp.getWidgetFromInstance(menu);
+if (data.menu && data.menu.data) {
+	data.menu.data.replace = true;
+	// Hide login if menu already has link to login
+	data.hasLogin = false;
+	if (data.menu.data.menu.items) {
+		for(var i in data.menu.data.menu.items) {
+			var item = data.menu.data.menu.items[i];
+			if (item.type == 'page' && item.sp_page == data.login_page)
+				data.hasLogin = true;
+		}
+	}
+}
+
+data.typeahead = $sp.getWidgetFromInstance('typeahead-search');
+// gets CAS provider
+data.default_idp = gs.getProperty('glide.authenticate.sso.redirect.idp');]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_header_footer</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-02-14 21:04:02</sys_created_on>
+        <sys_id>33701f5d0fd097006717590be1050e30</sys_id>
+        <sys_mod_count>26</sys_mod_count>
+        <sys_name>ucd_app_Header</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_header_footer_33701f5d0fd097006717590be1050e30</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-02-28 18:59:23</sys_updated_on>
+        <template><![CDATA[<div style="background: #002855 url(servicehub-header-bg.svg) center top/cover no-repeat;">
+<!-- admin-eduque 11/20/17 removed header__bar style in container and moved style directly to html as it the style conflicts with the mobile menu expansion functionality -->
+    <div class="container">
+        <nav class="navbar-inverse" ng-class="::{'navbar':!isViewNative, 'is-native': isViewNative}"
+             role="navigation">
+            <div ng-show="::!isViewNative" class="navbar-header">
+                <a class="navbar-brand" ng-if="::!portal.logo" href="?id={{::portal.homepage_dv}}"><span>{{::portal.title}}</span></a>
+                <a class="navbar-brand navbar-brand-logo" ng-if="::portal.logo" href="?id={{::portal.homepage_dv}}">
+                    <img ng-src="{{::portal.logo}}" />
+                </a>
+
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sp-nav-bar">
+                    <span class="sr-only">${Toggle navigation}</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div sp-navbar-toggle="" class="collapse navbar-collapse navbar-right" id="sp-nav-bar">
+                <!-- Include The Menu -->
+                <sp-widget widget="data.menu"></sp-widget>
+              <!--
+                <ul ng-if="::(!user.logged_in && page.id != portal.login_page_dv && !data.hasLogin)" class="nav navbar-nav">
+                    <li><a href ng-click="openLogin()">${Login}</a></li>
+                </ul>
+                <ul ng-if="::user.logged_in" class="nav navbar-nav">
+                    <!-- chat, avatar, and logout --
+                    <li ng-if="::data.connect_support_queue_id"><a href ng-click="openPopUp()">${Live Chat}</a></li>
+                    <li class="dropdown hidden-xs">
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="navbar-avatar"><sn-avatar class="avatar-small-medium" primary="userID" /></span>
+                            <span class="visible-lg-inline">{{::user.name}}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <!--<li><a ng-href="?id=user_profile&sys_id={{::user.sys_id}}">${Profile}</a></li>--
+                            <li><a href="{{data.logoutURL}}">${Logout}</a></li>
+                        </ul>
+                    </li>
+                    <li class="visible-xs-block"><a>{{::user.name}}</a><span class="navbar-avatar-inline"><sn-avatar class="avatar-small-medium" primary="userID" /></span></li>
+                    <li class="visible-xs-block"><a href="{{data.logoutURL}}">${Logout}</a></li>
+                </ul>
+							-->
+            </div>
+        </nav>
+    </div>
+</div>]]></template>
+    </sp_header_footer>
+</record_update>

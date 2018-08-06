@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_wizard_answer">
+    <sys_wizard_answer action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <answer>Carousel Slide</answer>
+        <button_label/>
+        <dependent_value/>
+        <element/>
+        <name>Carousel Slide</name>
+        <next_question/>
+        <order>100</order>
+        <payload_name/>
+        <question display_value="Application File" name="Application File">e31cc1504f0313000d952b8ca310c76a</question>
+        <roles/>
+        <script/>
+        <sys_class_name>sys_wizard_answer</sys_class_name>
+        <sys_created_by>system</sys_created_by>
+        <sys_created_on>2017-06-13 15:17:39</sys_created_on>
+        <sys_id>1b1a4f0e13d37200d26f5e7f3244b038</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Carousel Slide</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sys_wizard_answer_1b1a4f0e13d37200d26f5e7f3244b038</sys_update_name>
+        <sys_updated_by>system</sys_updated_by>
+        <sys_updated_on>2017-06-13 15:17:39</sys_updated_on>
+        <table/>
+        <target_url>sp_carousel_slide.do</target_url>
+        <type>1</type>
+    </sys_wizard_answer>
+</record_update>

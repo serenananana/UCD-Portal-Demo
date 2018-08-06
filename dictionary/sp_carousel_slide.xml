@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element attributes="update_synch=true,synch_attachments=true" audit="true" extends="sys_metadata" label="Carousel Slide" max_length="40" name="sp_carousel_slide" type="collection">
+        <element label="Image" max_length="32" name="x_uocd2_ucd_portal_image" reference="db_image" type="reference"/>
+        <element label="Order" max_length="40" name="x_uocd2_ucd_portal_order" type="integer"/>
+        <element label="Service Category" max_length="32" name="x_uocd2_ucd_portal_service_category" reference="sc_category" type="reference"/>
+        <index name="index">
+            <element name="x_uocd2_ucd_portal_image"/>
+        </index>
+    </element>
+</database>

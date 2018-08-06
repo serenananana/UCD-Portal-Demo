@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, $rootScope) {
+	// Request Catalog homepage
+	$scope.data.breadcrumbs.unshift({
+		label: $scope.page.title,
+		url: '?id=' + $scope.data.sc_catalog_page
+	});
+	
+	$rootScope.$broadcast('sp.update.breadcrumbs', $scope.data.breadcrumbs);
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.page-title {
+  font-weight: bold;
+  color: #002855;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd_view-service-page</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_view-service-page</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	// Retrieve the service sys_id from the URL
+	data.service_id = $sp.getParameter('sys_id');
+	data.sc_catalog_page = $sp.getDisplayValue("sc_catalog_page") || "ucd_request_catalog";
+	data.breadcrumbs = [];
+
+	// Query the Service Page table for the page associated w/ this category
+	// Also grab the record for this category
+	var record = new GlideRecord('u_service_page');
+	record.addActiveQuery();
+	record.addQuery('u_category',data.service_id);
+	record.query();
+	var cat = new GlideRecord('sc_category');
+	cat.get(data.service_id);
+
+	while (record.next()) {
+		var service = {};
+		service.title = cat.title.getDisplayValue();
+		service.serviceDescription = record.u_description.getDisplayValue();
+		service.providers = record.u_service_providers.getDisplayValue();
+		service.features = record.u_features_and_benefits.getDisplayValue();
+		service.getStarted = record.u_get_started.getDisplayValue();
+		service.id = record.getUniqueValue();
+		data.service = service;
+
+		/**** Update breadcrumbs ****/
+		// Current item
+		data.breadcrumbs = [{label: data.service.title, url: '#'}];
+
+		/*** Carousel portion ***/
+		var options = {service_page: data.service.id};
+		data.carousel = $sp.getWidget("ucd_carousel", options);
+
+		// Parent category
+		var parent = new GlideRecord('sc_category');
+		parent.get(cat.parent);
+		if (parent) {
+			data.breadcrumbs.unshift({
+				label: parent.getDisplayValue('title'),
+				url: '?id=ucd_category&sys_id=' + parent.getUniqueValue()
+			});
+		}
+	}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-03-11 00:35:35</sys_created_on>
+        <sys_id>31cabf670f5132006df006bce1050ee4</sys_id>
+        <sys_mod_count>51</sys_mod_count>
+        <sys_name>ucd_view-service-page</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_31cabf670f5132006df006bce1050ee4</sys_update_name>
+        <sys_updated_by>josephdt</sys_updated_by>
+        <sys_updated_on>2017-04-05 15:37:18</sys_updated_on>
+        <template><![CDATA[<div>
+  <h1 class="page-title">{{data.service.title}}</h1>
+  <div class="panel panel-warning">
+    <div class="panel-heading">
+      A SERVICE OF {{::data.service.providers}}
+    </div> 
+    <div class="panel-body">
+      <sp-widget widget="data.carousel"></sp-widget>
+      <div ng-bind-html="data.service.serviceDescription"></div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Features/Benefits</h3>
+          <div ng-bind-html="data.service.features"></div>
+        </div>
+				<div class="col-md-6">
+          <h3>Get Started</h3>
+          <div ng-bind-html="data.service.getStarted"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

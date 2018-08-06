@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($sce) {
+  /* widget controller */
+  var c = this;
+//	c.data.features = $sce.trustAsHtml(c.data.features);
+//	alert(c.features)
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.feature-container{&#13;
+padding:0;&#13;
+}&#13;
+.panel-heading{&#13;
+background: #17375a;&#13;
+}&#13;
+title{&#13;
+margin: 0 5px;&#13;
+  color:#002855;&#13;
+}&#13;
+p{&#13;
+margin: 0 !important;&#13;
+}&#13;
+.supported-widget{&#13;
+margin-bottom: 10%;&#13;
+}&#13;
+aside.sidebar .single {&#13;
+&#13;
+padding: 15px 15px 5px;&#13;
+background: #fff;&#13;
+border: 0px solid #f0f0f0; }&#13;
+aside.sidebar .single h3.side-title {&#13;
+margin: 0;&#13;
+margin-bottom: 10px;&#13;
+padding: 0;&#13;
+//font-size: 20px;&#13;
+color: #002855;&#13;
+}&#13;
+aside.sidebar .single h3.side-title:after {&#13;
+content: '';&#13;
+width: 60px;&#13;
+height: 1px;&#13;
+background: #00b0ff;&#13;
+display: block;&#13;
+margin-top: 6px; }&#13;
+.single.contact-info {&#13;
+  &#13;
+background: none;&#13;
+border: none; }&#13;
+.single.contact-info li {&#13;
+ }&#13;
+.single.contact-info li .icon {&#13;
+display: block;&#13;
+float: left;&#13;
+margin-right: 10px;&#13;
+width: 50px;&#13;
+height: 50px;&#13;
+border-radius: 50%;&#13;
+border: 0px solid #f0f0f0;&#13;
+color: #00b0ff;&#13;
+text-align: center;&#13;
+line-height: 50px; }&#13;
+.single.contact-info li .info {&#13;
+overflow: hidden; }&#13;
+li a{color:inherit;}&#13;
+.list-group-item{border-radius:0px;}&#13;
+&#13;
+.list-group-item {&#13;
+    position: relative;&#13;
+    display: block;&#13;
+    padding: 10px 15px;&#13;
+    margin-bottom: -1px;&#13;
+    background-color: #fff;&#13;
+    border-left: 0px solid #ddd !important;&#13;
+    border-right: 0px solid #ddd !important;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>title,id</field_list>
+        <has_preview>false</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link/>
+        <name>UCD - Get Help Answers</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	var category = new GlideRecord("sc_category");
+	category.addQuery("sys_id",$sp.getParameter('sys_id'));
+	category.query();
+	if(category.next()){
+		data.category = category.getValue('title');
+	}
+	var item = new GlideRecord("sc_cat_item");
+	item.get($sp.getParameter('sys_id'));
+	data.item = item.getValue('name');
+	data.category = category.getValue('title');
+	data.title = 'Features/Benefits';
+	data.description  = category.getValue('u_features_benefits');
+	data.articles = [];
+	var textQuery = 'IR_AND_OR_QUERY';
+	var kb = new GlideRecord('kb_knowledge');
+	kb.addQuery('workflow_state', 'published');
+	kb.orderByDesc('sys_view_count');
+	// Check if article has category# in meta field
+	if(hasMeta(data.category)) {
+		kb.addEncodedQuery("metaLIKE"+data.category+"#");
+	} else
+		kb.addEncodedQuery("short_descriptionLIKE"+data.category+"^ORmetaLIKE"+data.category);
+	//kb.addEncodedQuery("short_descriptionLIKE"+data.category);
+	// kb.addQuery('short_description','CONTAINS',data.category.toString());
+	kb.addActiveQuery();
+	kb.setLimit(5);
+	kb.query();
+	while(kb.next()){
+		var n = {};
+		n.id = kb.getUniqueValue();
+		n.number = kb.getValue('number');
+		n.summary = kb.getValue('short_description');
+		data.articles.push(n);
+	}
+
+	var item = new GlideRecord('sc_cat_item');
+	item.get($sp.getParameter('sys_id'));
+	data.helpinfo = item.getValue('u_gethelpinfo');
+	data.features = item.getValue('u_features_benefits');
+
+	function hasMeta(category) {
+		var gr = new GlideRecord('kb_knowledge');
+			gr.addQuery('workflow_state', 'published');
+			gr.addEncodedQuery("metaLIKE"+category+"#");
+			gr.query();
+			if(gr.getRowCount()) {
+				return true;
+			} 
+		return false;
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-09-26 18:19:01</sys_created_on>
+        <sys_id>b7822cc413e9c30093625dcf3244b000</sys_id>
+        <sys_mod_count>91</sys_mod_count>
+        <sys_name>UCD - Get Help Answers</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_b7822cc413e9c30093625dcf3244b000</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-24 20:50:56</sys_updated_on>
+        <template><![CDATA[<div class = 'supported-widget col-sm-12'>
+  <div class="row">
+
+    <aside class="sidebar">
+      <div class="single contact-info">
+        <h3 class="side-title">
+          <div class=""><img src="getAnswers.jpg" width="21" height="21"/><span class = 'title'>Find Answers</span></div>
+        </h3>
+      </div>
+      <ul class="list-group" ng-if = "data.articles.length > 0 ">
+        <li class="list-group-item" ng-repeat = 'article in data.articles'>
+          <a href = "?id=ucd_kb_article&sys_id={{article.id}} "target=_blank"">{{article.summary}}</a>
+        </li>
+      </ul>
+      <ul class="list-group" ng-if = "data.articles.length == 0 ">
+        <li class="list-group-item">${No matched articles}</li>
+      </ul>
+
+      <div class="single contact-info">
+        <h3 class="side-title">
+          <div class=""><img src="GetHelpDot.jpg" width="21" height="21"/><span class = 'title'>Get Help</span></div>
+        </h3>
+
+        <ul class="list-unstyled" ng-if="!data.helpinfo">
+          <li>
+            <div class="info"><p><b>Contact IT Express</b> </p></div>
+          </li>
+
+          <li>
+            <div class="info"><p>M-F 7am-6pm</p></div>
+          </li>
+
+          <li>
+            <div class="info"><p>530-754-HELP(4357)</p></div>
+          </li>
+        </ul> 
+        <span ng-if='data.helpinfo'>{{data.helpinfo }}</span> 
+      </div>
+    </aside>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

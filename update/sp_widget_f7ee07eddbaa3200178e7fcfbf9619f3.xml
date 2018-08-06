@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($rootScope, $scope, $timeout, spUtil) {
+	var c = this;
+	
+	if(c.data.selectedStuff){ // stuff previously chosen
+		c.selectedStuff = c.data.selectedStuff;
+		$scope.activeButton = getButtonIndex(c.selectedStuff);
+	} else { // default to incidents
+		c.selectedStuff = 'My Incidents'; 
+		$scope.activeButton = 0;
+	}
+	// handle open and closed from my stuff breadcrumb
+	if(c.data.action) {
+		if(c.data.action == "open") {
+			c.data.isOpen = true;
+			c.server.update().then(function(r){
+			// check if current selection exists as a button in Open
+					checkButtonHighlight();
+			});
+			$rootScope.$broadcast('showActive', c.selectedStuff,c.data.action);				
+		} else {
+				c.data.isOpen = false;
+				c.server.update().then(function(r){
+				// check if current selection exists as a button in Closed
+						checkButtonHighlight();
+				});
+			$rootScope.$broadcast('showInactive', c.selectedStuff,c.data.action);
+		}
+	} else { // default action
+		c.data.action = "open";
+		c.data.isOpen = true;
+	}
+	
+	// broadcast to other widgets after waiting 500 ms
+	$timeout(function() {
+		$rootScope.$broadcast('showHideWidget', c.selectedStuff, c.data.action);
+	}, 500);
+	
+	// broadcast selection when stuff button clicked
+	$scope.selectStuff = function(selection, index) {
+		c.selectedStuff = selection;
+		$scope.activeButton = index;
+		$rootScope.$broadcast('showHideWidget',selection, c.data.action);
+	};
+	
+	// broadcast open only 
+	$scope.getOpen = function() {
+		c.data.action = "open";
+		c.data.isOpen = true;
+		c.server.update().then(function(r){
+			// check if current selection exists as a button in Open
+			checkButtonHighlight();
+		});
+		$rootScope.$broadcast('showActive', c.selectedStuff,c.data.action);
+	};
+	
+	// broadcast closed only
+		$scope.getClosed = function() {
+		c.data.action = "closed";
+		c.data.isOpen = false;
+		c.server.update().then(function(r){
+			// check if current selection exists as a button in Closed
+				checkButtonHighlight();
+			});
+		$rootScope.$broadcast('showInactive', c.selectedStuff,c.data.action);
+	};
+		function checkButtonHighlight() {
+			if(!buttonExists(c.selectedStuff)) {
+				$scope.activeButton = 0;
+				c.selectedStuff = 'My Incidents';
+				$rootScope.$broadcast('showHideWidget',c.selectedStuff, c.data.action);
+			} else {
+				$scope.activeButton = getButtonIndex(c.selectedStuff);
+			}
+		}	
+	
+		function buttonExists(category) {
+			for(var i=0; i<$scope.data.categories.length; i++) {
+				var categoryStr = category + "";
+				var catStr = $scope.data.categories[i].label + "";
+								
+				if(catStr == categoryStr) { 
+					return true;
+				}
+			} 
+			return false;
+		}
+		
+		function getButtonIndex(category) {
+			for(var i=0; i<$scope.data.categories.length; i++) {
+				var categoryStr = category + "";
+				var catStr = $scope.data.categories[i].label + "";
+				
+				if(catStr == categoryStr) {
+					return i;
+				}
+			}
+			return -1;
+		}
+}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.label {
+  float: right;
+}
+
+.panel-body &gt; div {
+  margin-bottom: 15px;
+}
+
+fa {
+  margin-right: 10px;
+}
+
+.label-custom {
+  vertical-align: middle;
+}
+
+.btn-custom {
+ width: 100%; 
+}
+
+.btn-half {
+  display: inline-block;
+}
+
+.btn-pressed {
+  color: #fff;
+  background-color: #4d6988;
+}
+
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-my-stuff-filter</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_My Stuff Filter</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.categories = []; // list of categories to display	
+	
+	// get default stuff to view if page loaded from breadcrumb
+	checkStuff();
+		
+	// get open or closed items
+	if($sp.getParameter('filter'))
+		data.action = $sp.getParameter('filter');
+	else 
+		data.action = 'open';
+	// handle input
+	if(input && input.action == 'open')
+		data.action = 'open';
+	else if(input && input.action == 'closed')
+		data.action = 'closed';
+		
+	// get count of my stuff items
+	pushStuffCount(data.action);
+	
+  function pushStuffCount(state) {
+	var numInc = 0; var numApproval = 0; var numChange = 0; var numReq = 0; var numContract = 0; var numAsset = 0; var numTask = 0; var numWatched = 0; var numRitm = 0;
+	var numSoftware = 0; var numFac = 0; var numIncNeedsAction = 0; var numApprovalNeedsAction = 0; var numCategory = 0;
+	
+	// check if tables exist
+	var facTable = gs.tableExists('facilities');
+	var sftTable = gs.tableExists('u_sft_commitment');
+	
+	// get count of open items
+	if(state=='open') {
+		numInc = getCount('incident', "active=true^caller_idDYNAMICjavascript:gs.getUserID()");
+		//if(gs.getUser().hasRole('itil')) numIncNeedsAction = getCount('incident', "stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^sys_updated_by!=javascript:gs.getUserName()^NQcaller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");
+		numIncNeedsAction = getCount('incident', "stateNOT IN6,7^caller_idDYNAMICjavascript:gs.getUserID()^stateIN3,4");			
+		numApproval = getCount('sysapproval_approver', "approverDYNAMICjavascript:gs.getUserID()^sysapprovalISNOTEMPTY^state=requested");
+		numApprovalNeedsAction = numApproval;
+		numChange = getCount('change_request', "active=true^requested_byDYNAMICjavascript:gs.getUserID()^NQactive=true^assigned_toDYNAMICjavascript:gs.getUserID()");
+		numReq = getCount('sc_request', "requested_forDYNAMICjavascript:gs.getUserID()^active=true");
+		numRitm = getCount('sc_req_item', "active=true^u_primary_contactDYNAMICjavascript:gs.getUserID()^ORu_task_requested_forDYNAMICjavascript:gs.getUserID()");
+		if(facTable) numFac = getCount('facilities', "caller_idDYNAMICjavascript:gs.getUserID()^active=true");
+		numContract = getCount('ast_contract', "contract_administratorDYNAMICjavascript:gs.getUserID()^state=active^ORstate=draft");
+		numTask = getCount('sc_task', "active=true^assigned_toDYNAMICjavascript:gs.getUserID()");
+		numAsset = getCount('alm_hardware', "assigned_toDYNAMICjavascript:gs.getUserID()");
+		if(sftTable) numSoftware = getCount('u_sft_commitment', "u_active=true^u_userDYNAMICjavascript:gs.getUserID()");
+		numWatched = getCount('incident', "active=true^watch_listLIKEjavascript:gs.getUserID()^NQactive=true^watch_listLIKEjavascript:(new global. ScopedGlideUser()).getEmail()");
+		numCategory = getCount('sc_ic_category_request', "state=requested^managerDYNAMICjavascript:gs.getUserID()");
+	} // get count of closed items
+	else if(state == 'closed') {
+		numInc = getCount('incident', "active=false^caller_idDYNAMICjavascript:gs.getUserID()");
+		numReq = getCount('sc_request', "requested_forDYNAMICjavascript:gs.getUserID()^active=false");
+		numRitm = getCount('sc_req_item', "active=false^u_primary_contactDYNAMICjavascript:gs.getUserID()^ORu_task_requested_forDYNAMICjavascript:gs.getUserID()");
+		numChange = getCount('change_request', "active=false^requested_byDYNAMICjavascript:gs.getUserID()^NQactive=false^assigned_toDYNAMICjavascript:gs.getUserID()");
+		if(facTable) numFac = getCount('facilities', "caller_idDYNAMICjavascript:gs.getUserID()^active=false");
+		numApproval = getCount('sysapproval_approver', "approverDYNAMICjavascript:gs.getUserID()^sysapprovalISNOTEMPTY^stateNOT INnot requested,requested");
+		numContract = getCount('ast_contract', "contract_administratorDYNAMICjavascript:gs.getUserID()^state=expired^ORstate=cancelled");
+		numTask = getCount('sc_task', "active=false^assigned_toDYNAMICjavascript:gs.getUserID()");
+		numAsset = getCount('alm_hardware', "assigned_toDYNAMICjavascript:gs.getUserID()");
+		if(sftTable) numSoftware = getCount('u_sft_commitment', "u_active=false^u_userDYNAMICjavascript:gs.getUserID()");
+		numWatched = getCount('incident', "active=false^watch_listLIKEjavascript:gs.getUserID()^NQactive=false^watch_listLIKEjavascript:(new global. ScopedGlideUser()).getEmail()");
+		numCategory = getCount('sc_ic_category_request', "state!=requested^managerDYNAMICjavascript:gs.getUserID()");
+	}
+	
+	// push count to button label
+	    pushCount(numInc, "My Incidents", numIncNeedsAction);
+		pushCount(numApproval, "My Approvals", numApprovalNeedsAction);
+		pushCount(numContract, "My Contracts", 0);
+        //pushCount(numReq, "My Requests");
+		pushCount(numRitm, "My Request Items", 0);
+		pushCount(numChange, "My Change Requests", 0);
+	  if(facTable) pushCount(numFac, "My Facilities Requests", 0);
+		pushCount(numTask, "My Tasks");
+		if(sftTable) pushCount(numSoftware, "My Software Commitments", 0);
+		pushCount(numAsset, "My Assets", 0);
+		pushCount(numWatched, "My Watched Incidents", 0);
+		pushCount(numCategory, "My Category Requests", 0);
+	}
+	
+	function getCount(table, filter) {
+		var ga = new GlideAggregate(table);
+		ga.addEncodedQuery(filter);
+		ga.addAggregate('COUNT');
+		ga.query();
+		var count = 0;
+		if(ga.next()) {
+			count = ga.getAggregate('COUNT');
+		}
+		return count;
+}
+
+	function pushCount(count, label, needsAction) {
+		if(count != 0 || label == "My Incidents") {
+			data.categories.push({
+				label: label,
+				count: count,
+				needsAction: needsAction
+			});
+		}
+	}
+	
+	function checkStuff() {
+		var stuffCheck = $sp.getParameter('stuff');
+		switch(stuffCheck) {
+		case 'incident':
+			data.selectedStuff = 'My Incidents';
+			break;
+		case 'sysapproval':
+			data.selectedStuff = 'My Approvals';
+			break;
+		case 'sysapproval_approver':
+			data.selectedStuff = 'My Approvals';
+			break;
+		case 'alm_hardware':
+			data.selectedStuff = 'My Assets';
+			break;
+		case 'sc_task':
+			data.selectedStuff = 'My Tasks';
+			break;
+		case 'ast_contract':
+			data.selectedStuff = 'My Contracts';
+			break;
+		case 'change_request':
+			data.selectedStuff = 'My Change Requests';
+			break;
+		case 'facilities':
+			data.selectedStuff = 'My Facilities Requests';
+			break;
+		case 'sc_req_item':
+			data.selectedStuff = 'My Request Items';
+			break;
+		case 'sc_ic_category_request':
+			data.selectedStuff = "My Category Requests";
+			break;
+		}
+	}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>aztan</sys_created_by>
+        <sys_created_on>2017-05-05 19:39:15</sys_created_on>
+        <sys_id>f7ee07eddbaa3200178e7fcfbf9619f3</sys_id>
+        <sys_mod_count>118</sys_mod_count>
+        <sys_name>ucd_My Stuff Filter</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_f7ee07eddbaa3200178e7fcfbf9619f3</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-07-03 19:44:41</sys_updated_on>
+        <template><![CDATA[<div class="panel o-box">
+    <h2 class="panel-title u-space-bottom">Filter<fa ng-if="c.options.glyph" name="{{c.options.glyph}}" /></h2>
+  <div class="u-space-bottom u-align--center">
+      <button ng-class="c.data.isOpen ? 'btn-pressed btn btn-default btn-half' : 'btn btn-default btn-half'" ng-click="getOpen()">Open</button>
+    	<button ng-class="c.data.isOpen ? 'btn btn-default btn-half' : 'btn-pressed btn btn-default btn-half'" ng-click="getClosed()">Closed</button>
+    </div>
+    <div ng-repeat="category in c.data.categories">
+      <button class="btn btn-default btn-custom u-space-bottom" 
+              ng-click="selectStuff(category.label, $index)"
+              ng-class="{true:'btn-pressed'}[activeButton == $index]">
+        <span ng-if="category.needsAction > 0" class="label label-as-badge label-primary label-custom">{{::category.needsAction}}</span>
+	{{::category.label}}</button>
+    </div>
+  </div>
+
+<!-- without styling 
+<div class="panel panel-{{::c.options.color}} b">
+  <div class="panel-heading">
+    <h4 class="panel-title">Filter<fa ng-if="c.options.glyph" name="{{c.options.glyph}}" /></h4>
+  </div>
+  <div class="panel-body">
+    <div class = "col-sm-12 text-center">
+      <button ng-class="c.data.isOpen ? 'btn-pressed btn btn-default btn-half' : 'btn btn-default btn-half'" ng-click="getOpen()">Open</button>
+    	<button ng-class="c.data.isOpen ? 'btn btn-default btn-half' : 'btn-pressed btn btn-default btn-half'" ng-click="getClosed()">Closed</button>
+    </div>
+    <div ng-repeat="category in c.data.categories">
+      <button class="btn btn-default btn-custom" ng-click="selectStuff(category.label)">      
+        <span ng-if="category.needsAction > 0" class="label label-as-badge label-primary label-custom">{{::category.needsAction}}</span>
+	{{::category.label}}</button>
+    </div>
+  </div>
+</div>-->
+]]></template>
+    </sp_widget>
+</record_update>

@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update node_type="content_page" unload_date="2018-08-06 18:00:29">
+    <sys_portal action="delete_multiple" query="page=a38fde19133c87003527bd122244b05e">
+        <related_items_node>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone0</dropzone>
+                <offset>1</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>2b8fde19133c87003527bd122244b060</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">2b8fde19133c87003527bd122244b060</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>238fde19133c87003527bd122244b062</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>Knowledge Base UC Davis Logo</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">2b8fde19133c87003527bd122244b060</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>278fde19133c87003527bd122244b061</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">2b8fde19133c87003527bd122244b060</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>6f8fde19133c87003527bd122244b061</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_static</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">2b8fde19133c87003527bd122244b060</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>ab8fde19133c87003527bd122244b061</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>ebe3849881365100e0b29d39bff2f19e</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">2b8fde19133c87003527bd122244b060</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>e78fde19133c87003527bd122244b061</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone20</dropzone>
+                <offset>3</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                <sys_id>3b8f5259133c87003527bd122244b038</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">3b8f5259133c87003527bd122244b038</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>338f5259133c87003527bd122244b03a</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">3b8f5259133c87003527bd122244b038</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>378f5259133c87003527bd122244b039</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">3b8f5259133c87003527bd122244b038</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>7f8f5259133c87003527bd122244b039</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>content_block_lists</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">3b8f5259133c87003527bd122244b038</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>bb8f5259133c87003527bd122244b039</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>Suggested Articles</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">3b8f5259133c87003527bd122244b038</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>f78f5259133c87003527bd122244b039</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>89baee2781625100e0b29d39bff2f159</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone20</dropzone>
+                <offset>1</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>6b8fde19133c87003527bd122244b065</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6b8fde19133c87003527bd122244b065</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>278f5259133c87003527bd122244b033</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_iframe</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6b8fde19133c87003527bd122244b065</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>2b8f5259133c87003527bd122244b032</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>UCD_KB_Login</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6b8fde19133c87003527bd122244b065</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>638f5259133c87003527bd122244b033</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>130cc9712bd07100e0b209d417da1545</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6b8fde19133c87003527bd122244b065</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>af8f5259133c87003527bd122244b032</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6b8fde19133c87003527bd122244b065</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>eb8f5259133c87003527bd122244b032</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone20</dropzone>
+                <offset>2</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>6f8fde19133c87003527bd122244b05e</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6f8fde19133c87003527bd122244b05e</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>2f8fde19133c87003527bd122244b05f</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6f8fde19133c87003527bd122244b05e</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>678fde19133c87003527bd122244b060</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>Most Popular KB Articles</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6f8fde19133c87003527bd122244b05e</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>6b8fde19133c87003527bd122244b05f</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6f8fde19133c87003527bd122244b05e</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>a38fde19133c87003527bd122244b060</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_lists</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">6f8fde19133c87003527bd122244b05e</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>ef8fde19133c87003527bd122244b05f</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>e0af6f18492a5100e0b25ea395cd7c51</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone10</dropzone>
+                <offset>0</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                <sys_id>7f8f5259133c87003527bd122244b036</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">7f8f5259133c87003527bd122244b036</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>3f8f5259133c87003527bd122244b037</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>Knowledge Base Search</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">7f8f5259133c87003527bd122244b036</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>778f5259133c87003527bd122244b038</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>8268bb58492a5100e0b25ea395cd7c19</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">7f8f5259133c87003527bd122244b036</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>7b8f5259133c87003527bd122244b037</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>content_block_programmatic</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">7f8f5259133c87003527bd122244b036</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>b38f5259133c87003527bd122244b038</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">7f8f5259133c87003527bd122244b036</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>ff8f5259133c87003527bd122244b037</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone20</dropzone>
+                <offset>0</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>a38f5259133c87003527bd122244b035</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">a38f5259133c87003527bd122244b035</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>378f5259133c87003527bd122244b036</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">a38f5259133c87003527bd122244b035</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>738f5259133c87003527bd122244b036</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>KBnavIcon</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">a38f5259133c87003527bd122244b035</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>bb8f5259133c87003527bd122244b036</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">a38f5259133c87003527bd122244b035</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>bf8f5259133c87003527bd122244b035</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_static</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">a38f5259133c87003527bd122244b035</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>f78f5259133c87003527bd122244b036</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>58e17f692b907100e0b209d417da1547</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone100</dropzone>
+                <offset>1</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                <sys_id>bf8f5259133c87003527bd122244b03b</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">bf8f5259133c87003527bd122244b03b</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>338f5259133c87003527bd122244b03d</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>Knowledge Base Footer</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">bf8f5259133c87003527bd122244b03b</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>7f8f5259133c87003527bd122244b03c</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>content_block_static</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">bf8f5259133c87003527bd122244b03b</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>b78f5259133c87003527bd122244b03d</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">bf8f5259133c87003527bd122244b03b</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>bb8f5259133c87003527bd122244b03c</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>83ddbe90492a5100e0b25ea395cd7c16</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">bf8f5259133c87003527bd122244b03b</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>f38f5259133c87003527bd122244b03d</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone100</dropzone>
+                <offset>0</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>e38fde19133c87003527bd122244b062</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e38fde19133c87003527bd122244b062</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>2b8fde19133c87003527bd122244b063</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>Knowledge Base Google Analytics</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e38fde19133c87003527bd122244b062</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>678fde19133c87003527bd122244b063</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>fcaee26a6f171100091f52a03f3ee49f</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e38fde19133c87003527bd122244b062</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>a38fde19133c87003527bd122244b063</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e38fde19133c87003527bd122244b062</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>eb8fde19133c87003527bd122244b063</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_programmatic</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e38fde19133c87003527bd122244b062</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>ef8fde19133c87003527bd122244b062</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone10</dropzone>
+                <offset>1</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                <sys_id>e78f5259133c87003527bd122244b033</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e78f5259133c87003527bd122244b033</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>2f8f5259133c87003527bd122244b034</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>f19b51a081221100e0b29d39bff2f1b3</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e78f5259133c87003527bd122244b033</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>6b8f5259133c87003527bd122244b034</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e78f5259133c87003527bd122244b033</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>a78f5259133c87003527bd122244b034</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e78f5259133c87003527bd122244b033</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>e38f5259133c87003527bd122244b034</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>Knowledge Base Detail</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:27">e78f5259133c87003527bd122244b033</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:27</sys_created_on>
+                        <sys_id>ef8f5259133c87003527bd122244b034</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:27</sys_updated_on>
+                        <value>content_block_programmatic</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+            <sys_portal action="INSERT_OR_UPDATE">
+                <dropzone>dropzone0</dropzone>
+                <offset>2</offset>
+                <page display_value="UC Davis IT Knowledge Base - Detail">a38fde19133c87003527bd122244b05e</page>
+                <summary/>
+                <sys_created_by>admin-aztan</sys_created_by>
+                <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                <sys_id>f38f5259133c87003527bd122244b03a</sys_id>
+                <sys_mod_count>0</sys_mod_count>
+                <sys_updated_by>admin-aztan</sys_updated_by>
+                <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                <related_items_node>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>title</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">f38f5259133c87003527bd122244b03a</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>3b8f5259133c87003527bd122244b03b</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>Knowledge Base Header</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>type</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">f38f5259133c87003527bd122244b03a</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>778f5259133c87003527bd122244b03b</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>content_block_header</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>sys_id</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">f38f5259133c87003527bd122244b03a</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>b38f5259133c87003527bd122244b03b</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>d52c7a90492a5100e0b25ea395cd7cb1</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>renderer</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">f38f5259133c87003527bd122244b03a</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>fb8f5259133c87003527bd122244b03b</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>com.glide.cms.RenderBlock</value>
+                    </sys_portal_preferences>
+                    <sys_portal_preferences action="INSERT_OR_UPDATE">
+                        <name>current_page</name>
+                        <portal_section display_value="Created 2017-08-24 10:50:28">f38f5259133c87003527bd122244b03a</portal_section>
+                        <sys_created_by>admin-aztan</sys_created_by>
+                        <sys_created_on>2017-08-24 17:50:28</sys_created_on>
+                        <sys_id>ff8f5259133c87003527bd122244b03a</sys_id>
+                        <sys_mod_count>0</sys_mod_count>
+                        <sys_updated_by>admin-aztan</sys_updated_by>
+                        <sys_updated_on>2017-08-24 17:50:28</sys_updated_on>
+                        <value>1d4d3690492a5100e0b25ea395cd7cb0</value>
+                    </sys_portal_preferences>
+                </related_items_node>
+            </sys_portal>
+        </related_items_node>
+    </sys_portal>
+    <content_page action="INSERT_OR_UPDATE">
+        <content_site display_value="Employee Self-Service">5767a89fc0a8016b012f6aecb0c816a4</content_site>
+        <content_theme display_value="">f85147d0492a5100e0b25ea395cd7c16</content_theme>
+        <description>ESS page of ServiceNow KB article (original knowledge_detail.do)</description>
+        <frame_buster>true</frame_buster>
+        <layout display_value="">ffeaf690492a5100e0b25ea395cd7c12</layout>
+        <model_id/>
+        <model_table/>
+        <name>Knowledge Base - Detail</name>
+        <order/>
+        <parent_page display_value="">d8dcfa90492a5100e0b25ea395cd7cb2</parent_page>
+        <read_roles>public</read_roles>
+        <roles/>
+        <selectable>true</selectable>
+        <sys_class_name>content_page</sys_class_name>
+        <sys_created_by>admin-aztan</sys_created_by>
+        <sys_created_on>2017-08-24 17:50:26</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>a38fde19133c87003527bd122244b05e</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>Knowledge Base - Detail</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>content_page_a38fde19133c87003527bd122244b05e</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2017-08-24 20:40:34</sys_updated_on>
+        <title>UC Davis IT Knowledge Base - Detail</title>
+        <url_suffix>copy_of_knowledge_detail</url_suffix>
+        <user/>
+        <view/>
+        <workflow_state>published</workflow_state>
+    </content_page>
+</record_update>

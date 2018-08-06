@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function($scope, spUtil, $http) {  
+	var c = this;  
+	c.openNew = function() {
+		window.open ('?id=ucd_cat_item&sys_id=' + c.data.cat_item + '&sysparm_ritm=' + c.data.ritmSysID, '_blank');
+	};
+}  ]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.panel-primary &gt; .panel-heading {&#13;
+  border-color: #c9c9c9;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>false</has_preview>
+        <id>ucd-resubmit-ritm</id>
+        <internal>false</internal>
+        <link/>
+        <name>Resubmit RITM</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {  
+	data.canResubmit = false;
+	data.ritmSysID = $sp.getParameter('sys_id');
+	
+	if (!data.ritmSysID) return;
+	
+	var grCatItem = new GlideRecord('sc_req_item');
+	grCatItem.get(data.ritmSysID);
+	data.cat_item = grCatItem.cat_item+'';
+	
+	var grVarSet = new GlideRecord('io_set_item');
+	grVarSet.addQuery('sc_cat_item', data.cat_item);
+	grVarSet.addQuery('variable_set', 'cb5c4a37137297803527bd122244b021'); //Fill out form automatically with previous RITM's values
+	grVarSet.query();
+	
+	if (grVarSet.getRowCount() > 0) data.canResubmit = true;
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-07-20 20:20:35</sys_created_on>
+        <sys_id>9c9e5a6b13d79f003527bd122244b009</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>Resubmit RITM</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_9c9e5a6b13d79f003527bd122244b009</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-07-25 20:29:44</sys_updated_on>
+        <template><![CDATA[<div ng-if="data.canResubmit" class="panel panel-primary b">    
+  <div class="panel-heading">    
+    <h4 panel-title pull-left>    
+      ${Link to Resubmit}    
+    </h4>    
+  </div>
+  <div class="clearfix"> </div>
+  <div class="panel-body">  
+    <div style="float:right; margin-top:15px;">  
+      <button type="submit" class="btn btn-primary" ng-click="c.openNew()">  
+        ${Start}  
+      </button>  
+    </div>   
+  </div>    
+</div>  
+]]></template>
+    </sp_widget>
+</record_update>

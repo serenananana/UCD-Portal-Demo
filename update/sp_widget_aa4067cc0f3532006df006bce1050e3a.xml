@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function() {
+	var c = this;
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.label {&#13;
+  float: right;&#13;
+}&#13;
+&#13;
+.panel-body &gt; div {&#13;
+  margin-bottom: 15px;&#13;
+}&#13;
+&#13;
+fa {&#13;
+  margin-right: 10px;&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>ucd-kb-categories-kbv3</id>
+        <internal>false</internal>
+        <link/>
+        <name>ucd_KB Categories - KBv3</name>
+        <option_schema/>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.categoryPageUrl = "ucd_kb_category"; // Category page url
+	data.catParam = $sp.getParameter("kb_category"); // Get the sys_id from the URL
+	data.kb = $sp.getValue("kb_knowledge_base") // sys_id for the KB for this portal
+	data.categories = []; // list of categories to display
+	var api = new ScopedPortalAPI(); // loads UCD Portal API
+	
+	var kbs = new GlideRecord("kb_knowledge_base");
+	kbs.query();
+	while(kbs.next()){ // for each knowledge base
+		if(kbs.canRead()){ // if user has permissions to access
+			var cats = new GlideRecord("kb_category"); // load each category
+			cats.addQuery("parent_id", kbs.getUniqueValue()); // Filter out subcategories
+			cats.query();
+			while (cats.next()) {
+				if(api.numKBArticles(cats.getUniqueValue()) > 0){ // if category is not empty, then push it to list
+					data.categories.push({label: cats.getDisplayValue("label"), value: cats.getUniqueValue()});	
+				}
+			}
+		}
+	}
+	
+	// Sort the final list of categories alphabetically
+	//	increasing
+	data.categories.sort(function(a, b) {
+		return (a.label < b.label) ? -1 : (a.label > b.label) ? 1 : 0;
+	});
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>josephdt</sys_created_by>
+        <sys_created_on>2017-03-24 22:12:31</sys_created_on>
+        <sys_id>aa4067cc0f3532006df006bce1050e3a</sys_id>
+        <sys_mod_count>55</sys_mod_count>
+        <sys_name>ucd_KB Categories - KBv3</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_aa4067cc0f3532006df006bce1050e3a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-05-02 20:53:27</sys_updated_on>
+        <template><![CDATA[<div class="panel panel-{{::c.options.color}} b">
+  <div class="panel-heading">
+    <h4 class="panel-title" ng-bind="::c.options.title"><fa ng-if="c.options.glyph" name="{{c.options.glyph}}" /></h4>
+  </div>
+  <div class="panel-body">
+    <div ng-repeat="category in c.data.categories">
+      <a ng-href="?id={{c.data.categoryPageUrl}}&kb_category={{::category.value}}">{{::category.label}}</a>
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

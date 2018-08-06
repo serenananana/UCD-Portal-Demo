@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element attributes="ref_ac_columns_search=true,ref_ac_columns=full_category,ref_auto_completer=AJAXTableCompleter" label="Knowledge Category" max_length="40" name="kb_category" type="collection">
+        <element attributes="edge_encryption_enabled=true" label="Description" max_length="1000" name="x_uocd2_ucd_portal_u_description" type="string"/>
+        <element label="Icon" max_length="100" name="x_uocd2_ucd_portal_u_icon" reference="db_image" type="reference"/>
+        <index name="index">
+            <element name="x_uocd2_ucd_portal_u_icon"/>
+        </index>
+    </element>
+</database>

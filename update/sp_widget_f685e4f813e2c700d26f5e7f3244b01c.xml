@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script><![CDATA[function clientController($scope, $http,$timeout, $location, $rootScope, spUtil, $interpolate) {
+	var c = this;
+	$timeout(function() {
+		$rootScope.$broadcast('sp.update.breadcrumbs', c.data.bcs);
+	});
+
+	$('#category-tree').treeview({
+		data: c.data.categories,
+		levels: 0,
+		state: {
+			expanded: true
+		}
+	});
+
+	$('#category-tree').on('nodeSelected', function(event, data) {
+		$location.url('/servicehub?id=' + c.data.page + '&sys_id=' + data.sys_id);
+		$scope.$apply();
+	});
+
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.node-category-tree {&#13;
+    border-top-right-radius: 0px !important;&#13;
+    border-top-left-radius: 0px !important;&#13;
+    border-bottom-right-radius: 0px !important;&#13;
+    border-bottom-left-radius: 0px !important;&#13;
+}&#13;
+.panel-heading {&#13;
+    background: #17375a;&#13;
+}&#13;
+.panel-title {&#13;
+    color: #ffffff;&#13;
+}&#13;
+&#13;
+.panel__title {&#13;
+    font-size: 16px;&#13;
+    font-size: 1rem;&#13;
+    line-height: 1.625;&#13;
+    margin: .75em 0 .25em;&#13;
+    padding: 0;&#13;
+    color: #002855;&#13;
+    font-style: normal;&#13;
+    font-weight: 700;&#13;
+    font-size: 25px;&#13;
+    font-size: 1.3rem;&#13;
+	padding: 0px 16px 5px 16px;&#13;
+    line-height: 1.04;&#13;
+}&#13;
+&#13;
+.ucd-custom {&#13;
+}&#13;
+&#13;
+.panel {&#13;
+    clear: left;&#13;
+    margin-bottom: 1.3em;&#13;
+}&#13;
+&#13;
+.treeview .list-group-item {&#13;
+	cursor: pointer;&#13;
+}&#13;
+&#13;
+.treeview span.indent {&#13;
+	margin-left: 10px;&#13;
+	margin-right: 10px;&#13;
+}&#13;
+&#13;
+.treeview span.icon {&#13;
+	width: 12px;&#13;
+	margin-right: 5px;&#13;
+}&#13;
+&#13;
+.treeview .node-disabled {&#13;
+	color: silver;&#13;
+	cursor: not-allowed;&#13;
+}&#13;
+&#13;
+.list-group-item {&#13;
+    position: relative;&#13;
+    display: block;&#13;
+    padding: 8px 0px !important;&#13;
+    margin-bottom: -1px;&#13;
+    background-color: #fff;&#13;
+    border-top: 1px solid #ddd;&#13;
+    border-bottom: 1px solid #ddd;&#13;
+    border-left: 0px !important;&#13;
+    border-right: 0px !important;&#13;
+    /*border: 1px solid #ddd;*/&#13;
+    font-size: 13px;&#13;
+    :active{&#13;
+    	background-color: #f8eecc !important;&#13;
+    }&#13;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data>{"options" :&#13;
+   {&#13;
+      "hide_xs" : false&#13;
+   }&#13;
+}</demo_data>
+        <description/>
+        <docs/>
+        <field_list>color</field_list>
+        <has_preview>true</has_preview>
+        <id/>
+        <internal>false</internal>
+        <link/>
+        <name>UCD Nested SC Categories</name>
+        <option_schema>[{"name":"hide_xs","default_value":false,"label":"Hide at XS","type":"boolean"},{"name":"omit_badges","label":"Omit badges","type":"boolean"},{"name":"check_can_view","default_value":"true","label":"Check canView per item (may impact performance for large catalogs)","type":"boolean"},{"hint":"Choose between a flattened and a nested category structure","name":"category_layout","label":"Category Layout","type":"choice","choices":[{"label":"Flat","value":"Flat"},{"label":"Nested","value":"Nested"}]},{"displayValue":"Page","name":"page","label":"page","type":"reference","value":"sp_page","ed":{"reference":"sp_page"}}]</option_schema>
+        <public>true</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	data.sc_catalog = $sp.getValue('sc_catalog');
+	data.sid = $sp.getParameter('sys_id');
+	data.services = "93056219134143003527bd122244b024";
+	data.title = gs.getMessage(options.title);
+	//data.page = options.page || "ucd_view_service_sp";
+	data.page = options.page || "ucd_view_service2";
+	data.isLoggedIn = gs.isLoggedIn();
+
+	var brcs = getAllParents(data.sid);
+	data.bcs = [];
+	var murl = "?id=ucd_services&ucd_catalog="+data.sc_catalog+"&ucd_category_id="+data.services;
+	
+	// add parents of current category to breadcrumb
+	for(i=brcs.length-1;i>=0;i--){
+		if(i==brcs.length-1) { // Catalog breadcrumb
+			var categoryBc = getBreads(brcs[i]);
+		
+			data.bcs.push({label: categoryBc.label + " Catalog", url: "?id=ucd_services&ucd_catalog="+data.sc_catalog+"&ucd_category_id="+categoryBc.id});
+			data.title = categoryBc.label + " Categories";
+			data.catalog = categoryBc.id;
+		} else {
+			data.bcs.push(getBreads(brcs[i]));
+		}
+	} 
+	
+	if(brcs.length == 0) { // already at parent category so it is catalog
+		var catalogBc = getBreads(data.sid);
+		data.bcs.push({label: catalogBc.label + " Catalog", url: "?id=ucd_services&ucd_catalog="+data.sc_catalog+"&ucd_category_id="+catalogBc.id});
+		data.title = catalogBc.label + " Categories";
+		data.catalog = catalogBc.id;
+	}
+	else // add current category to breadcrumb
+		data.bcs.push(getBreads(data.sid)); 
+	
+	// get all categories
+	data.categories = getCategories(data.sc_catalog,data.sid);
+})();
+
+function getBreads(sid) {
+	var bc = {};
+	var scname = new GlideRecord('sc_category');
+	if(scname.get(sid)) {
+		bc.label =   scname.getValue('title');     
+		//bc.url   =   "?id=ucd_view_service_sp&ucd_catalog="+data.sc_catalog+"&sys_id="+scname.getValue('sys_id');  
+		bc.url   =   "?id=ucd_view_service2&ucd_catalog="+data.sc_catalog+"&sys_id="+scname.getValue('sys_id'); // includes user criteria checking
+		bc.id = scname.sys_id;
+	}
+	return bc;
+}
+
+function getCategories(catalog,sid) {
+	var result = [];
+	var sc = new GlideRecord('sc_category');
+	if (catalog) {
+		sc.addQuery('sc_catalog', catalog);
+	}
+	sc.addQuery('sys_class_name', 'sc_category');
+	// Use parent breadcrumb as catalog
+	sc.addQuery('parent', data.catalog); // Shows sibling categories
+	//sc.addQuery('sys_id', sid); // Shows only selected category 
+	//sc.addNullQuery('parent'); // Shows other categories than selected one
+	sc.addActiveQuery();
+	sc.orderBy('title');
+	sc.query();
+	while(sc.next()) {
+		/*if (!$sp.canReadRecord("sc_category", sc.getUniqueValue())) {
+			continue;
+		}*/
+		if(hasItems(sc.sys_id, sc.title)) {
+			result.push(getCategoryRecursive({
+				sys_id: sc.getValue('sys_id'),
+				text: sc.getValue('title'),
+				state: getState(sc.getValue('sys_id')),
+				href: '?id=ucd_view_service2&sys_id=' + sc.getValue('sys_id') // includes user criteria checking
+				//href: '?id=ucd_view_service_sp&sys_id=' + sc.getValue('sys_id')
+			}));
+		}
+	}
+	return result;
+}
+
+function getCategoryRecursive(category) {
+	var sc = new GlideRecord('sc_category');
+	sc.addQuery('sys_class_name', 'sc_category');
+	sc.addQuery('parent', category.sys_id);
+	sc.addActiveQuery();
+	sc.orderBy('title');
+	sc.query();
+	/*if(sc.getRowCount() > 0) { // did not check if category had items in it first 
+		category.nodes = [];
+	}*/
+	while(sc.next()) {
+		// Prevents hiding of catalog items from guests
+		/*if (!$sp.canReadRecord("sc_category", sc.getUniqueValue())) {
+			continue;
+		}*/
+		if(hasItems(sc.sys_id, sc.title)) {
+			category.nodes = [];
+			category.nodes.push(getCategoryRecursive({
+				sys_id: sc.getValue('sys_id'),
+				text: sc.getValue('title'),
+				parent: sc.getValue('parent'),
+				state: getState(sc.getValue('sys_id')),
+				href: '?id=ucd_view_service_sp&sys_id=' + sc.getValue('sys_id') // includes user criteria checking
+				//href: '?id=ucd_view_service_sp&sys_id=' + sc.getValue('sys_id')
+			}));
+		}
+	}
+	return category;
+}
+
+function getState(categorySysId) {
+	var currentSysId = $sp.getParameter("sys_id");
+	var parents = getAllParents(currentSysId);
+	if(_.contains(parents, categorySysId)) {
+		return { expanded: true };
+	}
+	if(categorySysId == currentSysId) {
+		return { 
+			expanded: true,
+			selected: true };
+	}
+	return {};
+}
+
+function getAllParents(categorySysId) {
+	var result = [];
+	var sc = new GlideRecord('sc_category');
+	if(sc.get(categorySysId)) {
+		var parent = sc.getValue('parent');
+		if(parent) {
+			result.push(parent);
+		}
+		result = _.uniq(_.union(result, getAllParents(sc.getValue('parent'))));
+	}
+	return result;
+}
+
+	/**
+	* Checks if category has items in it
+	*/
+	function hasItems(category, name) { 
+		if(hasItem(category, name))
+			return true;
+		else { // check subcategories
+			var sub = new GlideRecord('sc_category');
+			sub.addQuery('parent', category);
+			sub.addActiveQuery();
+			sub.query();
+			while(sub.next()) {
+				if(hasItem(sub.getUniqueValue(), sub.title)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	/**
+	* Helper function for hasItems function
+	*/
+	function hasItem(category, name) {
+		var items = new GlideRecord('sc_cat_item');
+		items.addQuery("category", category);
+		items.addActiveQuery();
+		items.query();
+		if(items.next()) {
+			return true;
+		}
+		return false;
+	}
+
+
+/** Pre-breadcrumbs update to remove duplicate Get Services
+(function() {
+	data.sc_catalog = $sp.getValue('sc_catalog');
+	data.sid = $sp.getParameter('sys_id');
+	data.services = "93056219134143003527bd122244b024";
+	data.categories = getCategories(data.sc_catalog,data.sid);
+	//gs.addInfoMessage(JSON.stringify(data.categories));
+	data.title = gs.getMessage(options.title);
+	data.page = options.page || "ucd_view_service_sp";
+
+	var brcs = getAllParents(data.sid);
+	data.bcs = [];
+	var murl = "?id=ucd_services&ucd_catalog="+data.sc_catalog+"&ucd_category_id="+data.services;
+	data.bcs.push({label:'Get Services', url: murl});
+	for(i=brcs.length-1;i>=0;i--){
+		data.bcs.push(getBreads(brcs[i]));
+	}
+	data.bcs.push(getBreads(data.sid)); 
+})();
+
+function getBreads(sid) {
+	var bc = {};
+	var scname = new GlideRecord('sc_category');
+	if(scname.get(sid)) {
+		bc.label =   scname.getValue('title');     
+		bc.url   =   "?id=ucd_view_service_sp&ucd_catalog="+data.sc_catalog+"&sys_id="+scname.getValue('sys_id');     
+	}
+	return bc;
+}
+
+function getCategories(catalog,sid) {
+	var result = [];
+	var sc = new GlideRecord('sc_category');
+	if (catalog) {
+		sc.addQuery('sc_catalog', catalog);
+	}
+	sc.addQuery('sys_class_name', 'sc_category');
+	sc.addNullQuery('parent');
+	sc.addActiveQuery();
+	sc.orderBy('title');
+	sc.query();
+	while(sc.next()) {
+		if (!$sp.canReadRecord("sc_category", sc.getUniqueValue())) {
+			continue;
+		}
+		result.push(getCategoryRecursive({
+			sys_id: sc.getValue('sys_id'),
+			text: sc.getValue('title'),
+			state: getState(sc.getValue('sys_id')),
+			href: '?id=ucd_view_service_sp&sys_id=' + sc.getValue('sys_id')
+		}));
+	}
+	return result;
+}
+
+function getCategoryRecursive(category) {
+	var sc = new GlideRecord('sc_category');
+	sc.addQuery('sys_class_name', 'sc_category');
+	sc.addQuery('parent', category.sys_id);
+	sc.addActiveQuery();
+	sc.orderBy('title');
+	sc.query();
+	if(sc.getRowCount() > 0) {
+		category.nodes = [];
+	}
+	while(sc.next()) {
+
+		if (!$sp.canReadRecord("sc_category", sc.getUniqueValue())) {
+			continue;
+		}
+		category.nodes.push(getCategoryRecursive({
+			sys_id: sc.getValue('sys_id'),
+			text: sc.getValue('title'),
+			parent: sc.getValue('parent'),
+			state: getState(sc.getValue('sys_id')),
+			href: '?id=ucd_view_service_sp&sys_id=' + sc.getValue('sys_id')
+		}));
+	}
+	return category;
+}
+
+function getState(categorySysId) {
+	var currentSysId = $sp.getParameter("sys_id");
+	var parents = getAllParents(currentSysId);
+	if(_.contains(parents, categorySysId)) {
+		return { expanded: true };
+	}
+	if(categorySysId == currentSysId) {
+		return { selected: true };
+	}
+	return {};
+}
+
+function getAllParents(categorySysId) {
+	var result = [];
+	var sc = new GlideRecord('sc_category');
+	if(sc.get(categorySysId)) {
+		var parent = sc.getValue('parent');
+		if(parent) {
+			result.push(parent);
+		}
+		result = _.uniq(_.union(result, getAllParents(sc.getValue('parent'))));
+	}
+	return result;
+}
+*/]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>kloves-alxcrlsn</sys_created_by>
+        <sys_created_on>2017-11-17 19:30:17</sys_created_on>
+        <sys_id>f685e4f813e2c700d26f5e7f3244b01c</sys_id>
+        <sys_mod_count>246</sys_mod_count>
+        <sys_name>UCD Nested SC Categories</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_widget_f685e4f813e2c700d26f5e7f3244b01c</sys_update_name>
+        <sys_updated_by>admin-aztan</sys_updated_by>
+        <sys_updated_on>2018-01-22 19:48:46</sys_updated_on>
+        <template><![CDATA[<div ng-class="::{'hidden-xs' : options.hide_xs}" class="panel ucd-custom b">
+    <div class="panel__heading">
+        <h4 class="panel__title">
+            <!--<span ng-if="::options.glyph">
+                <fa name="{{::options.glyph}}" />
+            </span>-->
+            {{::data.title}}
+        </h4>
+    </div>
+    <div id="category-tree"></div>
+</div>
+
+<!--<div ng-class="::{'hidden-xs' : options.hide_xs}" class="panel panel-{{::options.color}} b">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <!--<span ng-if="::options.glyph">
+                <fa name="{{::options.glyph}}" />
+            </span>
+            {{::data.title}}
+        </h4>
+    </div>
+    <div id="category-tree"></div>
+</div>-->]]></template>
+    </sp_widget>
+</record_update>

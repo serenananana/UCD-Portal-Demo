@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_page">
+    <sp_page action="INSERT_OR_UPDATE">
+        <category/>
+        <css/>
+        <draft>false</draft>
+        <dynamic_title_structure/>
+        <id>Suggested Articles</id>
+        <internal>false</internal>
+        <public>true</public>
+        <roles/>
+        <short_description/>
+        <sys_class_name>sp_page</sys_class_name>
+        <sys_created_by>tnohren</sys_created_by>
+        <sys_created_on>2017-04-19 22:37:36</sys_created_on>
+        <sys_id>675f1d28db123200b11e711ebf961936</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Suggested Articles</sys_name>
+        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_update_name>sp_page_675f1d28db123200b11e711ebf961936</sys_update_name>
+        <sys_updated_by>aztan</sys_updated_by>
+        <sys_updated_on>2017-06-26 16:24:38</sys_updated_on>
+        <title>UCD_kb_view_suggested</title>
+    </sp_page>
+    <sys_translated_text action="delete_multiple" query="documentkey=675f1d28db123200b11e711ebf961936"/>
+</record_update>
