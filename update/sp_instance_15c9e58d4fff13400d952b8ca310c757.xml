@@ -7,32 +7,27 @@
         <css/>
         <glyph/>
         <id/>
-        <order>0</order>
+        <order>1</order>
         <roles/>
         <short_description/>
         <size>md</size>
         <sp_column display_value="1">4e907df2db200300178e7fcfbf9619d9</sp_column>
-        <sp_widget display_value="">4dd8b8bc0f7c47006717590be1050ec8</sp_widget>
+        <sp_widget display_value="ucd_Form without Save Portal">8b79e58d4fff13400d952b8ca310c74c</sp_widget>
         <sys_class_name>sp_instance</sys_class_name>
-        <sys_created_by>aztan</sys_created_by>
-        <sys_created_on>2017-08-16 20:00:28</sys_created_on>
-        <sys_id>46907df2db200300178e7fcfbf9619db</sys_id>
-        <sys_mod_count>4</sys_mod_count>
+        <sys_created_by>admin-eduque</sys_created_by>
+        <sys_created_on>2018-08-06 18:36:30</sys_created_on>
+        <sys_id>15c9e58d4fff13400d952b8ca310c757</sys_id>
+        <sys_mod_count>0</sys_mod_count>
         <sys_name/>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
-        <sys_update_name>sp_instance_46907df2db200300178e7fcfbf9619db</sys_update_name>
-        <sys_updated_by>admin-aztan</sys_updated_by>
-        <sys_updated_on>2017-08-23 20:28:55</sys_updated_on>
+        <sys_update_name>sp_instance_15c9e58d4fff13400d952b8ca310c757</sys_update_name>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-08-06 18:36:30</sys_updated_on>
         <title/>
         <url/>
-        <widget_parameters><![CDATA[{
-	"view":{
-		"value": "servicehub",
-		"displayValue": "servicehub"
-	}
-}]]></widget_parameters>
+        <widget_parameters/>
     </sp_instance>
-    <sys_translated_text action="delete_multiple" query="documentkey=46907df2db200300178e7fcfbf9619db"/>
+    <sys_translated_text action="delete_multiple" query="documentkey=15c9e58d4fff13400d952b8ca310c757"/>
 </record_update>

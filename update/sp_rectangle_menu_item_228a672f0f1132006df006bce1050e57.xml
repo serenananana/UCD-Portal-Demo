@@ -19,24 +19,24 @@
         <sc_cat_item/>
         <sc_category/>
         <short_description/>
-        <sp_page display_value="ucd_kb_view2">838942880f3132006df006bce1050efa</sp_page>
+        <sp_page/>
         <sp_rectangle_menu display_value="ucd_Header Menu">ee4a232f0f1132006df006bce1050e07</sp_rectangle_menu>
         <sp_rectangle_menu_item/>
         <sys_class_name>sp_rectangle_menu_item</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2017-03-10 23:25:08</sys_created_on>
         <sys_id>228a672f0f1132006df006bce1050e57</sys_id>
-        <sys_mod_count>7</sys_mod_count>
+        <sys_mod_count>10</sys_mod_count>
         <sys_name>Find Answers</sys_name>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_rectangle_menu_item_228a672f0f1132006df006bce1050e57</sys_update_name>
-        <sys_updated_by>aztan</sys_updated_by>
-        <sys_updated_on>2017-12-11 22:35:00</sys_updated_on>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-08-06 18:13:53</sys_updated_on>
         <table/>
-        <type>page</type>
-        <url/>
+        <type>url</type>
+        <url>?id=ucd_kb_view2&amp;kb=a7e8a78bff0221009b20ffffffffff17</url>
         <url_target/>
     </sp_rectangle_menu_item>
     <sys_translated_text action="delete_multiple" query="documentkey=228a672f0f1132006df006bce1050e57"/>

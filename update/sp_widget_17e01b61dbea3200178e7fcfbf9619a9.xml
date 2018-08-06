@@ -24,7 +24,8 @@
 		if(c.selectedStuff == "My Contracts" || c.selectedStuff == "My Assets" || c.selectedStuff == "My Software Commitments" || c.selectedStuff == "My Facilities Requests" || c.selectedStuff == "My Change Requests" || c.selectedStuff == "My Tasks") {
 			p = 'ucd_form';
 		} else if(c.selectedStuff == "My Request Items") {
-			p = 'ucd_ritm'; 
+			//p = 'ucd_ritm'; 
+			p = 'ucd_ticket'; //for demo
 			//p = 'ucd_ritm'; removed stage widget 8.30.17
 			$scope.data.view = 'servicehub';
 		} else { // Incident 
@@ -184,14 +185,14 @@
         <sys_created_by>aztan</sys_created_by>
         <sys_created_on>2017-05-05 19:43:21</sys_created_on>
         <sys_id>17e01b61dbea3200178e7fcfbf9619a9</sys_id>
-        <sys_mod_count>46</sys_mod_count>
+        <sys_mod_count>47</sys_mod_count>
         <sys_name>ucd_Data Table for My Stuff</sys_name>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_17e01b61dbea3200178e7fcfbf9619a9</sys_update_name>
         <sys_updated_by>admin-eduque</sys_updated_by>
-        <sys_updated_on>2018-05-15 17:17:50</sys_updated_on>
+        <sys_updated_on>2018-08-06 18:47:30</sys_updated_on>
         <template><![CDATA[<div ng-if="showWidget != 'My Approvals'">
   <div ng-if="data.dataTableWidget && !data.invalid_table">
   	<sp-widget widget="data.dataTableWidget"></sp-widget>

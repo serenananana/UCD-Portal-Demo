@@ -312,7 +312,8 @@
 			} else if(data == "My Requests") {
 				c.data.newFilter = "active=true^requested_forDYNAMICjavascript:gs.getUserID()";
 			} else if(data == "My Request Items") {
-				c.data.newFilter = "active=true^stage!=complete^state=1^ORstate=2^u_primary_contactDYNAMICjavascript:gs.getUserID()^NQactive=true^stage!=complete^state=1^ORstate=2^u_task_requested_forDYNAMICjavascript:gs.getUserID()^NQactive=true^stage!=complete^state=1^ORstate=2^opened_byDYNAMICjavascript:gs.getUserID()";
+				//c.data.newFilter = "active=true^stage!=complete^state=1^ORstate=2^u_primary_contactDYNAMICjavascript:gs.getUserID()^NQactive=true^stage!=complete^state=1^ORstate=2^u_task_requested_forDYNAMICjavascript:gs.getUserID()^NQactive=true^stage!=complete^state=1^ORstate=2^opened_byDYNAMICjavascript:gs.getUserID()";
+				c.data.newFilter = "active=true^stage!=complete^state=1^ORstate=2^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe^NQactive=true^stage!=complete^state=1^ORstate=2^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe^NQactive=true^stage!=complete^state=1^ORstate=2^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe"; //for demo
 				//c.data.newFilter = "active=true^stage!=complete^u_primary_contactDYNAMICjavascript:gs.getUserID()^ORu_task_requested_forDYNAMICjavascript:gs.getUserID()^ORopened_byDYNAMICjavascript:gs.getUserID()";
 			} else if(data == "My Approvals") {
 				c.data.newFilter = "approver=javascript:getMyApprovals()^state=requested";
@@ -342,7 +343,8 @@
 				c.data.newFilter = "active=false^requested_forDYNAMICjavascript:gs.getUserID()";
 			} else if(data == "My Request Items") {
 				//c.data.newFilter = "state=3^ORstate=4^ORstate=7^u_primary_contactDYNAMICjavascript:gs.getUserID()^ORu_task_requested_forDYNAMICjavascript:gs.getUserID()^ORopened_byDYNAMICjavascript:gs.getUserID()";
-				c.data.newFilter = "state=3^ORstate=4^ORstate=7^u_primary_contactDYNAMICjavascript:gs.getUserID()^NQstate=3^ORstate=4^ORstate=7^u_task_requested_forDYNAMICjavascript:gs.getUserID()^NQstate=3^ORstate=4^ORstate=7^opened_byDYNAMICjavascript:gs.getUserID()";
+				//c.data.newFilter = "state=3^ORstate=4^ORstate=7^u_primary_contactDYNAMICjavascript:gs.getUserID()^NQstate=3^ORstate=4^ORstate=7^u_task_requested_forDYNAMICjavascript:gs.getUserID()^NQstate=3^ORstate=4^ORstate=7^opened_byDYNAMICjavascript:gs.getUserID()";
+				c.data.newFilter = "state=3^ORstate=4^ORstate=7^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe^NQstate=3^ORstate=4^ORstate=7^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe^NQstate=3^ORstate=4^ORstate=7^request.requested_forDYNAMIC90d1921e5f510100a9ad2572f2b477fe"; //for demo
 			} else if(data == "My Approvals") {
 				c.data.newFilter = "approver=javascript:getMyApprovals()^state!=requested";
 			} else if(data == "My Contracts") {
@@ -884,14 +886,14 @@ tbody tr:last-child {
         <sys_created_by>aztan</sys_created_by>
         <sys_created_on>2017-05-05 19:45:58</sys_created_on>
         <sys_id>a581df61dbea3200178e7fcfbf961982</sys_id>
-        <sys_mod_count>319</sys_mod_count>
+        <sys_mod_count>322</sys_mod_count>
         <sys_name>ucd_Data Table</sys_name>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_a581df61dbea3200178e7fcfbf961982</sys_update_name>
         <sys_updated_by>admin-eduque</sys_updated_by>
-        <sys_updated_on>2018-07-20 22:38:51</sys_updated_on>
+        <sys_updated_on>2018-08-06 18:46:25</sys_updated_on>
         <template><![CDATA[<div class="panel o-box">
     <section class="u-space-bottom">
         <div class="o-media ">

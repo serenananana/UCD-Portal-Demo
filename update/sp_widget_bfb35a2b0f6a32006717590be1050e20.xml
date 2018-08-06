@@ -336,7 +336,7 @@ select:invalid {
 		
 		if(data.isLoggedIn){ // Logged in user submitting ticket
 			inc.caller_id = data.currUser;
-			inc.u_requested_for = req.getUniqueValue();
+			//inc.u_requested_for = req.getUniqueValue();
 			inc.contact_type = "service hub";
 			inc.assignment_group = "786178d950368500528ad44054e28fca";
 			
@@ -344,14 +344,14 @@ select:invalid {
 			usr.addQuery('sys_id', data.currUser);
 			usr.query();
 			
-			if(usr.next()){
+			/*if(usr.next()){
 				var psg = new GlideRecord('u_group_selection');
 				psg.addQuery('u_primary_support_group', usr.u_primary_support_group);
 				psg.query();
 				if(psg.next()){
 					inc.assignment_group = psg.u_assignment_group;
 				}
-			}
+			}*/
 			
 			inc.short_description = input.subj;
 			work_notes = 'Email: ' + input.email + '[code]<br/>[/code]Phone Number: ';
@@ -367,7 +367,7 @@ select:invalid {
 			inc.contact_type = 'service hub';
 			inc.caller_id = 'Guest';
 			inc.assignment_group = '786178d950368500528ad44054e28fca';
-			inc.u_guest_name = input.guest.first_name+' '+input.guest.last_name;
+			//inc.u_guest_name = input.guest.first_name+' '+input.guest.last_name;
 			inc.short_description = input.guest_subj;
 			work_notes = 'Affiliation: ' + input.option.value + '[code]<br/>[/code]Phone Number: ';
 			if(input.guest.phone){
@@ -377,7 +377,7 @@ select:invalid {
 				work_notes += '[code]<br/>[/code]Article selected: ' + input.selectedArticle;
 			}
 			inc.work_notes = work_notes;
-			inc.u_emailed_from = input.guest.email;
+			//inc.u_emailed_from = input.guest.email;
 			inc.watch_list = input.guest.email;
 		}
 				
@@ -386,7 +386,7 @@ select:invalid {
 			inc.close_code = 'Closed by KB';
 			inc.category = 'request';
 			inc.subcategory = 'how to';
-			inc.u_do_not_send_notification = '1';
+			//inc.u_do_not_send_notification = '1';
 			inc.work_notes = 'Customer found solution via the KB search in the Service Hub.';
 			inc.comments = 'Thank you for using the Service Hub. We are happy that you were able to locate a solution to the problem you were experiencing.';
 		}
@@ -403,14 +403,14 @@ select:invalid {
         <sys_created_by>cglam</sys_created_by>
         <sys_created_on>2017-05-11 20:25:50</sys_created_on>
         <sys_id>bfb35a2b0f6a32006717590be1050e20</sys_id>
-        <sys_mod_count>198</sys_mod_count>
+        <sys_mod_count>199</sys_mod_count>
         <sys_name>ucd_Help Ticket</sys_name>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_bfb35a2b0f6a32006717590be1050e20</sys_update_name>
         <sys_updated_by>admin-eduque</sys_updated_by>
-        <sys_updated_on>2018-07-20 22:33:14</sys_updated_on>
+        <sys_updated_on>2018-08-06 18:19:20</sys_updated_on>
         <template><![CDATA[<div class="panel o-box--large">
             <div class="o-media ">
         		<div class="o-media__figure">

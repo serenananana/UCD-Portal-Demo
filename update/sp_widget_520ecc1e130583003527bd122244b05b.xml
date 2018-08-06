@@ -89,18 +89,8 @@
 				data.knowledgeBases[i].isChecked = "true";
 			}
 		}
-			data.knowledgeBases.unshift({
-				name: "IT - Public",
-				id: '7c2d56f42bd89200e0b209d417da153e',
-				isChecked: "false"
-			}); 
 	} else {
-	// move IT - public to front
-	data.knowledgeBases.unshift({
-		name: "IT - Public",
-		id: '7c2d56f42bd89200e0b209d417da153e',
-		isChecked: "true"
-	}); 
+
 	}
 	
 	/**
@@ -156,14 +146,14 @@
         <sys_created_by>admin-aztan</sys_created_by>
         <sys_created_on>2017-09-08 20:04:17</sys_created_on>
         <sys_id>520ecc1e130583003527bd122244b05b</sys_id>
-        <sys_mod_count>93</sys_mod_count>
+        <sys_mod_count>94</sys_mod_count>
         <sys_name>ucd_Knowledge Base Filter</sys_name>
         <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
         <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_520ecc1e130583003527bd122244b05b</sys_update_name>
-        <sys_updated_by>admin-aztan</sys_updated_by>
-        <sys_updated_on>2018-02-28 19:01:17</sys_updated_on>
+        <sys_updated_by>admin-eduque</sys_updated_by>
+        <sys_updated_on>2018-08-06 18:10:48</sys_updated_on>
         <template><![CDATA[<div class="panel o-box" ng-if="data.hasInternalKB">
   <h2 class="panel__title">
     Filter By Knowledge Base
