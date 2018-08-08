@@ -19,9 +19,9 @@ $body-bg: 				#f0f3f4 !default;&#13;
         <sys_id>c36fcf1d0fd097006717590be1050e0f</sys_id>
         <sys_mod_count>1</sys_mod_count>
         <sys_name>ucd_app_Stock</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_theme_c36fcf1d0fd097006717590be1050e0f</sys_update_name>
         <sys_updated_by>admin-eduque</sys_updated_by>
         <sys_updated_on>2018-02-14 21:06:48</sys_updated_on>

@@ -147,9 +147,9 @@ li a{color:inherit;}&#13;
         <sys_id>b7822cc413e9c30093625dcf3244b000</sys_id>
         <sys_mod_count>91</sys_mod_count>
         <sys_name>UCD - Get Help Answers</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_b7822cc413e9c30093625dcf3244b000</sys_update_name>
         <sys_updated_by>admin-aztan</sys_updated_by>
         <sys_updated_on>2018-01-24 20:50:56</sys_updated_on>

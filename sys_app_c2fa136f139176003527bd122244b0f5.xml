@@ -8,7 +8,7 @@
         <license_model>none</license_model>
         <logo/>
         <menu/>
-        <name>UCD Portal</name>
+        <name>UCD Portal Demo</name>
         <private>false</private>
         <restrict_table_access>false</restrict_table_access>
         <runtime_access_tracking/>
@@ -23,14 +23,14 @@
         <sys_created_by>aztan</sys_created_by>
         <sys_created_on>2017-07-29 07:07:06</sys_created_on>
         <sys_id>c2fa136f139176003527bd122244b0f5</sys_id>
-        <sys_mod_count>102</sys_mod_count>
+        <sys_mod_count>104</sys_mod_count>
         <sys_updated_by>admin-eduque</sys_updated_by>
-        <sys_updated_on>2018-07-26 19:46:21</sys_updated_on>
+        <sys_updated_on>2018-08-08 15:40:44</sys_updated_on>
         <template/>
         <trackable>true</trackable>
         <user_role/>
         <vendor/>
         <vendor_prefix/>
-        <version>2.6.081</version>
+        <version>1.02</version>
     </sys_app>
 </record_update>

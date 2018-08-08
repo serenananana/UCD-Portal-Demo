@@ -15,9 +15,9 @@
             <sys_id>5d9c0bfddb933200178e7fcfbf961991</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_name>Description</sys_name>
-            <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+            <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
             <sys_policy/>
-            <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+            <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
             <sys_update_name>sys_documentation_kb_category_x_uocd2_ucd_portal_u_description_en</sys_update_name>
             <sys_updated_by>aztan</sys_updated_by>
             <sys_updated_on>2017-06-12 20:49:57</sys_updated_on>
