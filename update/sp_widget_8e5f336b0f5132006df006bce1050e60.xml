@@ -182,9 +182,9 @@
         <sys_id>8e5f336b0f5132006df006bce1050e60</sys_id>
         <sys_mod_count>5</sys_mod_count>
         <sys_name>ucd_Category Page</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_widget_8e5f336b0f5132006df006bce1050e60</sys_update_name>
         <sys_updated_by>josephdt12</sys_updated_by>
         <sys_updated_on>2017-03-29 20:57:14</sys_updated_on>

@@ -17,9 +17,9 @@
         <sys_id>db1b4cb1db713200178e7fcfbf96198f</sys_id>
         <sys_mod_count>4</sys_mod_count>
         <sys_name>mobile</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sys_filter_db1b4cb1db713200178e7fcfbf96198f</sys_update_name>
         <sys_updated_by>admin-aztan</sys_updated_by>
         <sys_updated_on>2017-03-29 17:13:31</sys_updated_on>

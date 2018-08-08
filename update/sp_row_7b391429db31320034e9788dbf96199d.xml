@@ -11,9 +11,9 @@
         <sys_id>7b391429db31320034e9788dbf96199d</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>1</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_row_7b391429db31320034e9788dbf96199d</sys_update_name>
         <sys_updated_by>josephdt12</sys_updated_by>
         <sys_updated_on>2017-03-28 23:33:45</sys_updated_on>

@@ -15,9 +15,9 @@
         <sys_id>2c9903c80f910b006717590be1050e0d</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>kb_category.x_uocd2_ucd_portal_u_description</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sys_security_acl_2c9903c80f910b006717590be1050e0d</sys_update_name>
         <sys_updated_by>admin-aztan</sys_updated_by>
         <sys_updated_on>2017-09-14 20:13:42</sys_updated_on>

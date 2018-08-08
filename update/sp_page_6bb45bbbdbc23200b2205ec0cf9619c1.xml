@@ -26,9 +26,9 @@ button.panel-button.sp-attachment-add.btn.btn-link {&#13;
         <sys_id>6bb45bbbdbc23200b2205ec0cf9619c1</sys_id>
         <sys_mod_count>19</sys_mod_count>
         <sys_name>ucd_ticket</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_update_name>sp_page_6bb45bbbdbc23200b2205ec0cf9619c1</sys_update_name>
         <sys_updated_by>aztan</sys_updated_by>
         <sys_updated_on>2018-01-09 18:31:02</sys_updated_on>

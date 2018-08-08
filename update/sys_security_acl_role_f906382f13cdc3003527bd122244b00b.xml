@@ -7,9 +7,9 @@
         <sys_id>f906382f13cdc3003527bd122244b00b</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_name>.knowledge_admin</sys_name>
-        <sys_package display_value="UCD Portal" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
+        <sys_package display_value="UCD Portal Demo" source="x_uocd2_ucd_portal">c2fa136f139176003527bd122244b0f5</sys_package>
         <sys_policy/>
-        <sys_scope display_value="UCD Portal">c2fa136f139176003527bd122244b0f5</sys_scope>
+        <sys_scope display_value="UCD Portal Demo">c2fa136f139176003527bd122244b0f5</sys_scope>
         <sys_security_acl display_value="kb_category.x_uocd2_ucd_portal_u_icon">880630ef13cdc3003527bd122244b01a</sys_security_acl>
         <sys_update_name>sys_security_acl_role_f906382f13cdc3003527bd122244b00b</sys_update_name>
         <sys_updated_by>admin-aztan</sys_updated_by>
